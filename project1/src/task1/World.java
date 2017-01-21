@@ -8,13 +8,14 @@ class World {
     int n;
     private char[][] initialGrid, grid;
     private Random random;
+    public boolean simulationEnd;
 
     World (){
         random = new Random();
         n = 10;
         initialGrid = generateGrid(n);
-        placeAgent(initialGrid);
         grid = initialGrid.clone();
+        simulationEnd = false;
     }
 
     private char[][] generateGrid(int n){
@@ -48,9 +49,28 @@ class World {
         return grid;
     }
 
-    private void placeAgent(char[][] grid){
-        int y = random.nextInt(n);
-        int x = random.nextInt(n);
+    void placeAgent(int y, int x){
         grid[y][x] = 'A';
     }
+
+    int moveAgent(int old_y, int old_x, int new_y, int new_x){
+        if (getSquareStatus(new_y, new_x) != 'W' && getSquareStatus(old_y, old_x) == 'A') {
+            grid[old_y][old_x] = ' ';
+            grid[new_x][new_y] = 'A';
+            return calculateReward(new_y, new_x);
+        }
+        return -1000;
+    }
+
+    private int calculateReward(int y, int x){
+        char squareStatus = getSquareStatus(y, x);
+        if (squareStatus == 'F') return 1;
+        if (squareStatus == 'P') return -4;
+        if (squareStatus == 'W') {
+            simulationEnd = true;
+            return -100;
+        }
+        return 0;
+    }
+
 }
