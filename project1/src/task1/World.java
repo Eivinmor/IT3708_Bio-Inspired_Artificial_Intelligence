@@ -45,17 +45,11 @@ class World {
         return grid[y][x];
     }
 
-    public char[][] getGrid(){
-        return grid;
-    }
-
     void placeAgent(int y, int x){
         grid[y][x] = 'A';
     }
 
     int moveAgent(int old_y, int old_x, int new_y, int new_x){
-//        System.out.println("WORLD Moving from:    " + old_y + "," + old_x);
-//        System.out.println("WORLD Moving to:      " + new_y + "," + new_x);
         if (getSquareStatus(new_y, new_x) != 'W' && getSquareStatus(old_y, old_x) == 'A') {
             int reward = calculateReward(new_y, new_x);
             grid[old_y][old_x] = ' ';
@@ -69,12 +63,10 @@ class World {
 
     private int calculateReward(int y, int x){
         char squareStatus = getSquareStatus(y, x);
-//        System.out.println(squareStatus);
         if (squareStatus == 'F') return 1;
         if (squareStatus == 'P') return -4;
         if (squareStatus == 'W') {
             simulationEnd = true;
-            System.out.println("MOVED INTO WALL");
             return -100;
         }
         return 0;
