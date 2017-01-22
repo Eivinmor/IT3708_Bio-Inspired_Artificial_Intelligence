@@ -1,12 +1,11 @@
 package task1;
-import java.util.HashSet;
 import java.util.Random;
-import java.util.Set;
+import java.util.HashSet;
 
 class Agent {
     private World world;
     private Random random;
-    private int directionIndex;
+    private int directionIndex; // 0:U, 1:R, 2:D, 3:L
     private int[][] directionCoordsArray;
     private int y, x, score;
 
@@ -26,7 +25,7 @@ class Agent {
     }
 
     private char[] observe(){
-        char[] observedSquares = new char[] {'-', '-', '-', '-'};
+        char[] observedSquares = new char[] {'-', '-', '-', '-'};   // '-' represents no available information
         for (int i = directionIndex-1; i < directionIndex + 2; i++) {
             int j = i % 4;
             if (j < 0) j += 4;
@@ -34,7 +33,7 @@ class Agent {
             int x = this.x + directionCoordsArray[j][1];
             observedSquares[j] = world.getSquareStatus(y, x);
         }
-        return observedSquares; // {front, right, down, left}
+        return observedSquares; // U, R, D, L
     }
 
     private int move(int moveDirection){
@@ -49,20 +48,20 @@ class Agent {
     private int chooseMoveDirection(char[] observedSquaresStatusArray){
         for (char status : new char[] {'F', ' ', 'P'} ) {
             if (observedSquaresStatusArray[directionIndex] == status) return directionIndex;
-            Set<Integer> dirStatusSet = new HashSet<>(3);
+            HashSet<Integer> statusDirectionsSet = new HashSet<>(3);
             for (int i = 0; i < 4; i++) {
-                if (observedSquaresStatusArray[i] == status && i != directionIndex) dirStatusSet.add(i);
+                if (observedSquaresStatusArray[i] == status) statusDirectionsSet.add(i);
             }
-            if (!dirStatusSet.isEmpty()) {
-                int randIndex = random.nextInt(dirStatusSet.size());
+            if (!statusDirectionsSet.isEmpty()) {
+                int randIndex = random.nextInt(statusDirectionsSet.size());
                 int i = 0;
-                for (int direction : dirStatusSet) {
+                for (int direction : statusDirectionsSet) {
                     if (i == randIndex) return direction;
                     i++;
                 }
             }
         }
-        System.out.println("AGENT No possible move");
+        System.out.println("AGENT: No possible move");
         return -1;
     }
 
@@ -72,8 +71,8 @@ class Agent {
 
     void step() {
         char[] observedSquares = observe();
-        int chosenMoveDir = chooseMoveDirection(observedSquares);
-        score += move(chosenMoveDir);
-        directionIndex = chosenMoveDir;
+        int chosenMoveDirection = chooseMoveDirection(observedSquares);
+        directionIndex = chosenMoveDirection;
+        score += move(chosenMoveDirection);
     }
 }

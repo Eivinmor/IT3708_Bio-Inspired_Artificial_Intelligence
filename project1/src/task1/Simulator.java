@@ -11,8 +11,8 @@ class Simulator {
 
     private Simulator(){
         sc = new Scanner(System.in);
-        trials = 1;
-        stepByStep = true;
+        trials = 1000;
+        stepByStep = false;
     }
 
     private void simulate(){
@@ -34,13 +34,13 @@ class Simulator {
             printGrid(world.getGrid());
             System.out.println();
         }
-        int step = 0;
-        while(!world.simulationEnd && step < 50) {
+        int step = 1;
+        while(!world.simulationEnd && step <= 50) {
             if (stepByStep) {
                 sc.nextLine();
                 agent.step();
                 printGrid(world.getGrid());
-                System.out.println("Step " + step + " score: " + agent.getScore());
+                System.out.println("Step " + step + " score: " + agent.getScore() + "\n");
             }
             else agent.step();
             step++;

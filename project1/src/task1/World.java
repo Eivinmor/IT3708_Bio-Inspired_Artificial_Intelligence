@@ -30,7 +30,7 @@ class World {
     }
 
     char getSquareStatus (int y, int x){
-        if (x >= n || x < 0 || y >= n || y < 0 )
+        if (y >= n || y < 0 || x >= n || x < 0)
             return 'W';
         return grid[y][x];
     }
