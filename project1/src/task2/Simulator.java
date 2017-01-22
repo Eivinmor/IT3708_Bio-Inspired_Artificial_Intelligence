@@ -1,4 +1,4 @@
-package task1;
+package task2;
 
 import java.util.Scanner;
 
@@ -6,13 +6,14 @@ import java.util.Scanner;
 class Simulator {
 
     private Scanner sc;
-    private int trials, steps;
+    private int trials, rounds, steps;
     private boolean stepByStep;
 
     private Simulator(){
         sc = new Scanner(System.in);
-        trials = 1000;
-        steps = 50;
+        trials = 1;
+        rounds = 100;
+        steps = 100;
         stepByStep = false;
     }
 
@@ -28,7 +29,7 @@ class Simulator {
 
     private int runTrial(){
         World world = new World();
-        BaselineAgent agent = new BaselineAgent(world);
+        SupervisedNeuralAgent agent = new SupervisedNeuralAgent(world);
         world.placeAgent(agent.getY(), agent.getX());
         if (stepByStep) {
             System.out.println("Initial world:");
