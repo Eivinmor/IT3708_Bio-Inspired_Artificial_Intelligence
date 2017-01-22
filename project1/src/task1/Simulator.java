@@ -15,12 +15,11 @@ class Simulator {
         stepByStep = false;
     }
 
-    private void simulate(){
+    private void runSimulation(){
         int sum = 0;
         for (int i = 1; i <= trials; i++) {
             int score = runTrial();
             System.out.println("Trial " + i + " score: " + score);
-
             sum += score;
         }
         System.out.println("---------------------\nTotal avg. score: " + sum/trials);
@@ -29,6 +28,7 @@ class Simulator {
     private int runTrial(){
         World world = new World();
         Agent agent = new Agent(world);
+        world.placeAgent(agent.getY(), agent.getX());
         if (stepByStep) {
             System.out.println("Initial world:");
             printGrid(world.getGrid());
@@ -59,6 +59,6 @@ class Simulator {
 
     public static void main(String[] args) {
         Simulator simulator = new Simulator();
-        simulator.simulate();
+        simulator.runSimulation();
     }
 }

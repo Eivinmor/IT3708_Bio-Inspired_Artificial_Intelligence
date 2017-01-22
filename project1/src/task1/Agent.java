@@ -21,7 +21,6 @@ class Agent {
         directionIndex = random.nextInt(4);
         y = random.nextInt(world.n);
         x = random.nextInt(world.n);
-        world.placeAgent(y, x);
     }
 
     private char[] observe(){
@@ -65,9 +64,11 @@ class Agent {
         return -1;
     }
 
-    int getScore(){
-        return score;
-    }
+    int getScore(){return score;}
+
+    int getY(){return y;}
+
+    int getX(){return x;}
 
     void step() {
         char[] observedSquares = observe();
