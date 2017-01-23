@@ -4,10 +4,13 @@ import java.util.Random;
 
 
 class World {
-    int n;
+    private int n, agentCardinalDirection, agentY, agentX;
     private char[][] initialGrid, grid;
+    private int[][] cardinalCoordsArray;
     private Random random;
     boolean simulationEnd;
+
+
 
     public World (){
         random = new Random();
@@ -15,6 +18,11 @@ class World {
         initialGrid = generateGrid(n);
         grid = initialGrid.clone();
         simulationEnd = false;
+        cardinalCoordsArray  = new int[4][2];
+        cardinalCoordsArray[0] = new int[] {-1,0};   // N
+        cardinalCoordsArray[1] = new int[] {0,1};    // E
+        cardinalCoordsArray[2] = new int[] {1,0};    // S
+        cardinalCoordsArray[3] = new int[] {0,-1};   // W
     }
 
     private char[][] generateGrid(int n){
@@ -29,21 +37,36 @@ class World {
         return newGrid;
     }
 
-    char getSquareStatus (int y, int x){
+    char observeInDirection(int direction) {
+        int j = cleanCardinalDirection(agentCardinalDirection + direction - 1);
+        int obsY = agentY + cardinalCoordsArray[j][0];
+        int obsX = agentX + cardinalCoordsArray[j][1];
+        return getSquareStatus(obsY, obsX);
+    }
+
+    private char getSquareStatus (int y, int x){
         if (y >= n || y < 0 || x >= n || x < 0)
             return 'W';
         return grid[y][x];
     }
 
-    void placeAgent(int y, int x){
-        grid[y][x] = 'A';
+    void placeAgentRandom(){
+        agentCardinalDirection = random.nextInt(4);
+        agentY = random.nextInt(n);
+        agentX = random.nextInt(n);
+        grid[agentY][agentX] = 'A';
     }
 
-    int moveAgent(int old_y, int old_x, int new_y, int new_x){
-        if (getSquareStatus(new_y, new_x) != 'W' && getSquareStatus(old_y, old_x) == 'A') {
-            int reward = calculateReward(new_y, new_x);
-            grid[old_y][old_x] = ' ';
-            grid[new_y][new_x] = 'A';
+    int moveAgent(int moveDirection){
+        agentCardinalDirection = cleanCardinalDirection(agentCardinalDirection + moveDirection - 1);
+        int newAgentY = agentY + cardinalCoordsArray[agentCardinalDirection][0];
+        int newAgentX = agentX + cardinalCoordsArray[agentCardinalDirection][1];
+        if (getSquareStatus(newAgentY, newAgentX) != 'W' && getSquareStatus(agentY, agentX) == 'A') {
+            int reward = calculateReward(newAgentY, newAgentX);
+            grid[agentY][agentX] = ' ';
+            grid[newAgentY][newAgentX] = 'A';
+            agentY = newAgentY;
+            agentX = newAgentX;
             return reward;
         }
         System.out.println("Invalid move");
@@ -60,6 +83,12 @@ class World {
             return -100;
         }
         return 0;
+    }
+
+    private int cleanCardinalDirection(int cardinalDirection) {
+        int newCardinalDirection = cardinalDirection % 4;
+        if (newCardinalDirection < 0) return newCardinalDirection += 4;
+        return newCardinalDirection;
     }
 
     char[][] getGrid(){
