@@ -12,32 +12,33 @@ class Simulator {
 
     private Simulator(){
         sc = new Scanner(System.in);
-        trials = 1;
         trainingRounds = 100;
+        trials = 100;
         steps = 50;
         stepByStep = false;
     }
 
     private void runSimulation(){
-        int sum = 0;
-        for (int i = 1; i <= trials; i++) {
-            int trialScore = runTrial();
-            System.out.println("Trial\t" + i + "\tscore: " + trialScore);
-            sum += trialScore;
-        }
-        System.out.println("---------------------\nTotal avg. score: " + sum/trials);
-    }
-
-    private int runTrial(){
         SupervisedNeuralAgent agent = new SupervisedNeuralAgent();
+        double totalScore = 0;
         for (int i = 1; i <= trainingRounds; i++) {
-            int roundScore = runTrainingRound(agent);
-            System.out.println("\tRound\t" + i + "\tscore: " + roundScore);
+            double roundScore = runTrainingRound(agent);
+            System.out.println("Training round\t" + i + "\t avg score: " + roundScore);
+            totalScore += roundScore;
         }
-        return agent.getScore();
+        System.out.println("---------------------\nTotal avg. score: " + divideToIntRoundUp(totalScore, trainingRounds));
     }
 
-    private int runTrainingRound(SupervisedNeuralAgent agent){
+    private double runTrainingRound(SupervisedNeuralAgent agent){
+        double roundScore = 0;
+        for (int i = 1; i <= trials; i++) {
+            int trialScore = runTrial(agent);
+            roundScore += trialScore;
+        }
+        return roundScore/trials;
+    }
+
+    private int runTrial(SupervisedNeuralAgent agent){
         World world = new World();
         world.placeAgentRandom();
         agent.registerNewWorld(world);
@@ -67,6 +68,12 @@ class Simulator {
             }
             System.out.println();
         }
+    }
+
+    private int divideToIntRoundUp(double dividend, int divisor){
+        int quotient = (int)dividend/divisor;
+        if (dividend % divisor > (divisor / 2)) quotient += 1;
+        return quotient;
     }
 
     public static void main(String[] args) {

@@ -3,7 +3,9 @@ package task1;
 import java.util.HashSet;
 import java.util.Random;
 
+
 public class BaselineAgent {
+
     private World world;
     private Random random;
     private int score;
@@ -20,10 +22,6 @@ public class BaselineAgent {
             observations[i] = world.observeInDirection(i);
         }
         return observations; // L, F, R
-    }
-
-    private int move(int moveDirection){
-        return world.moveAgent(moveDirection);
     }
 
     public int chooseMoveDirection(char[] observations){
@@ -50,6 +48,6 @@ public class BaselineAgent {
     void step() {
         char[] observations = observe();
         int chosenMoveDirection = chooseMoveDirection(observations);
-        score += move(chosenMoveDirection);
+        score += world.moveAgent(chosenMoveDirection);
     }
 }
