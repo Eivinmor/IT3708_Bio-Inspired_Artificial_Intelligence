@@ -31,7 +31,7 @@ class BaselineAgent {
             if (observedSquares[1] == status) return 1; // Forward
             HashSet<Integer> statusDirectionsSet = new HashSet<>(2);
             if (observedSquares[0] == status) statusDirectionsSet.add(0);   // Left
-            else if (observedSquares[2] == status) statusDirectionsSet.add(2);  // Right
+            if (observedSquares[2] == status) statusDirectionsSet.add(2);  // Right
             if (!statusDirectionsSet.isEmpty()) {
                 int randIndex = random.nextInt(statusDirectionsSet.size());
                 int i = 0;
@@ -48,7 +48,7 @@ class BaselineAgent {
     int getScore(){return score;}
 
     void step() {
-        char[] observedSquares = observe(); // FIXED
+        char[] observedSquares = observe();
         int chosenMoveDirection = chooseMoveDirection(observedSquares);
         score += move(chosenMoveDirection);
     }
