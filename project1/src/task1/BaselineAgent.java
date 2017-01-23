@@ -3,35 +3,35 @@ package task1;
 import java.util.HashSet;
 import java.util.Random;
 
-class BaselineAgent {
+public class BaselineAgent {
     private World world;
     private Random random;
     private int score;
 
-    BaselineAgent(World world){
+    public BaselineAgent(World world){
         this.world = world;
         random = new Random();
         score = 0;
     }
 
     private char[] observe(){
-        char[] observedSquares = new char[3];   // L, F, R
+        char[] observations = new char[3];   // L, F, R
         for (int i = 0; i < 3; i++) {
-            observedSquares[i] = world.observeInDirection(i);
+            observations[i] = world.observeInDirection(i);
         }
-        return observedSquares; // L, F, R
+        return observations; // L, F, R
     }
 
     private int move(int moveDirection){
         return world.moveAgent(moveDirection);
     }
 
-    private int chooseMoveDirection(char[] observedSquares){
+    public int chooseMoveDirection(char[] observations){
         for (char status : new char[] {'F', ' ', 'P'} ) {
-            if (observedSquares[1] == status) return 1; // Forward
+            if (observations[1] == status) return 1; // Forward
             HashSet<Integer> statusDirectionsSet = new HashSet<>(2);
-            if (observedSquares[0] == status) statusDirectionsSet.add(0);   // Left
-            if (observedSquares[2] == status) statusDirectionsSet.add(2);  // Right
+            if (observations[0] == status) statusDirectionsSet.add(0);   // Left
+            if (observations[2] == status) statusDirectionsSet.add(2);  // Right
             if (!statusDirectionsSet.isEmpty()) {
                 int randIndex = random.nextInt(statusDirectionsSet.size());
                 int i = 0;
@@ -48,8 +48,8 @@ class BaselineAgent {
     int getScore(){return score;}
 
     void step() {
-        char[] observedSquares = observe();
-        int chosenMoveDirection = chooseMoveDirection(observedSquares);
+        char[] observations = observe();
+        int chosenMoveDirection = chooseMoveDirection(observations);
         score += move(chosenMoveDirection);
     }
 }

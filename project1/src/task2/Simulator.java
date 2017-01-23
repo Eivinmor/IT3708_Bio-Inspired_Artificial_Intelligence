@@ -1,20 +1,20 @@
 package task2;
 
+import task1.World;
 import java.util.Scanner;
 
 
 class Simulator {
 
     private Scanner sc;
-    private int trials, rounds, steps;
+    private int trials, steps;
     private boolean stepByStep;
 
     private Simulator(){
         sc = new Scanner(System.in);
-        trials = 1;
-        rounds = 100;
-        steps = 100;
-        stepByStep = false;
+        trials = 1000;
+        steps = 50;
+        stepByStep = true;
     }
 
     private void runSimulation(){
@@ -30,7 +30,7 @@ class Simulator {
     private int runTrial(){
         World world = new World();
         SupervisedNeuralAgent agent = new SupervisedNeuralAgent(world);
-        world.placeAgent(agent.getY(), agent.getX());
+        world.placeAgentRandom();
         if (stepByStep) {
             System.out.println("Initial world:");
             printGrid(world.getGrid());

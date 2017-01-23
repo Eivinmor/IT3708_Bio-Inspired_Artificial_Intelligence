@@ -1,105 +1,76 @@
 package task2;
 
-
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Random;
-import java.util.stream.Collector;
+
 
 class SupervisedNeuralAgent {
-    private World world;
+    private task1.World world;
+    private task1.BaselineAgent teacher;
     private Random random;
-    private int directionIndex; // 0:U, 1:R, 2:D, 3:L
-    private int[][] directionCoordsArray;
-    private int y, x, score;
-
-    private BaselineAgent teacher;
+    private int score;
+    private double learningRate;
     private int[][] inputLayer;
     private double[] outputLayer;
     private double[][][] weights;
-    HashMap<Character, Integer> inputLaterStatusIndex;
+    HashMap<Character, Integer> inputLayerStatusIndex;
 
-    SupervisedNeuralAgent(World world){
+    SupervisedNeuralAgent(task1.World world){
         this.world = world;
         random = new Random();
         score = 0;
-        directionCoordsArray  = new int[4][2];
-        directionCoordsArray[0] = new int[] {-1,0};   // U
-        directionCoordsArray[1] = new int[] {0,1};    // R
-        directionCoordsArray[2] = new int[] {1,0};    // D
-        directionCoordsArray[3] = new int[] {0,-1};   // L
-        directionIndex = random.nextInt(4);
-        y = random.nextInt(world.n);
-        x = random.nextInt(world.n);
+        learningRate = 0.01;
+        double maxStartWeight = 0.001;
 
-        teacher = new BaselineAgent(world);
+        teacher = new task1.BaselineAgent(world);
         inputLayer = new int[3][4];
         outputLayer = new double[3];
         weights = new double[3][4][3];
-        generateStartWeights(0, 0.001);
+        generateStartWeights(0, maxStartWeight);
 
-        inputLaterStatusIndex = new HashMap(4);
-        inputLaterStatusIndex.put(' ', 0);
-        inputLaterStatusIndex.put('W', 1);
-        inputLaterStatusIndex.put('F', 2);
-        inputLaterStatusIndex.put('P', 3);
-    }
-
-    int getTeacherDirection(char[] observedSquaresStatusArray){
-        return teacher.chooseMoveDirection(observedSquaresStatusArray);
+        inputLayerStatusIndex = new HashMap(4);
+        inputLayerStatusIndex.put(' ', 0);
+        inputLayerStatusIndex.put('W', 1);
+        inputLayerStatusIndex.put('F', 2);
+        inputLayerStatusIndex.put('P', 3);
     }
 
     private char[] observe(){
-        char[] observedSquares = new char[] {'-', '-', '-', '-'};   // '-' represents no available information
-        for (int i = directionIndex-1; i < directionIndex + 2; i++) {
-            int j = i % 4;
-            if (j < 0) j += 4;
-            int obsY = y + directionCoordsArray[j][0];
-            int obsX = x + directionCoordsArray[j][1];
-            observedSquares[j] = world.getSquareStatus(obsY, obsX);
+        char[] observations = new char[3];   // L, F, R
+        for (int i = 0; i < 3; i++) {
+            observations[i] = world.observeInDirection(i);
         }
-        return observedSquares; // U, R, D, L
+        return observations; // L, F, R
     }
 
     private int move(int moveDirection){
-        int new_y = y + directionCoordsArray[moveDirection][0];
-        int new_x = x + directionCoordsArray[moveDirection][1];
-        int reward = world.moveAgent(y, x, new_y, new_x);
-        y = new_y;
-        x = new_x;
-        return reward;
+        return world.moveAgent(moveDirection);
     }
 
-    int chooseMoveDirection(char[] observedSquares){
-        activateNetwork(observedSquares);
+    int chooseMoveDirection(char[] observations){
+        activateNetwork(observations);
         int bestDirection = -1;
         double bestValue = 0;
-        for (int i = 0; i < outputLayer.length; i++) {
+        for (int i = 0; i < 3; i++) {
             if (outputLayer[i] > bestValue) {
                 bestDirection = i;
                 bestValue = outputLayer[i];
             }
         }
-        return cleanDirection(directionIndex + bestDirection - 1);
+        return bestDirection;
     }
 
-    void activateNetwork(char[] observedSquares){
+    void activateNetwork(char[] observations){
         for (int i = 0; i < 3; i++) {
-            int checkDirection = cleanDirection(directionIndex + i - 1);
-            int checkedStatusIndex = inputLaterStatusIndex.get(observedSquares[checkDirection]);
+            int observedStatusIndex = inputLayerStatusIndex.get(observations[i]);   // gets input layer index of status from observaron
+            inputLayer[i][observedStatusIndex] = 1;
             for (int j = 0; j < 3; j++) {
-                outputLayer[j] += weights[i][checkedStatusIndex][j];
+                outputLayer[j] += weights[i][observedStatusIndex][j];
             }
         }
         for (int j = 0; j < outputLayer.length; j++) {
             System.out.println(outputLayer[j]);
         }
-    }
-
-    int cleanDirection(int directionIndex) {
-        int newDirection = directionIndex % 4;
-        if (newDirection < 0) return newDirection += 4;
-        return newDirection;
     }
 
     void generateStartWeights(double low, double high){
@@ -112,24 +83,35 @@ class SupervisedNeuralAgent {
         }
     }
 
-    void updateWeights(int teacherDirection){
+    void updateWeights(int moveDirection, int teacherDirection){
         int correctChoice = 0;
-        if (teacherDirection == directionIndex) correctChoice = 1;
+        if (teacherDirection == moveDirection) correctChoice = 1;
+        for (int i = 0; i < weights.length; i++) {
+            for (int j = 0; j < weights[i].length; j++) {
+                for (int k = 0; k < weights[i][j].length; k++) {
+                    weights[i][j][k] += learningRate * deltaRule(k, correctChoice) * inputLayer[i][j];
+                }
+                
+            }
+        }
+    }
 
+    private double deltaRule(int outputNeuron, int correctChoice) {
+        double actualExpOutput = outputLayer[outputNeuron];
+        double sumExpOutput = 0;
+        for (int i = 0; i < 3; i++) {
+            sumExpOutput += Math.exp(outputLayer[i]);
+        }
+        return -(actualExpOutput/sumExpOutput) + correctChoice;
     }
 
     int getScore(){return score;}
 
-    int getY(){return y;}
-
-    int getX(){return x;}
-
     void step() {
-        char[] observedSquares = observe();
-        int chosenMoveDirection = chooseMoveDirection(observedSquares);
-        directionIndex = chosenMoveDirection;
-        int teacherDirection = teacher.chooseMoveDirection(observedSquares);
-        updateWeights(teacherDirection);
+        char[] observations = observe();
+        int chosenMoveDirection = chooseMoveDirection(observations);
+        int teacherDirection = teacher.chooseMoveDirection(observations);
+        updateWeights(chosenMoveDirection, teacherDirection);
         score += move(chosenMoveDirection);
     }
 }

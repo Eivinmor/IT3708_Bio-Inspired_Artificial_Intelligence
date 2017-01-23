@@ -3,12 +3,12 @@ package task1;
 import java.util.Random;
 
 
-class World {
+public class World {
     private int n, agentCardinalDirection, agentY, agentX;
     private char[][] initialGrid, grid;
     private int[][] cardinalCoordsArray;
     private Random random;
-    boolean simulationEnd;
+    public boolean simulationEnd;
 
 
 
@@ -37,7 +37,7 @@ class World {
         return newGrid;
     }
 
-    char observeInDirection(int direction) {
+    public char observeInDirection(int direction) {
         int j = cleanCardinalDirection(agentCardinalDirection + direction - 1);
         int obsY = agentY + cardinalCoordsArray[j][0];
         int obsX = agentX + cardinalCoordsArray[j][1];
@@ -50,14 +50,14 @@ class World {
         return grid[y][x];
     }
 
-    void placeAgentRandom(){
+    public void placeAgentRandom(){
         agentCardinalDirection = random.nextInt(4);
         agentY = random.nextInt(n);
         agentX = random.nextInt(n);
         grid[agentY][agentX] = 'A';
     }
 
-    int moveAgent(int moveDirection){
+    public int moveAgent(int moveDirection){
         agentCardinalDirection = cleanCardinalDirection(agentCardinalDirection + moveDirection - 1);
         int newAgentY = agentY + cardinalCoordsArray[agentCardinalDirection][0];
         int newAgentX = agentX + cardinalCoordsArray[agentCardinalDirection][1];
@@ -91,7 +91,7 @@ class World {
         return newCardinalDirection;
     }
 
-    char[][] getGrid(){
+    public char[][] getGrid(){
         return grid;
     }
 }
