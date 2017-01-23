@@ -7,30 +7,40 @@ import java.util.Scanner;
 class Simulator {
 
     private Scanner sc;
-    private int trials, steps;
+    private int trials, trainingRounds, steps;
     private boolean stepByStep;
 
     private Simulator(){
         sc = new Scanner(System.in);
-        trials = 1000;
+        trials = 1;
+        trainingRounds = 100;
         steps = 50;
-        stepByStep = true;
+        stepByStep = false;
     }
 
     private void runSimulation(){
         int sum = 0;
         for (int i = 1; i <= trials; i++) {
-            int score = runTrial();
-            System.out.println("Trial " + i + " score: " + score);
-            sum += score;
+            int trialScore = runTrial();
+            System.out.println("Trial\t" + i + "\tscore: " + trialScore);
+            sum += trialScore;
         }
         System.out.println("---------------------\nTotal avg. score: " + sum/trials);
     }
 
     private int runTrial(){
+        SupervisedNeuralAgent agent = new SupervisedNeuralAgent();
+        for (int i = 1; i <= trainingRounds; i++) {
+            int roundScore = runTrainingRound(agent);
+            System.out.println("\tRound\t" + i + "\tscore: " + roundScore);
+        }
+        return agent.getScore();
+    }
+
+    private int runTrainingRound(SupervisedNeuralAgent agent){
         World world = new World();
-        SupervisedNeuralAgent agent = new SupervisedNeuralAgent(world);
         world.placeAgentRandom();
+        agent.registerNewWorld(world);
         if (stepByStep) {
             System.out.println("Initial world:");
             printGrid(world.getGrid());

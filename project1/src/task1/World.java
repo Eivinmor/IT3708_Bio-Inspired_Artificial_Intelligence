@@ -69,7 +69,7 @@ public class World {
             agentX = newAgentX;
             return reward;
         }
-        System.out.println("Invalid move");
+//        System.out.println("Invalid move");
         simulationEnd = true;
         return 0;
     }

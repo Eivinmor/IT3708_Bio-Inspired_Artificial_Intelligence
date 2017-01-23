@@ -1,5 +1,7 @@
 package task2;
 
+import task1.BaselineAgent;
+
 import java.util.HashMap;
 import java.util.Random;
 
@@ -15,14 +17,12 @@ class SupervisedNeuralAgent {
     private double[][][] weights;
     HashMap<Character, Integer> inputLayerStatusIndex;
 
-    SupervisedNeuralAgent(task1.World world){
-        this.world = world;
+    SupervisedNeuralAgent(){
         random = new Random();
         score = 0;
         learningRate = 0.01;
         double maxStartWeight = 0.001;
 
-        teacher = new task1.BaselineAgent(world);
         inputLayer = new int[3][4];
         outputLayer = new double[3];
         weights = new double[3][4][3];
@@ -63,13 +63,20 @@ class SupervisedNeuralAgent {
     void activateNetwork(char[] observations){
         for (int i = 0; i < 3; i++) {
             int observedStatusIndex = inputLayerStatusIndex.get(observations[i]);   // gets input layer index of status from observaron
-            inputLayer[i][observedStatusIndex] = 1;
-            for (int j = 0; j < 3; j++) {
-                outputLayer[j] += weights[i][observedStatusIndex][j];
+            for (int j = 0; j < 4; j++) {
+                if (j == observedStatusIndex) inputLayer[i][j] = 1;
+                else inputLayer[i][j] = 0;
             }
+
         }
+//        for (int i = 0; i < 3; i++) {
+//            int observedStatusIndex = inputLayerStatusIndex.get(observations[i]);   // gets input layer index of status from observaron
+//            inputLayer[i][observedStatusIndex] = 1;
+//            for (int j = 0; j < 3; j++) {
+//                outputLayer[j] += weights[i][observedStatusIndex][j];
+//            }
+//        }
         for (int j = 0; j < outputLayer.length; j++) {
-            System.out.println(outputLayer[j]);
         }
     }
 
@@ -102,10 +109,16 @@ class SupervisedNeuralAgent {
         for (int i = 0; i < 3; i++) {
             sumExpOutput += Math.exp(outputLayer[i]);
         }
-        return -(actualExpOutput/sumExpOutput) + correctChoice;
+        return - (actualExpOutput/sumExpOutput) + correctChoice;
     }
 
     int getScore(){return score;}
+
+    void registerNewWorld(task1.World newWorld){
+        world = newWorld;
+        teacher = new BaselineAgent(newWorld);
+        score = 0;
+    }
 
     void step() {
         char[] observations = observe();
