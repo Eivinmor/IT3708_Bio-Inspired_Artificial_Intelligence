@@ -28,7 +28,8 @@ class Simulator {
 
     private int runTrial(){
         World world = new World();
-        BaselineAgent agent = new BaselineAgent(world);
+        BaselineAgent agent = new BaselineAgent();
+        agent.registerNewWorld(world);
         world.placeAgentRandom();
         if (stepByStep) {
             System.out.println("Initial world:");

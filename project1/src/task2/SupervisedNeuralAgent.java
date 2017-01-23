@@ -34,6 +34,7 @@ class SupervisedNeuralAgent {
         inputLayerStatusIndex.put('W', 1);
         inputLayerStatusIndex.put('F', 2);
         inputLayerStatusIndex.put('P', 3);
+        teacher = new BaselineAgent();
     }
 
     private char[] observe(){
@@ -122,7 +123,6 @@ class SupervisedNeuralAgent {
 
     void registerNewWorld(task1.World newWorld){
         world = newWorld;
-        teacher = new BaselineAgent(newWorld);
         score = 0;
     }
 

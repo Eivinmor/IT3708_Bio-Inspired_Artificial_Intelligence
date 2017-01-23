@@ -10,8 +10,7 @@ public class BaselineAgent {
     private Random random;
     private int score;
 
-    public BaselineAgent(World world){
-        this.world = world;
+    public BaselineAgent(){
         random = new Random();
         score = 0;
     }
@@ -41,6 +40,11 @@ public class BaselineAgent {
         }
         System.out.println("AGENT: No possible move");
         return -1;
+    }
+
+    public void registerNewWorld(task1.World newWorld){
+        world = newWorld;
+        score = 0;
     }
 
     int getScore(){return score;}
