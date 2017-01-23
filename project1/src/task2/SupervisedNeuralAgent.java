@@ -50,28 +50,15 @@ class SupervisedNeuralAgent {
         int bestDirection = -1;
         double bestValue = Double.MIN_VALUE;
         for (int i = 0; i < 3; i++) {
-//            System.out.println(outputLayer[i]);
             if (outputLayer[i] > bestValue) {
                 bestDirection = i;
                 bestValue = outputLayer[i];
             }
         }
-//        System.out.println("Chose direction: " + bestDirection);
         return bestDirection;
     }
 
     void activateNetwork(char[] observations){
-//        for (int i = 0; i < 3; i++) {
-//            int observedStatusIndex = inputLayerStatusIndex.get(observations[i]);   // gets input layer index of status from observaron
-//            for (int j = 0; j < 4; j++) {
-//                if (j == observedStatusIndex) inputLayer[i][j] = 1;
-//                else inputLayer[i][j] = 0;
-//                for (int k = 0; k < 3; k++) {
-//                    outputLayer[k] += weights[i][observedStatusIndex][k];
-//                }
-//            }
-//
-//        }
         resetInputLayer();
         resetOutputLayer();
         for (int i = 0; i < 3; i++) {
@@ -121,11 +108,6 @@ class SupervisedNeuralAgent {
 
     int getScore(){return score;}
 
-    void registerNewWorld(task1.World newWorld){
-        world = newWorld;
-        score = 0;
-    }
-
     void generateStartWeights(double low, double high){
         for (int i = 0; i < weights.length; i++) {
             for (int j = 0; j < weights[i].length; j++) {
@@ -134,6 +116,11 @@ class SupervisedNeuralAgent {
                 }
             }
         }
+    }
+
+    void registerNewWorld(task1.World newWorld){
+        world = newWorld;
+        score = 0;
     }
 
     void printWeights(){
