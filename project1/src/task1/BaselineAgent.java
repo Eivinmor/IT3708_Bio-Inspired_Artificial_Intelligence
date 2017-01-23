@@ -6,51 +6,51 @@ import java.util.Random;
 class BaselineAgent {
     private World world;
     private Random random;
-    private int directionIndex; // 0:U, 1:R, 2:D, 3:L
-    private int[][] directionCoordsArray;
+    private int cardinalDirection; // 0:N, 1:E, 2:S, 3:W
+    private int[][] cardinalCoordsArray;
     private int y, x, score;
 
     BaselineAgent(World world){
         this.world = world;
         random = new Random();
         score = 0;
-        directionCoordsArray  = new int[4][2];
-        directionCoordsArray[0] = new int[] {-1,0};   // U
-        directionCoordsArray[1] = new int[] {0,1};    // R
-        directionCoordsArray[2] = new int[] {1,0};    // D
-        directionCoordsArray[3] = new int[] {0,-1};   // L
-        directionIndex = random.nextInt(4);
+        cardinalCoordsArray  = new int[4][2];
+        cardinalCoordsArray[0] = new int[] {-1,0};   // N
+        cardinalCoordsArray[1] = new int[] {0,1};    // E
+        cardinalCoordsArray[2] = new int[] {1,0};    // S
+        cardinalCoordsArray[3] = new int[] {0,-1};   // W
+        cardinalDirection = random.nextInt(4);
         y = random.nextInt(world.n);
         x = random.nextInt(world.n);
     }
 
     private char[] observe(){
-        char[] observedSquares = new char[] {'-', '-', '-', '-'};   // '-' represents no available information
-        for (int i = directionIndex - 1; i < directionIndex + 2; i++) {
-            int j = cleanDirection(i);
-            int obsY = y + directionCoordsArray[j][0];
-            int obsX = x + directionCoordsArray[j][1];
-            observedSquares[j] = world.getSquareStatus(obsY, obsX);
+        char[] observedSquares = new char[3];   // L, F, R
+        for (int i = -1; i < 2; i++) {
+            int j = cleanCardinalDirection(cardinalDirection + i);
+            int obsY = y + cardinalCoordsArray[j][0];
+            int obsX = x + cardinalCoordsArray[j][1];
+            observedSquares[i+1] = world.getSquareStatus(obsY, obsX);
         }
-        return observedSquares; // U, R, D, L
+        return observedSquares; // L, F, R
     }
 
     private int move(int moveDirection){
-        int new_y = y + directionCoordsArray[moveDirection][0];
-        int new_x = x + directionCoordsArray[moveDirection][1];
+        cardinalDirection = cleanCardinalDirection(cardinalDirection + moveDirection - 1);
+        int new_y = y + cardinalCoordsArray[cardinalDirection][0];
+        int new_x = x + cardinalCoordsArray[cardinalDirection][1];
         int reward = world.moveAgent(y, x, new_y, new_x);
         y = new_y;
         x = new_x;
         return reward;
     }
 
-    int chooseMoveDirection(char[] observedSquares){
+    private int chooseMoveDirection(char[] observedSquares){
         for (char status : new char[] {'F', ' ', 'P'} ) {
-            if (observedSquares[directionIndex] == status) return directionIndex;
-            HashSet<Integer> statusDirectionsSet = new HashSet<>(3);
-            for (int i = 0; i < 4; i++) {
-                if (observedSquares[i] == status) statusDirectionsSet.add(i);
-            }
+            if (observedSquares[1] == status) return 1; // Forward
+            HashSet<Integer> statusDirectionsSet = new HashSet<>(2);
+            if (observedSquares[0] == status) statusDirectionsSet.add(0);   // Left
+            else if (observedSquares[2] == status) statusDirectionsSet.add(2);  // Right
             if (!statusDirectionsSet.isEmpty()) {
                 int randIndex = random.nextInt(statusDirectionsSet.size());
                 int i = 0;
@@ -64,10 +64,10 @@ class BaselineAgent {
         return -1;
     }
 
-    int cleanDirection(int directionIndex) {
-        int newDirection = directionIndex % 4;
-        if (newDirection < 0) return newDirection += 4;
-        return newDirection;
+    private int cleanCardinalDirection(int cardinalDirection) {
+        int newCardinalDirection = cardinalDirection % 4;
+        if (newCardinalDirection < 0) return newCardinalDirection += 4;
+        return newCardinalDirection;
     }
 
     int getScore(){return score;}
@@ -77,9 +77,8 @@ class BaselineAgent {
     int getX(){return x;}
 
     void step() {
-        char[] observedSquares = observe();
+        char[] observedSquares = observe(); // FIXED
         int chosenMoveDirection = chooseMoveDirection(observedSquares);
-        directionIndex = chosenMoveDirection;
         score += move(chosenMoveDirection);
     }
 }
