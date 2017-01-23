@@ -4,13 +4,12 @@ import java.util.Random;
 
 
 public class World {
+
     private int n, agentCardinalDirection, agentY, agentX;
     private char[][] initialGrid, grid;
     private int[][] cardinalCoordsArray;
     private Random random;
     public boolean simulationEnd;
-
-
 
     public World (){
         random = new Random();
@@ -69,7 +68,6 @@ public class World {
             agentX = newAgentX;
             return reward;
         }
-//        System.out.println("Invalid move");
         simulationEnd = true;
         return 0;
     }

@@ -1,4 +1,6 @@
-package task1;
+package task3;
+
+import task1.World;
 
 import java.util.Scanner;
 
@@ -6,28 +8,38 @@ import java.util.Scanner;
 class Simulator {
 
     private Scanner sc;
-    private int trials, steps;
+    private int trials, trainingRounds, steps;
     private boolean stepByStep;
 
     private Simulator(){
         sc = new Scanner(System.in);
-        trials = 1000;
+        trainingRounds = 10000;
+        trials = 10000;
         steps = 50;
         stepByStep = false;
     }
 
     private void runSimulation(){
-        BaselineAgent agent = new BaselineAgent();
-        int totalScore = 0;
-        for (int i = 1; i <= trials; i++) {
-            int trialScore = runTrial(agent);
-            System.out.println(String.format("%s%5d%s%4d", "Trial", i, "  avg score:", trialScore));
-            totalScore += trialScore;
+        ReinforcedNeuralAgent agent = new ReinforcedNeuralAgent();
+        double totalScore = 0;
+        for (int i = 1; i <= trainingRounds; i++) {
+            double roundAvgScore = runTrainingRound(agent);
+            System.out.println(String.format("%s%5d%s%6.1f", "Training round", i, "  avg score:", roundAvgScore));
+            totalScore += roundAvgScore;
         }
-        System.out.println("--------------------------\nTotal avg. score: " + divideRoundUp(totalScore,trials));
+        System.out.println("--------------------------\nTotal avg. score: " + divideToIntRoundUp(totalScore, trainingRounds));
     }
 
-    private int runTrial(BaselineAgent agent){
+    private double runTrainingRound(ReinforcedNeuralAgent agent){
+        double roundScore = 0;
+        for (int i = 1; i <= trials; i++) {
+            int trialScore = runTrial(agent);
+            roundScore += trialScore;
+        }
+        return roundScore/trials;
+    }
+
+    private int runTrial(ReinforcedNeuralAgent agent){
         World world = new World();
         agent.registerNewWorld(world);
         world.placeAgentRandom();
@@ -59,9 +71,9 @@ class Simulator {
         }
     }
 
-    private int divideRoundUp(int dividend, int divisor){
-        int quotient = dividend/divisor;
-        if (dividend % divisor >= (divisor / 2)) quotient += 1;
+    private int divideToIntRoundUp(double dividend, int divisor){
+        int quotient = (int)dividend/divisor;
+        if (dividend % divisor > (divisor / 2)) quotient += 1;
         return quotient;
     }
 

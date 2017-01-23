@@ -22,11 +22,11 @@ class Simulator {
         SupervisedNeuralAgent agent = new SupervisedNeuralAgent();
         double totalScore = 0;
         for (int i = 1; i <= trainingRounds; i++) {
-            double roundScore = runTrainingRound(agent);
-            System.out.println("Training round\t" + i + "\t avg score: " + roundScore);
-            totalScore += roundScore;
+            double roundAvgScore = runTrainingRound(agent);
+            System.out.println(String.format("%s%5d%s%6.1f", "Training round", i, "  avg score:", roundAvgScore));
+            totalScore += roundAvgScore;
         }
-        System.out.println("---------------------\nTotal avg. score: " + divideToIntRoundUp(totalScore, trainingRounds));
+        System.out.println("--------------------------\nTotal avg. score: " + divideToIntRoundUp(totalScore, trainingRounds));
     }
 
     private double runTrainingRound(SupervisedNeuralAgent agent){
@@ -40,8 +40,8 @@ class Simulator {
 
     private int runTrial(SupervisedNeuralAgent agent){
         World world = new World();
-        world.placeAgentRandom();
         agent.registerNewWorld(world);
+        world.placeAgentRandom();
         if (stepByStep) {
             System.out.println("Initial world:");
             printGrid(world.getGrid());
