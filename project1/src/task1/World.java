@@ -36,10 +36,10 @@ public class World {
         return newGrid;
     }
 
-    public char observeInDirection(int direction) {
+    public char observeInDirection(int direction, int distance) {
         int j = cleanCardinalDirection(agentCardinalDirection + direction - 1);
-        int obsY = agentY + cardinalCoordsArray[j][0];
-        int obsX = agentX + cardinalCoordsArray[j][1];
+        int obsY = agentY + cardinalCoordsArray[j][0] * (distance + 1);
+        int obsX = agentX + cardinalCoordsArray[j][1] * (distance + 1);
         return getSquareStatus(obsY, obsX);
     }
 

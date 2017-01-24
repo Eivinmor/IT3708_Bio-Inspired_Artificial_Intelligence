@@ -1,10 +1,10 @@
-package task3;
+package task4;
 
 import java.util.HashMap;
 import java.util.Random;
 
 
-class ReinforcedNeuralAgent {
+class ExtendedReinforcedNeuralAgent {
 
     private task1.World world;
     private Random random;
@@ -14,10 +14,10 @@ class ReinforcedNeuralAgent {
     private HashMap<Character, Integer> inputLayerStatusIndex;
 
 
-    ReinforcedNeuralAgent(){
+    ExtendedReinforcedNeuralAgent(){
         random = new Random();
         score = 0;
-        observeDistance = 1;
+        observeDistance = 3;
         learningRate = 0.001;
         discountFactor = 0.9;
         double maxStartWeight = 0.001;
@@ -36,13 +36,13 @@ class ReinforcedNeuralAgent {
     }
 
     private char[] observe(){
-        char[] observations = new char[3*observeDistance];   // L, F, R
+        char[] observations = new char[3*observeDistance];
         for (int i = 0; i < observeDistance; i++) {
             for (int j = 0; j < 3; j++) {
                 observations[i*3 + j] = world.observeInDirection(j, i);
             }
         }
-        return observations; // L, F, R
+        return observations;
     }
 
     int chooseMoveDirection(int[] neuronOutputs){

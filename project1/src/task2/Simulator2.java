@@ -4,13 +4,13 @@ import task1.World;
 import java.util.Scanner;
 
 
-class Simulator {
+class Simulator2 {
 
     private Scanner sc;
     private int trials, trainingRounds, steps;
     private boolean stepByStep;
 
-    private Simulator(){
+    private Simulator2(){
         sc = new Scanner(System.in);
         trainingRounds = 100;
         trials = 100;
@@ -77,7 +77,7 @@ class Simulator {
     }
 
     public static void main(String[] args) {
-        Simulator simulator = new Simulator();
-        simulator.runSimulation();
+        Simulator2 simulator2 = new Simulator2();
+        simulator2.runSimulation();
     }
 }

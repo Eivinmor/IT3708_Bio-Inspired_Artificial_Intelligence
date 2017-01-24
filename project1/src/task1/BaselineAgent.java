@@ -9,16 +9,20 @@ public class BaselineAgent {
     private World world;
     private Random random;
     private int score;
+    private int observeDistance;
 
     public BaselineAgent(){
         random = new Random();
         score = 0;
+        observeDistance = 1;
     }
 
     private char[] observe(){
-        char[] observations = new char[3];   // L, F, R
-        for (int i = 0; i < 3; i++) {
-            observations[i] = world.observeInDirection(i);
+        char[] observations = new char[3*observeDistance];   // L, F, R
+        for (int i = 0; i < observeDistance; i++) {
+            for (int j = 0; j < 3; j++) {
+                observations[i*3 + j] = world.observeInDirection(j, i);
+            }
         }
         return observations; // L, F, R
     }

@@ -1,33 +1,46 @@
-package task1;
+package task3;
+
+import task1.World;
 
 import java.util.Scanner;
 
 
-class Simulator {
+class Simulator3 {
 
     private Scanner sc;
-    private int trials, steps;
+    private int trials, trainingRounds, steps;
     private boolean stepByStep;
 
-    private Simulator(){
+    private Simulator3(){
         sc = new Scanner(System.in);
-        trials = 1000;
+        trainingRounds = 100;
+        trials = 100;
         steps = 50;
         stepByStep = false;
     }
 
     private void runSimulation(){
-        BaselineAgent agent = new BaselineAgent();
-        int totalScore = 0;
-        for (int i = 1; i <= trials; i++) {
-            int trialScore = runTrial(agent);
-            System.out.println(String.format("%s%5d%s%4d", "Trial", i, "  avg score:", trialScore));
-            totalScore += trialScore;
+        ReinforcedNeuralAgent agent = new ReinforcedNeuralAgent();
+        double totalScore = 0;
+        for (int i = 1; i <= trainingRounds; i++) {
+            double roundAvgScore = runTrainingRound(agent);
+            System.out.println(String.format("%s%5d%s%6.1f", "Training round", i, "  avg score:", roundAvgScore));
+            totalScore += roundAvgScore;
         }
-        System.out.println(String.format("%s%.1f", "--------------------------\nTotal avg. score: ", (double)totalScore/trials));
+        System.out.println(String.format("%s%.1f", "--------------------------\nTotal avg. score: ", totalScore/trainingRounds));
     }
 
-    private int runTrial(BaselineAgent agent){
+    private double runTrainingRound(ReinforcedNeuralAgent agent){
+        double roundScore = 0;
+        for (int i = 1; i <= trials; i++) {
+            int trialScore = runTrial(agent);
+            roundScore += trialScore;
+        }
+//        agent.printWeights();
+        return roundScore/trials;
+    }
+
+    private int runTrial(ReinforcedNeuralAgent agent){
         World world = new World();
         agent.registerNewWorld(world);
         world.placeAgentRandom();
@@ -59,14 +72,8 @@ class Simulator {
         }
     }
 
-    private int divideRoundUp(int dividend, int divisor){
-        int quotient = dividend/divisor;
-        if (dividend % divisor >= (divisor / 2)) quotient += 1;
-        return quotient;
-    }
-
     public static void main(String[] args) {
-        Simulator simulator = new Simulator();
-        simulator.runSimulation();
+        Simulator3 simulator3 = new Simulator3();
+        simulator3.runSimulation();
     }
 }

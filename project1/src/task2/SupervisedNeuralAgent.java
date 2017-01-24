@@ -9,16 +9,17 @@ import java.util.Random;
 class SupervisedNeuralAgent {
 
     private task1.World world;
-    private task1.BaselineAgent teacher;
     private Random random;
-    private int score, numOfObservedSquares, numOfPossibleSquareStates, numOfPossibleActions;
+    private int score, observeDistance, numOfObservedSquares, numOfPossibleSquareStates, numOfPossibleActions;
     private double learningRate;
     private double[][][] weights;
     private HashMap<Character, Integer> inputLayerStatusIndex;
+    private task1.BaselineAgent teacher;
 
     SupervisedNeuralAgent(){
         random = new Random();
         score = 0;
+        observeDistance = 1;
         learningRate = 0.1;
         double maxStartWeight = 0.001;
         numOfObservedSquares = 3;
@@ -37,9 +38,11 @@ class SupervisedNeuralAgent {
     }
 
     private char[] observe(){
-        char[] observations = new char[3];   // L, F, R
-        for (int i = 0; i < 3; i++) {
-            observations[i] = world.observeInDirection(i);
+        char[] observations = new char[3*observeDistance];   // L, F, R
+        for (int i = 0; i < observeDistance; i++) {
+            for (int j = 0; j < 3; j++) {
+                observations[i*3 + j] = world.observeInDirection(j, i);
+            }
         }
         return observations; // L, F, R
     }
@@ -81,7 +84,6 @@ class SupervisedNeuralAgent {
                     if (teacherDirection == k) correctChoice = 1;
                     weights[i][j][k] += learningRate * deltaRule(neuronOutputs[k], sumExpOutput, correctChoice) * neuronInputs[i][j];
                 }
-
             }
         }
     }
@@ -142,6 +144,5 @@ class SupervisedNeuralAgent {
         score += world.moveAgent(chosenMoveDirection);
         int teacherDirection = teacher.chooseMoveDirection(observations);
         updateWeights(neuronInputs, neuronOutputs, teacherDirection);
-
     }
 }
