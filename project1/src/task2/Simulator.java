@@ -26,7 +26,7 @@ class Simulator {
             System.out.println(String.format("%s%5d%s%6.1f", "Training round", i, "  avg score:", roundAvgScore));
             totalScore += roundAvgScore;
         }
-        System.out.println("--------------------------\nTotal avg. score: " + divideToIntRoundUp(totalScore, trainingRounds));
+        System.out.println(String.format("%s%.1f", "--------------------------\nTotal avg. score: ", totalScore/trainingRounds));
     }
 
     private double runTrainingRound(SupervisedNeuralAgent agent){

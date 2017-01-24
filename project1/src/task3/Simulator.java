@@ -27,7 +27,7 @@ class Simulator {
             System.out.println(String.format("%s%5d%s%6.1f", "Training round", i, "  avg score:", roundAvgScore));
             totalScore += roundAvgScore;
         }
-        System.out.println("--------------------------\nTotal avg. score: " + divideToIntRoundUp(totalScore, trainingRounds));
+        System.out.println(String.format("%s%.1f", "--------------------------\nTotal avg. score: ", totalScore/trainingRounds));
     }
 
     private double runTrainingRound(ReinforcedNeuralAgent agent){
@@ -70,12 +70,6 @@ class Simulator {
             }
             System.out.println();
         }
-    }
-
-    private int divideToIntRoundUp(double dividend, int divisor){
-        int quotient = (int)dividend/divisor;
-        if (dividend % divisor > (divisor / 2)) quotient += 1;
-        return quotient;
     }
 
     public static void main(String[] args) {

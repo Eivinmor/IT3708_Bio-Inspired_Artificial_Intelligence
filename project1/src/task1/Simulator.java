@@ -24,7 +24,7 @@ class Simulator {
             System.out.println(String.format("%s%5d%s%4d", "Trial", i, "  avg score:", trialScore));
             totalScore += trialScore;
         }
-        System.out.println("--------------------------\nTotal avg. score: " + divideRoundUp(totalScore,trials));
+        System.out.println(String.format("%s%.1f", "--------------------------\nTotal avg. score: ", (double)totalScore/trials));
     }
 
     private int runTrial(BaselineAgent agent){
