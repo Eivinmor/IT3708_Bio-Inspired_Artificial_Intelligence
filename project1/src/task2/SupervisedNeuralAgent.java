@@ -21,7 +21,7 @@ class SupervisedNeuralAgent {
     SupervisedNeuralAgent(){
         random = new Random();
         score = 0;
-        learningRate = 0.01;
+        learningRate = 0.1;
         double maxStartWeight = 0.001;
 
         inputLayer = new int[3][4];
@@ -49,7 +49,7 @@ class SupervisedNeuralAgent {
         activateNetwork(observations);
         int bestDirection = -1;
         double bestValue = -Double.MAX_VALUE;
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < outputLayer.length; i++) {
             if (outputLayer[i] > bestValue) {
                 bestDirection = i;
                 bestValue = outputLayer[i];
@@ -61,23 +61,24 @@ class SupervisedNeuralAgent {
     void activateNetwork(char[] observations){
         resetInputLayer();
         resetOutputLayer();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < inputLayer.length; i++) {
             int observedStatusIndex = inputLayerStatusIndex.get(observations[i]);   // gets input layer index of status from observaron
             inputLayer[i][observedStatusIndex] = 1;
-            for (int j = 0; j < 3; j++) {
+            for (int j = 0; j < outputLayer.length; j++) {
                 outputLayer[j] += weights[i][observedStatusIndex][j];
             }
         }
     }
 
-    void updateWeights(int moveDirection, int teacherDirection){
+    // Weights between activated input neurons and all output neurons are changed based on the whether the output was the same as the teacher chose
+    void updateWeights(int teacherDirection){
         double sumExpOutput = 0;
         for (int i = 0; i < 3; i++) {
             sumExpOutput += Math.exp(outputLayer[i]);
         }
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 4; j++) {
-                for (int k = 0; k < 3; k++) {
+        for (int i = 0; i < weights.length; i++) {
+            for (int j = 0; j < weights[i].length; j++) {
+                for (int k = 0; k < weights[i][j].length; k++) {
                     int correctChoice = 0;
                     if (teacherDirection == k) correctChoice = 1;
                     weights[i][j][k] += learningRate * deltaRule(k, correctChoice, sumExpOutput) * inputLayer[i][j];
@@ -127,10 +128,10 @@ class SupervisedNeuralAgent {
         System.out.format("%24s\n", "OUTPUT");
         System.out.format("%22s%16s%16s", "Left", "Forward", "Right");
         System.out.println();
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 4; j++) {
+        for (int i = 0; i < weights.length; i++) {
+            for (int j = 0; j < weights[i].length; j++) {
                 System.out.format("%6s", "");
-                for (int k = 0; k < 3; k++) {
+                for (int k = 0; k < weights[i][j].length; k++) {
                     System.out.format("%16.10f", weights[i][j][k]);
                 }
                 System.out.println();
@@ -145,6 +146,6 @@ class SupervisedNeuralAgent {
         int chosenMoveDirection = chooseMoveDirection(observations);
         int teacherDirection = teacher.chooseMoveDirection(observations);
         score += world.moveAgent(chosenMoveDirection);
-        updateWeights(chosenMoveDirection, teacherDirection);
+        updateWeights(teacherDirection);
     }
 }

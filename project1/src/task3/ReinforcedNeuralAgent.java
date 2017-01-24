@@ -9,7 +9,7 @@ class ReinforcedNeuralAgent {
     private task1.World world;
     private Random random;
     private int score;
-    private double learningRate;
+    private double learningRate, discountFactor;
     private int[][] inputLayer;
     private double[] outputLayer;
     private double[][][] weights;
@@ -19,6 +19,7 @@ class ReinforcedNeuralAgent {
         random = new Random();
         score = 0;
         learningRate = 0.01;
+        discountFactor = 0.9;
         double maxStartWeight = 0.001;
 
         inputLayer = new int[3][4];
@@ -57,26 +58,28 @@ class ReinforcedNeuralAgent {
     void activateNetwork(char[] observations){
         resetInputLayer();
         resetOutputLayer();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < inputLayer.length; i++) {
             int observedStatusIndex = inputLayerStatusIndex.get(observations[i]);   // gets input layer index of status from observaron
             inputLayer[i][observedStatusIndex] = 1;
-            for (int j = 0; j < 3; j++) {
+            for (int j = 0; j < outputLayer.length; j++) {
                 outputLayer[j] += weights[i][observedStatusIndex][j];
             }
         }
     }
 
-    void updateWeights(int[] newOutputValues, double maxOutputValue){
+    // Weights between activated input neurons and the best output neuron are changed based on the output value of the next iteration
+    void updateWeights(int reward, int chosenDirection, double[] oldOutputLayer, int nextChosenDirection){
+//        double chosenDirectionValue = oldOutputLayer[chosenDirection]
         for (int i = 0; i < weights.length; i++) {
             for (int j = 0; j < weights[i].length; j++) {
                 for (int k = 0; k < weights[i][j].length; k++) {
-                    weights[i][j][k] += learningRate * deltaRule() * inputLayer[i][j];
+//                    weights[i][j][k] += learningRate * deltaRule(reward, ) * inputLayer[i][j];
                 }
             }
         }
     }
 
-    private double deltaRule(int reward, double discountFactor, double maxNextOutput, double oldOutput) {
+    private double deltaRule(int reward, double maxNextOutput, double oldOutput) {
         return (reward + discountFactor * maxNextOutput - oldOutput);
     }
 
@@ -115,10 +118,10 @@ class ReinforcedNeuralAgent {
         System.out.format("%24s\n", "OUTPUT");
         System.out.format("%22s%16s%16s", "Left", "Forward", "Right");
         System.out.println();
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 4; j++) {
+        for (int i = 0; i < weights.length; i++) {
+            for (int j = 0; j < weights[i].length; j++) {
                 System.out.format("%6s", "");
-                for (int k = 0; k < 3; k++) {
+                for (int k = 0; k < weights[i][j].length; k++) {
                     System.out.format("%16.10f", weights[i][j][k]);
                 }
                 System.out.println();
@@ -129,12 +132,13 @@ class ReinforcedNeuralAgent {
     }
 
     void step() {
-        char[] observations = observe();
-        int chosenMoveDirection = chooseMoveDirection(observations);
-        score += world.moveAgent(chosenMoveDirection);
+        char[] observations = observe();                                // s
+        int chosenMoveDirection = chooseMoveDirection(observations);    // a
+        int reward = world.moveAgent(chosenMoveDirection);              // r
+        score += reward;
 
         char[] nextObservations = observe();
         int nextMoveDirection = chooseMoveDirection(nextObservations);
-        updateWeights(nextMoveDirection);
+//        updateWeights(nextMoveDirection, reward);
     }
 }
