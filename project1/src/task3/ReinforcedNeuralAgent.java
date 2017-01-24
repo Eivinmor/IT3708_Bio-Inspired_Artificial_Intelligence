@@ -66,10 +66,13 @@ class ReinforcedNeuralAgent {
         }
     }
 
-    void updateWeights(int[] newOutputValues){
-        double maxNextOutput = -Double.MAX_VALUE;
-        for (int i = 0; i < newOutputValues.length; i++) {
-            if (newOutputValues[i] > maxNextOutput) maxNextOutput = newOutputValues[i];
+    void updateWeights(int[] newOutputValues, double maxOutputValue){
+        for (int i = 0; i < weights.length; i++) {
+            for (int j = 0; j < weights[i].length; j++) {
+                for (int k = 0; k < weights[i][j].length; k++) {
+                    weights[i][j][k] += learningRate * deltaRule() * inputLayer[i][j];
+                }
+            }
         }
     }
 
@@ -129,6 +132,9 @@ class ReinforcedNeuralAgent {
         char[] observations = observe();
         int chosenMoveDirection = chooseMoveDirection(observations);
         score += world.moveAgent(chosenMoveDirection);
-//        updateWeights(chosenMoveDirection);
+
+        char[] nextObservations = observe();
+        int nextMoveDirection = chooseMoveDirection(nextObservations);
+        updateWeights(nextMoveDirection);
     }
 }
