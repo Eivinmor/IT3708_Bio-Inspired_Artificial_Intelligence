@@ -60,8 +60,8 @@ public class World {
         agentCardinalDirection = cleanCardinalDirection(agentCardinalDirection + moveDirection - 1);
         int newAgentY = agentY + cardinalCoordsArray[agentCardinalDirection][0];
         int newAgentX = agentX + cardinalCoordsArray[agentCardinalDirection][1];
+        int reward = calculateReward(newAgentY, newAgentX);
         if (getSquareStatus(newAgentY, newAgentX) != 'W' && getSquareStatus(agentY, agentX) == 'A') {
-            int reward = calculateReward(newAgentY, newAgentX);
             grid[agentY][agentX] = ' ';
             grid[newAgentY][newAgentX] = 'A';
             agentY = newAgentY;
@@ -69,17 +69,14 @@ public class World {
             return reward;
         }
         simulationEnd = true;
-        return 0;
+        return reward;
     }
 
     private int calculateReward(int y, int x){
         char squareStatus = getSquareStatus(y, x);
         if (squareStatus == 'F') return 1;
         if (squareStatus == 'P') return -4;
-        if (squareStatus == 'W') {
-            simulationEnd = true;
-            return -100;
-        }
+        if (squareStatus == 'W') return -100;
         return 0;
     }
 

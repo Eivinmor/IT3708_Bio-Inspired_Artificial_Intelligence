@@ -123,15 +123,15 @@ class SupervisedNeuralAgent {
         score = 0;
     }
 
-    void printWeights(){
+    public void printWeights(){
         System.out.format("%24s\n", "OUTPUT");
-        System.out.format("%16s%10s%10s", "Left", "Forward", "Right");
+        System.out.format("%22s%16s%16s", "Left", "Forward", "Right");
         System.out.println();
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 4; j++) {
                 System.out.format("%6s", "");
                 for (int k = 0; k < 3; k++) {
-                    System.out.format("%10f", Math.round(weights[i][j][k]*1000.0)/1000.0);
+                    System.out.format("%16.10f", weights[i][j][k]);
                 }
                 System.out.println();
             }

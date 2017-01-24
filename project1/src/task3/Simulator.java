@@ -14,7 +14,7 @@ class Simulator {
     private Simulator(){
         sc = new Scanner(System.in);
         trainingRounds = 10000;
-        trials = 10000;
+        trials = 100;
         steps = 50;
         stepByStep = false;
     }
@@ -36,6 +36,7 @@ class Simulator {
             int trialScore = runTrial(agent);
             roundScore += trialScore;
         }
+        agent.printWeights();
         return roundScore/trials;
     }
 
