@@ -22,7 +22,7 @@ class SupervisedNeuralAgent {
         observeDistance = 1;
         learningRate = 0.1;
         double maxStartWeight = 0.001;
-        numOfObservedSquares = 3;
+        numOfObservedSquares = 3 * observeDistance;
         numOfPossibleSquareStates = 4;
         numOfPossibleActions = 3;
 

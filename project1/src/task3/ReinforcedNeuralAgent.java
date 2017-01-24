@@ -21,7 +21,7 @@ class ReinforcedNeuralAgent {
         learningRate = 0.001;
         discountFactor = 0.9;
         double maxStartWeight = 0.001;
-        numOfObservedSquares = 3;
+        numOfObservedSquares = 3 * observeDistance;
         numOfPossibleSquareStates = 4;
         numOfPossibleActions = 3;
 

@@ -1,5 +1,7 @@
 package task1;
 
+import com.sun.org.apache.xpath.internal.SourceTree;
+
 import java.util.Scanner;
 
 
@@ -25,6 +27,8 @@ class Simulator1 {
             totalScore += trialScore;
         }
         System.out.println(String.format("%s%.1f", "--------------------------\nTotal avg. score: ", (double)totalScore/trials));
+        System.out.println("\nSETTINGS");
+        System.out.println("Trials: " + trials);
     }
 
     private int runTrial(BaselineAgent agent){

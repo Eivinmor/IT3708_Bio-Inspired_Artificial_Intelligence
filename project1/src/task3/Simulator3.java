@@ -28,6 +28,9 @@ class Simulator3 {
             totalScore += roundAvgScore;
         }
         System.out.println(String.format("%s%.1f", "--------------------------\nTotal avg. score: ", totalScore/trainingRounds));
+        System.out.println("\nSETTINGS");
+        System.out.println("Training rounds: " + trainingRounds);
+        System.out.println("Trials: " + trials);
     }
 
     private double runTrainingRound(ReinforcedNeuralAgent agent){
