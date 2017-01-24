@@ -36,7 +36,7 @@ class Simulator {
             int trialScore = runTrial(agent);
             roundScore += trialScore;
         }
-        agent.printWeights();
+//        agent.printWeights();
         return roundScore/trials;
     }
 

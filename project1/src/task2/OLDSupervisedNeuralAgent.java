@@ -6,26 +6,27 @@ import java.util.HashMap;
 import java.util.Random;
 
 
-class SupervisedNeuralAgent {
+class OLDSupervisedNeuralAgent {
 
     private task1.World world;
     private task1.BaselineAgent teacher;
     private Random random;
-    private int score, numOfObservedSquares, numOfPossibleSquareStates, numOfPossibleActions;
+    private int score;
     private double learningRate;
+    private int[][] inputLayer;
+    private double[] outputLayer;
     private double[][][] weights;
     private HashMap<Character, Integer> inputLayerStatusIndex;
 
-    SupervisedNeuralAgent(){
+    OLDSupervisedNeuralAgent(){
         random = new Random();
         score = 0;
         learningRate = 0.1;
         double maxStartWeight = 0.001;
-        numOfObservedSquares = 3;
-        numOfPossibleSquareStates = 4;
-        numOfPossibleActions = 3;
 
-        weights = new double[numOfObservedSquares][numOfPossibleSquareStates][numOfPossibleActions];
+        inputLayer = new int[3][4];
+        outputLayer = new double[3];
+        weights = new double[3][4][3];
         generateStartWeights(0, maxStartWeight);
         teacher = new BaselineAgent();
 
@@ -44,60 +45,66 @@ class SupervisedNeuralAgent {
         return observations; // L, F, R
     }
 
-    int chooseMoveDirection(int[] neuronOutputs){
+    int chooseMoveDirection(char[] observations){
+        activateNetwork(observations);
         int bestDirection = -1;
         double bestValue = -Double.MAX_VALUE;
-        for (int i = 0; i < numOfPossibleActions; i++) {
-            if (neuronOutputs[i] > bestValue) {
+        for (int i = 0; i < outputLayer.length; i++) {
+            if (outputLayer[i] > bestValue) {
                 bestDirection = i;
-                bestValue = neuronOutputs[i];
+                bestValue = outputLayer[i];
             }
         }
         return bestDirection;
     }
 
-    int[] activateNetwork(int[][] inputLayer){
-        int[] outputLayer = new int[numOfPossibleActions];
+    void activateNetwork(char[] observations){
+        resetInputLayer();
+        resetOutputLayer();
         for (int i = 0; i < inputLayer.length; i++) {
-            for (int j = 0; j < inputLayer[i].length; j++) {
-                for (int k = 0; k < outputLayer.length; k++) {
-                    outputLayer[k] += weights[i][j][k] * inputLayer[i][j];
-                }
+            int observedStatusIndex = inputLayerStatusIndex.get(observations[i]);   // gets input layer index of status from observaron
+            inputLayer[i][observedStatusIndex] = 1;
+            for (int j = 0; j < outputLayer.length; j++) {
+                outputLayer[j] += weights[i][observedStatusIndex][j];
             }
         }
-        return outputLayer;
     }
 
     // Weights between activated input neurons and all output neurons are changed based on the whether the output was the same as the teacher chose
-    private void updateWeights(int[][] neuronInputs, int[] neuronOutputs, int teacherDirection){
+    void updateWeights(int teacherDirection){
         double sumExpOutput = 0;
-        for (int i = 0; i < neuronOutputs.length; i++) {
-            sumExpOutput += Math.exp(neuronOutputs[i]);
+        for (int i = 0; i < 3; i++) {
+            sumExpOutput += Math.exp(outputLayer[i]);
         }
         for (int i = 0; i < weights.length; i++) {
             for (int j = 0; j < weights[i].length; j++) {
                 for (int k = 0; k < weights[i][j].length; k++) {
                     int correctChoice = 0;
                     if (teacherDirection == k) correctChoice = 1;
-                    weights[i][j][k] += learningRate * deltaRule(neuronOutputs[k], sumExpOutput, correctChoice) * neuronInputs[i][j];
+                    weights[i][j][k] += learningRate * deltaRule(k, correctChoice, sumExpOutput) * inputLayer[i][j];
                 }
 
             }
         }
     }
 
-    private double deltaRule(double specificOutput, double sumExpOutput, int correctChoice) {
-        double specificExpOutput = Math.exp(specificOutput);
-        return - (specificExpOutput/sumExpOutput) + (double)correctChoice;
+    private double deltaRule(int outputNeuron, int correctChoice, double sumExpOutput) {
+        double actualExpOutput = Math.exp(outputLayer[outputNeuron]);
+        return - (actualExpOutput/sumExpOutput) + (double)correctChoice;
     }
 
-    private int[][] calculateNeuralInput(char[] observations){
-        int[][] neuralInput = new int[numOfObservedSquares][numOfPossibleSquareStates];
-        for (int i = 0; i < numOfObservedSquares; i++) {
-            int observedStatusIndex = inputLayerStatusIndex.get(observations[i]);   // gets input layer index of status from observation
-            neuralInput[i][observedStatusIndex] = 1;
+    private void resetInputLayer(){
+        for (int i = 0; i < inputLayer.length; i++) {
+            for (int j = 0; j < inputLayer[i].length; j++) {
+                inputLayer[i][j] = 0;
+            }
         }
-        return neuralInput;
+    }
+
+    private void resetOutputLayer(){
+        for (int i = 0; i < outputLayer.length; i++) {
+            outputLayer[i] = 0;
+        }
     }
 
     int getScore(){return score;}
@@ -136,12 +143,9 @@ class SupervisedNeuralAgent {
 
     void step() {
         char[] observations = observe();
-        int[][] neuronInputs = calculateNeuralInput(observations);
-        int[] neuronOutputs = activateNetwork(neuronInputs);
-        int chosenMoveDirection = chooseMoveDirection(neuronOutputs);
-        score += world.moveAgent(chosenMoveDirection);
+        int chosenMoveDirection = chooseMoveDirection(observations);
         int teacherDirection = teacher.chooseMoveDirection(observations);
-        updateWeights(neuronInputs, neuronOutputs, teacherDirection);
-
+        score += world.moveAgent(chosenMoveDirection);
+        updateWeights(teacherDirection);
     }
 }

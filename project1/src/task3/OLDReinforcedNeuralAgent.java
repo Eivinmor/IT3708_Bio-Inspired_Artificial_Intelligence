@@ -1,32 +1,30 @@
 package task3;
 
-import task1.BaselineAgent;
-
 import java.util.HashMap;
 import java.util.Random;
 
 
-class ReinforcedNeuralAgent {
+class OLDReinforcedNeuralAgent {
 
     private task1.World world;
     private Random random;
-    private int score, numOfObservedSquares, numOfPossibleSquareStates, numOfPossibleActions;
+    private int score;
     private double learningRate, discountFactor;
+    private int[][] inputLayer;
+    private double[] outputLayer;
     private double[][][] weights;
     private HashMap<Character, Integer> inputLayerStatusIndex;
 
-
-    ReinforcedNeuralAgent(){
+    OLDReinforcedNeuralAgent(){
         random = new Random();
         score = 0;
         learningRate = 0.01;
         discountFactor = 0.9;
         double maxStartWeight = 0.001;
-        numOfObservedSquares = 3;
-        numOfPossibleSquareStates = 4;
-        numOfPossibleActions = 3;
 
-        weights = new double[numOfObservedSquares][numOfPossibleSquareStates][numOfPossibleActions];
+        inputLayer = new int[3][4];
+        outputLayer = new double[3];
+        weights = new double[3][4][3];
         generateStartWeights(0, maxStartWeight);
 
         inputLayerStatusIndex = new HashMap<>(4);
@@ -44,50 +42,59 @@ class ReinforcedNeuralAgent {
         return observations; // L, F, R
     }
 
-    int chooseMoveDirection(int[] neuronOutputs){
+    int chooseMoveDirection(char[] observations){
+        activateNetwork(observations);
         int bestDirection = -1;
         double bestValue = -Double.MAX_VALUE;
-        for (int i = 0; i < numOfPossibleActions; i++) {
-            if (neuronOutputs[i] > bestValue) {
+        for (int i = 0; i < 3; i++) {
+            if (outputLayer[i] > bestValue) {
                 bestDirection = i;
-                bestValue = neuronOutputs[i];
+                bestValue = outputLayer[i];
             }
         }
         return bestDirection;
     }
 
-    int[] activateNetwork(int[][] inputLayer){
-        int[] outputLayer = new int[numOfPossibleActions];
+    void activateNetwork(char[] observations){
+        resetInputLayer();
+        resetOutputLayer();
         for (int i = 0; i < inputLayer.length; i++) {
-            for (int j = 0; j < inputLayer[i].length; j++) {
-                for (int k = 0; k < outputLayer.length; k++) {
-                    outputLayer[k] += weights[i][j][k] * inputLayer[i][j];
-                }
+            int observedStatusIndex = inputLayerStatusIndex.get(observations[i]);   // gets input layer index of status from observaron
+            inputLayer[i][observedStatusIndex] = 1;
+            for (int j = 0; j < outputLayer.length; j++) {
+                outputLayer[j] += weights[i][observedStatusIndex][j];
             }
         }
-        return outputLayer;
     }
 
     // Weights between activated input neurons and the best output neuron are changed based on the output value of the next iteration
-    private void updateWeights(int reward, int[][] neuronInputs, int[] neuronOutputs, int chosenMoveDirection, double nextMaxOutputValue){
+    void updateWeights(int reward, int chosenDirection, double[] oldOutputLayer, int nextChosenDirection){
+//        double chosenDirectionValue = oldOutputLayer[chosenDirection]
         for (int i = 0; i < weights.length; i++) {
             for (int j = 0; j < weights[i].length; j++) {
-                weights[i][j][chosenMoveDirection] += learningRate * deltaRule(reward, neuronOutputs[chosenMoveDirection], nextMaxOutputValue) * neuronInputs[i][j];
+                for (int k = 0; k < weights[i][j].length; k++) {
+//                    weights[i][j][k] += learningRate * deltaRule(reward, ) * inputLayer[i][j];
+                }
             }
         }
     }
 
-    private double deltaRule(int reward, double output, double nextMaxOutputValue) {
-        return (reward + discountFactor * nextMaxOutputValue - output);
+    private double deltaRule(int reward, double maxNextOutput, double oldOutput) {
+        return (reward + discountFactor * maxNextOutput - oldOutput);
     }
 
-    private int[][] calculateNeuralInput(char[] observations){
-        int[][] neuralInput = new int[numOfObservedSquares][numOfPossibleSquareStates];
-        for (int i = 0; i < numOfObservedSquares; i++) {
-            int observedStatusIndex = inputLayerStatusIndex.get(observations[i]);   // gets input layer index of status from observation
-            neuralInput[i][observedStatusIndex] = 1;
+    private void resetInputLayer(){
+        for (int i = 0; i < inputLayer.length; i++) {
+            for (int j = 0; j < inputLayer[i].length; j++) {
+                inputLayer[i][j] = 0;
+            }
         }
-        return neuralInput;
+    }
+
+    private void resetOutputLayer(){
+        for (int i = 0; i < outputLayer.length; i++) {
+            outputLayer[i] = 0;
+        }
     }
 
     int getScore(){return score;}
@@ -125,20 +132,13 @@ class ReinforcedNeuralAgent {
     }
 
     void step() {
-        char[] observations = observe();
-        int[][] neuronInputs = calculateNeuralInput(observations);
-        int[] neuronOutputs = activateNetwork(neuronInputs);
-        int chosenMoveDirection = chooseMoveDirection(neuronOutputs);
-        int reward = world.moveAgent(chosenMoveDirection);
+        char[] observations = observe();                                // s
+        int chosenMoveDirection = chooseMoveDirection(observations);    // a
+        int reward = world.moveAgent(chosenMoveDirection);              // r
         score += reward;
 
         char[] nextObservations = observe();
-        int[][] nextNeuronInputs = calculateNeuralInput(nextObservations);
-        int[] nextNeuronOutputs = activateNetwork(nextNeuronInputs);
-        int nextChosenMoveDirection = chooseMoveDirection(nextNeuronOutputs);
-        double nextMaxOutputValue = nextNeuronOutputs[nextChosenMoveDirection];
-
-        updateWeights(reward, neuronInputs, neuronOutputs, chosenMoveDirection, nextMaxOutputValue);
-
+        int nextMoveDirection = chooseMoveDirection(nextObservations);
+//        updateWeights(nextMoveDirection, reward);
     }
 }
