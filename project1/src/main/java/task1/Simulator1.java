@@ -1,6 +1,7 @@
 package task1;
 
 import java.util.Scanner;
+import org.jfree.chart.*;
 
 
 class Simulator1 {
