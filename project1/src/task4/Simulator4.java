@@ -74,12 +74,6 @@ class Simulator4 {
         }
     }
 
-    private int divideToIntRoundUp(double dividend, int divisor){
-        int quotient = (int)dividend/divisor;
-        if (dividend % divisor > (divisor / 2)) quotient += 1;
-        return quotient;
-    }
-
     public static void main(String[] args) {
         Simulator4 simulator4 = new Simulator4();
         simulator4.runSimulation();

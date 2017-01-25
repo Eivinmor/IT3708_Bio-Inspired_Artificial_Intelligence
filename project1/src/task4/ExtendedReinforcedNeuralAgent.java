@@ -36,13 +36,13 @@ class ExtendedReinforcedNeuralAgent {
     }
 
     private char[] observe(){
-        char[] observations = new char[3*observeDistance];   // L, F, R
+        char[] observations = new char[3*observeDistance];   // L, L, L, F, F, F, R, R, R
         for (int i = 0; i < observeDistance; i++) {
             for (int j = 0; j < 3; j++) {
                 observations[i*3 + j] = world.observeInDirection(j, i);
             }
         }
-        return observations; // L, F, R
+        return observations; // L, L, L, F, F, F, R, R, R
     }
 
     int chooseMoveDirection(double[] neuronOutputs){

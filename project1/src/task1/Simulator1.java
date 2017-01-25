@@ -1,7 +1,5 @@
 package task1;
 
-import com.sun.org.apache.xpath.internal.SourceTree;
-
 import java.util.Scanner;
 
 
@@ -61,12 +59,6 @@ class Simulator1 {
             }
             System.out.println();
         }
-    }
-
-    private int divideRoundUp(int dividend, int divisor){
-        int quotient = dividend/divisor;
-        if (dividend % divisor >= (divisor / 2)) quotient += 1;
-        return quotient;
     }
 
     public static void main(String[] args) {
