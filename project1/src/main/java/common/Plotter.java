@@ -3,55 +3,63 @@ package common;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.util.ShapeUtilities;
+
+import java.awt.*;
 
 
 public class Plotter {
 
-    private DefaultCategoryDataset dataset;
-    private String windowTitle, chartTitle, xAxisTitle, yAxisTitle;
+    private XYSeriesCollection dataset;
+    private XYSeries agentScoreData;
+    private String applicationTitle, chartTitle, xAxisTitle, yAxisTitle;
 
-    public Plotter(String windowTitle, String chartTitle, String xAxisTitle, String yAxisTitle){
-        dataset = new DefaultCategoryDataset();
-        this.windowTitle = windowTitle;
+    public Plotter(String applicationTitle, String chartTitle, String xAxisTitle, String yAxisTitle){
+        this.applicationTitle = applicationTitle;
         this.chartTitle = chartTitle;
         this.xAxisTitle = xAxisTitle;
         this.yAxisTitle = yAxisTitle;
+        agentScoreData = new XYSeries("");
+        dataset = new XYSeriesCollection();
+        dataset.addSeries(agentScoreData);
     }
 
     public void plot(){
-        ApplicationFrame applicationFrame = new ApplicationFrame(windowTitle);
-        JFreeChart lineChart = ChartFactory.createLineChart(
+        ApplicationFrame applicationFrame = new ApplicationFrame(applicationTitle);
+        JFreeChart scatterChart = ChartFactory.createScatterPlot(
                 chartTitle,
                 xAxisTitle,
                 yAxisTitle,
                 dataset,
                 PlotOrientation.VERTICAL,
-                true,
-                true,
+                false,
+                false,
                 false);
+        XYPlot plot = scatterChart.getXYPlot();
+        plot.setBackgroundPaint(Color.WHITE);
+        plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
+        plot.getRangeAxis().setLowerMargin(0.1);
+        plot.getRangeAxis().setUpperMargin(0.1);
+        plot.getDomainAxis().setLowerMargin(0.1);
+        plot.getDomainAxis().setUpperMargin(0.1);
 
-        ChartPanel chartPanel = new ChartPanel(lineChart);
-        chartPanel.setPreferredSize(new java.awt.Dimension( 560 , 367));
+        Shape cross = ShapeUtilities.createDiagonalCross(3, (float)0.2);
+        plot.getRenderer().setSeriesShape(0, cross);
+        plot.getRenderer().setSeriesPaint(0, Color.RED);
+
+        ChartPanel chartPanel = new ChartPanel(scatterChart);
+        chartPanel.setPreferredSize(new java.awt.Dimension(1000, 600));
         applicationFrame.setContentPane(chartPanel);
         applicationFrame.pack();
         applicationFrame.setVisible(true);
     }
 
-    public void addData(double value, String rowKey, String columnKey){
-        dataset.addValue(value, rowKey, columnKey);
+    public void addData(int x, double y){
+        agentScoreData.add(x, y);
     }
-
-//    private DefaultCategoryDataset createDataset(){
-//        DefaultCategoryDataset dataset = new DefaultCategoryDataset( );
-//        dataset.addValue( 15 , "schools" , "1970" );
-//        dataset.addValue( 30 , "schools" , "1980" );
-//        dataset.addValue( 60 , "schools" ,  "1990" );
-//        dataset.addValue( 120 , "schools" , "2000" );
-//        dataset.addValue( 240 , "schools" , "2010" );
-//        dataset.addValue( 300 , "schools" , "2014" );
-//        return dataset;
-//    }
 }
