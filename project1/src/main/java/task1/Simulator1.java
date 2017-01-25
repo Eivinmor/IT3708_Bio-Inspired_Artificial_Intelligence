@@ -14,7 +14,7 @@ class Simulator1 {
         trials = 1000;
         steps = 50;
         stepByStep = false;
-        plotter = new common.Plotter("TASK 1 – Baseline agent", "Score per trial", "Trial", "Score");
+        plotter = new common.Plotter("TASK 1 – Baseline agent", "Trial", "Score");
     }
 
     private void runSimulation(){

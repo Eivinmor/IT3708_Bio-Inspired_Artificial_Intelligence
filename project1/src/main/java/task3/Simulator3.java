@@ -10,6 +10,7 @@ class Simulator3 {
     private Scanner sc;
     private int trials, trainingRounds, steps;
     private boolean stepByStep;
+    private common.Plotter plotter;
 
     private Simulator3(){
         sc = new Scanner(System.in);
@@ -17,6 +18,8 @@ class Simulator3 {
         trials = 100;
         steps = 50;
         stepByStep = false;
+        plotter = new common.Plotter("TASK 3 – Reinforced neural agent", "Training round", "Average score");
+
     }
 
     private void runSimulation(){
@@ -26,12 +29,14 @@ class Simulator3 {
             double roundAvgScore = runTrainingRound(agent);
             System.out.println(String.format("%s%5d%s%6.1f", "Training round", i, "  avg score:", roundAvgScore));
             totalScore += roundAvgScore;
+            plotter.addData(i, roundAvgScore);
         }
         System.out.println(String.format("%s%.1f", "--------------------------\nTotal avg score: ", totalScore/trainingRounds));
         System.out.println("\nTASK 3 – Reinforced neural agent");
         System.out.println("\nSETTINGS");
         System.out.println("Training rounds: " + trainingRounds);
         System.out.println("Trials: " + trials);
+        plotter.plot();
     }
 
     private double runTrainingRound(ReinforcedNeuralAgent agent){

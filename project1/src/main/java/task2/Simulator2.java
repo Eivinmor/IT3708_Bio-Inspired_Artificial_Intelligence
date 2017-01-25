@@ -1,5 +1,6 @@
 package task2;
 
+import common.Plotter;
 import task1.World;
 import java.util.Scanner;
 
@@ -9,6 +10,7 @@ class Simulator2 {
     private Scanner sc;
     private int trials, trainingRounds, steps;
     private boolean stepByStep;
+    private common.Plotter plotter;
 
     private Simulator2(){
         sc = new Scanner(System.in);
@@ -16,6 +18,7 @@ class Simulator2 {
         trials = 100;
         steps = 50;
         stepByStep = false;
+        plotter = new common.Plotter("TASK 2 – Supervised neural agent", "Training round", "Average score");
     }
 
     private void runSimulation(){
@@ -25,12 +28,14 @@ class Simulator2 {
             double roundAvgScore = runTrainingRound(agent);
             System.out.println(String.format("%s%5d%s%6.1f", "Training round", i, "  avg score:", roundAvgScore));
             totalScore += roundAvgScore;
+            plotter.addData(i, roundAvgScore);
         }
         System.out.println(String.format("%s%.1f", "--------------------------\nTotal avg score: ", totalScore/trainingRounds));
         System.out.println("\nTASK 2 – Supervised neural agent");
         System.out.println("\nSETTINGS");
         System.out.println("Training rounds: " + trainingRounds);
         System.out.println("Trials: " + trials);
+        plotter.plot();
     }
 
     private double runTrainingRound(SupervisedNeuralAgent agent){

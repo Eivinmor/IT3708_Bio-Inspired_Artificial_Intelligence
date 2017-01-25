@@ -19,8 +19,8 @@ public class Plotter {
     private XYSeries agentScoreData;
     private String applicationTitle, chartTitle, xAxisTitle, yAxisTitle;
 
-    public Plotter(String applicationTitle, String chartTitle, String xAxisTitle, String yAxisTitle){
-        this.applicationTitle = applicationTitle;
+    public Plotter(String chartTitle, String xAxisTitle, String yAxisTitle){
+        this.applicationTitle = chartTitle;
         this.chartTitle = chartTitle;
         this.xAxisTitle = xAxisTitle;
         this.yAxisTitle = yAxisTitle;
