@@ -47,7 +47,7 @@ class SupervisedNeuralAgent {
         return observations; // L, F, R
     }
 
-    int chooseMoveDirection(int[] neuronOutputs){
+    int chooseMoveDirection(double[] neuronOutputs){
         int bestDirection = -1;
         double bestValue = -Double.MAX_VALUE;
         for (int i = 0; i < numOfPossibleActions; i++) {
@@ -59,8 +59,8 @@ class SupervisedNeuralAgent {
         return bestDirection;
     }
 
-    int[] activateNetwork(int[][] inputLayer){
-        int[] outputLayer = new int[numOfPossibleActions];
+    double[] activateNetwork(int[][] inputLayer){
+        double[] outputLayer = new double[numOfPossibleActions];
         for (int i = 0; i < inputLayer.length; i++) {
             for (int j = 0; j < inputLayer[i].length; j++) {
                 for (int k = 0; k < outputLayer.length; k++) {
@@ -72,7 +72,7 @@ class SupervisedNeuralAgent {
     }
 
     // Weights between activated input neurons and all output neurons are changed based on the whether the output was the same as the teacher chose
-    private void updateWeights(int[][] neuronInputs, int[] neuronOutputs, int teacherDirection){
+    private void updateWeights(int[][] neuronInputs, double[] neuronOutputs, int teacherDirection){
         double sumExpOutput = 0;
         for (int i = 0; i < neuronOutputs.length; i++) {
             sumExpOutput += Math.exp(neuronOutputs[i]);
@@ -139,7 +139,7 @@ class SupervisedNeuralAgent {
     void step() {
         char[] observations = observe();
         int[][] neuronInputs = calculateNeuralInput(observations);
-        int[] neuronOutputs = activateNetwork(neuronInputs);
+        double[] neuronOutputs = activateNetwork(neuronInputs);
         int chosenMoveDirection = chooseMoveDirection(neuronOutputs);
         score += world.moveAgent(chosenMoveDirection);
         int teacherDirection = teacher.chooseMoveDirection(observations);

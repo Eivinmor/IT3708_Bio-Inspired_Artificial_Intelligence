@@ -13,7 +13,7 @@ class Simulator4 {
 
     private Simulator4(){
         sc = new Scanner(System.in);
-        trainingRounds = 10000;
+        trainingRounds = 100;
         trials = 100;
         steps = 50;
         stepByStep = false;

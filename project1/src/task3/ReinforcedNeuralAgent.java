@@ -18,7 +18,7 @@ class ReinforcedNeuralAgent {
         random = new Random();
         score = 0;
         observeDistance = 1;
-        learningRate = 0.001;
+        learningRate = 0.01;
         discountFactor = 0.9;
         double maxStartWeight = 0.001;
         numOfObservedSquares = 3 * observeDistance;
@@ -45,7 +45,7 @@ class ReinforcedNeuralAgent {
         return observations; // L, F, R
     }
 
-    int chooseMoveDirection(int[] neuronOutputs){
+    int chooseMoveDirection(double[] neuronOutputs){
         int bestDirection = -1;
         double bestValue = -Double.MAX_VALUE;
         for (int i = 0; i < numOfPossibleActions; i++) {
@@ -57,8 +57,8 @@ class ReinforcedNeuralAgent {
         return bestDirection;
     }
 
-    int[] activateNetwork(int[][] inputLayer){
-        int[] outputLayer = new int[numOfPossibleActions];
+    double[] activateNetwork(int[][] inputLayer){
+        double[] outputLayer = new double[numOfPossibleActions];
         for (int i = 0; i < inputLayer.length; i++) {
             for (int j = 0; j < inputLayer[i].length; j++) {
                 for (int k = 0; k < outputLayer.length; k++) {
@@ -70,7 +70,7 @@ class ReinforcedNeuralAgent {
     }
 
     // Weights between activated input neurons and the best output neuron are changed based on the output value of the next iteration
-    private void updateWeights(int reward, int[][] neuronInputs, int[] neuronOutputs, int chosenMoveDirection, double nextMaxOutputValue){
+    private void updateWeights(int reward, int[][] neuronInputs, double[] neuronOutputs, int chosenMoveDirection, double nextMaxOutputValue){
         for (int i = 0; i < weights.length; i++) {
             for (int j = 0; j < weights[i].length; j++) {
                 weights[i][j][chosenMoveDirection] += learningRate * deltaRule(reward, neuronOutputs[chosenMoveDirection], nextMaxOutputValue) * neuronInputs[i][j];
@@ -128,14 +128,14 @@ class ReinforcedNeuralAgent {
     void step() {
         char[] observations = observe();
         int[][] neuronInputs = calculateNeuralInput(observations);
-        int[] neuronOutputs = activateNetwork(neuronInputs);
+        double[] neuronOutputs = activateNetwork(neuronInputs);
         int chosenMoveDirection = chooseMoveDirection(neuronOutputs);
         int reward = world.moveAgent(chosenMoveDirection);
         score += reward;
 
         char[] nextObservations = observe();
         int[][] nextNeuronInputs = calculateNeuralInput(nextObservations);
-        int[] nextNeuronOutputs = activateNetwork(nextNeuronInputs);
+        double[] nextNeuronOutputs = activateNetwork(nextNeuronInputs);
         int nextChosenMoveDirection = chooseMoveDirection(nextNeuronOutputs);
         double nextMaxOutputValue = nextNeuronOutputs[nextChosenMoveDirection];
 
