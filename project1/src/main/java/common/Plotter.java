@@ -3,6 +3,7 @@ package common;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.AxisSpace;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.ApplicationFrame;
@@ -17,20 +18,19 @@ public class Plotter {
 
     private XYSeriesCollection dataset;
     private XYSeries agentScoreData;
-    private String applicationTitle, chartTitle, xAxisTitle, yAxisTitle;
+    private String chartTitle, xAxisTitle, yAxisTitle;
 
     public Plotter(String chartTitle, String xAxisTitle, String yAxisTitle){
-        this.applicationTitle = chartTitle;
         this.chartTitle = chartTitle;
         this.xAxisTitle = xAxisTitle;
         this.yAxisTitle = yAxisTitle;
-        agentScoreData = new XYSeries("");
+        agentScoreData = new XYSeries("agent");
         dataset = new XYSeriesCollection();
         dataset.addSeries(agentScoreData);
     }
 
     public void plot(){
-        ApplicationFrame applicationFrame = new ApplicationFrame(applicationTitle);
+        ApplicationFrame applicationFrame = new ApplicationFrame(chartTitle);
         JFreeChart scatterChart = ChartFactory.createScatterPlot(
                 chartTitle,
                 xAxisTitle,
@@ -45,15 +45,17 @@ public class Plotter {
         plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
         plot.getRangeAxis().setLowerMargin(0.1);
         plot.getRangeAxis().setUpperMargin(0.1);
-        plot.getDomainAxis().setLowerMargin(0.1);
-        plot.getDomainAxis().setUpperMargin(0.1);
+        plot.getDomainAxis().setLowerMargin(1.049);
+        plot.getDomainAxis().setUpperMargin(0.049);
+        plot.getDomainAxis().setLowerBound(-50);
+
 
         Shape cross = ShapeUtilities.createDiagonalCross(3, (float)0.2);
         plot.getRenderer().setSeriesShape(0, cross);
         plot.getRenderer().setSeriesPaint(0, Color.RED);
 
         ChartPanel chartPanel = new ChartPanel(scatterChart);
-        chartPanel.setPreferredSize(new java.awt.Dimension(1000, 600));
+        chartPanel.setPreferredSize(new java.awt.Dimension(1280, 720));
         applicationFrame.setContentPane(chartPanel);
         applicationFrame.pack();
         applicationFrame.setVisible(true);
