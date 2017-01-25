@@ -26,7 +26,8 @@ class Simulator2 {
             System.out.println(String.format("%s%5d%s%6.1f", "Training round", i, "  avg score:", roundAvgScore));
             totalScore += roundAvgScore;
         }
-        System.out.println(String.format("%s%.1f", "--------------------------\nTotal avg. score: ", totalScore/trainingRounds));
+        System.out.println(String.format("%s%.1f", "--------------------------\nTotal avg score: ", totalScore/trainingRounds));
+        System.out.println("\nTASK 2 – Supervised neural agent");
         System.out.println("\nSETTINGS");
         System.out.println("Training rounds: " + trainingRounds);
         System.out.println("Trials: " + trials);

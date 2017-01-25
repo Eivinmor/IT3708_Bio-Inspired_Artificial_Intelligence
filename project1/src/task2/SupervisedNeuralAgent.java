@@ -46,7 +46,7 @@ class SupervisedNeuralAgent {
         return observations; // L, F, R
     }
 
-    int chooseMoveDirection(double[] neuronOutputs){
+    private int chooseMoveDirection(double[] neuronOutputs){
         int bestDirection = -1;
         double bestValue = -Double.MAX_VALUE;
         for (int i = 0; i < numOfPossibleActions; i++) {
@@ -58,7 +58,7 @@ class SupervisedNeuralAgent {
         return bestDirection;
     }
 
-    double[] activateNetwork(int[][] inputLayer){
+    private double[] activateNetwork(int[][] inputLayer){
         double[] outputLayer = new double[numOfPossibleActions];
         for (int i = 0; i < inputLayer.length; i++) {
             for (int j = 0; j < inputLayer[i].length; j++) {
@@ -103,7 +103,7 @@ class SupervisedNeuralAgent {
 
     int getScore(){return score;}
 
-    void generateStartWeights(double low, double high){
+    private void generateStartWeights(double low, double high){
         for (int i = 0; i < weights.length; i++) {
             for (int j = 0; j < weights[i].length; j++) {
                 for (int k = 0; k < weights[i][j].length; k++) {
