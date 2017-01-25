@@ -10,12 +10,14 @@ public class World {
     private int[][] cardinalCoordsArray;
     private Random random;
     public boolean simulationEnd;
+    private char[] agentDirectionSymbols;
 
     public World (){
         random = new Random();
         n = 10;
         grid = generateGrid(n);
         simulationEnd = false;
+        agentDirectionSymbols = new char[] {'⇑', '⇒', '⇓', '⇐'};
         cardinalCoordsArray  = new int[4][2];
         cardinalCoordsArray[0] = new int[] {-1,0};   // N
         cardinalCoordsArray[1] = new int[] {0,1};    // E
@@ -52,7 +54,7 @@ public class World {
         agentCardinalDirection = random.nextInt(4);
         agentY = random.nextInt(n);
         agentX = random.nextInt(n);
-        grid[agentY][agentX] = 'A';
+        grid[agentY][agentX] = agentDirectionSymbols[agentCardinalDirection];
         initialGrid = grid.clone();
     }
 
@@ -61,9 +63,9 @@ public class World {
         int newAgentY = agentY + cardinalCoordsArray[agentCardinalDirection][0];
         int newAgentX = agentX + cardinalCoordsArray[agentCardinalDirection][1];
         int reward = calculateReward(newAgentY, newAgentX);
-        if (getSquareStatus(newAgentY, newAgentX) != 'W' && getSquareStatus(agentY, agentX) == 'A') {
+        if (getSquareStatus(newAgentY, newAgentX) != 'W') {
             grid[agentY][agentX] = ' ';
-            grid[newAgentY][newAgentX] = 'A';
+            grid[newAgentY][newAgentX] = agentDirectionSymbols[agentCardinalDirection];
             agentY = newAgentY;
             agentX = newAgentX;
             return reward;
@@ -82,11 +84,11 @@ public class World {
 
     private int cleanCardinalDirection(int cardinalDirection) {
         int newCardinalDirection = cardinalDirection % 4;
-        if (newCardinalDirection < 0) return newCardinalDirection += 4;
+        if (newCardinalDirection < 0) return newCardinalDirection + 4;
         return newCardinalDirection;
     }
 
-    public char[][] getGrid(){
-        return grid;
-    }
+    public char[][] getGrid(){return grid;}
+
+    public char[][] getInitialGrid(){return initialGrid;}
 }
