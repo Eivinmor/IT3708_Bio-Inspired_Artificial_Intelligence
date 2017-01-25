@@ -9,6 +9,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.ui.RefineryUtilities;
 import org.jfree.util.ShapeUtilities;
 
 import java.awt.*;
@@ -59,6 +60,7 @@ public class Plotter {
         applicationFrame.setContentPane(chartPanel);
         applicationFrame.pack();
         applicationFrame.setVisible(true);
+        RefineryUtilities.positionFrameOnScreen(applicationFrame, 0.0, 0.88);
     }
 
     public void addData(int x, double y){
