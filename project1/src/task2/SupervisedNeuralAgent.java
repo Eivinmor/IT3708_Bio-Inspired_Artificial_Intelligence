@@ -1,7 +1,6 @@
 package task2;
 
 import task1.BaselineAgent;
-
 import java.util.HashMap;
 import java.util.Random;
 
@@ -20,7 +19,7 @@ class SupervisedNeuralAgent {
         random = new Random();
         score = 0;
         observeDistance = 1;
-        learningRate = 0.1;
+        learningRate = 0.01;
         double maxStartWeight = 0.001;
         numOfObservedSquares = 3 * observeDistance;
         numOfPossibleSquareStates = 4;
