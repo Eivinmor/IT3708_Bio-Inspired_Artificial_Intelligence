@@ -1,20 +1,20 @@
 package task1;
 
 import java.util.Scanner;
-import org.jfree.chart.*;
-
 
 class Simulator1 {
 
     private Scanner sc;
     private int trials, steps;
     private boolean stepByStep;
+    private common.Plotter plotter;
 
     private Simulator1(){
         sc = new Scanner(System.in);
         trials = 1000;
         steps = 50;
         stepByStep = false;
+        plotter = new common.Plotter("TASK 1 – Baseline agent", "Score per trial", "Score", "Trial");
     }
 
     private void runSimulation(){
@@ -24,11 +24,13 @@ class Simulator1 {
             int trialScore = runTrial(agent);
             System.out.println(String.format("%s%5d%s%4d", "Trial", i, "  score:", trialScore));
             totalScore += trialScore;
+            plotter.addData(trialScore, "score", Integer.toString(i));
         }
         System.out.println(String.format("%s%.1f", "--------------------------\nTotal avg score: ", (double)totalScore/trials));
         System.out.println("\nTASK 1 – Baseline agent");
         System.out.println("\nSETTINGS");
         System.out.println("Trials: " + trials);
+        plotter.plot();
     }
 
     private int runTrial(BaselineAgent agent){

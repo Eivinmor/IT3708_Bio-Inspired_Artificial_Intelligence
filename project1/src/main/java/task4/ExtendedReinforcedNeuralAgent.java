@@ -28,7 +28,7 @@ class ExtendedReinforcedNeuralAgent {
         weights = new double[numOfObservedSquares][numOfPossibleSquareStates][numOfPossibleActions];
         generateStartWeights(0, maxStartWeight);
 
-        inputLayerStatusIndex = new HashMap<>(4);
+        inputLayerStatusIndex = new HashMap<Character, Integer>(4);
         inputLayerStatusIndex.put(' ', 0);
         inputLayerStatusIndex.put('W', 1);
         inputLayerStatusIndex.put('F', 2);
