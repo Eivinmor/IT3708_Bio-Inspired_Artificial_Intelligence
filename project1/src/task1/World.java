@@ -14,8 +14,7 @@ public class World {
     public World (){
         random = new Random();
         n = 10;
-        initialGrid = generateGrid(n);
-        grid = initialGrid.clone();
+        grid = generateGrid(n);
         simulationEnd = false;
         cardinalCoordsArray  = new int[4][2];
         cardinalCoordsArray[0] = new int[] {-1,0};   // N
@@ -54,6 +53,7 @@ public class World {
         agentY = random.nextInt(n);
         agentX = random.nextInt(n);
         grid[agentY][agentX] = 'A';
+        initialGrid = grid.clone();
     }
 
     public int moveAgent(int moveDirection){
