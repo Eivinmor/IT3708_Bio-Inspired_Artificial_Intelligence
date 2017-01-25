@@ -18,7 +18,7 @@ class Simulator2 {
         trials = 100;
         steps = 50;
         stepByStep = false;
-        plotter = new common.Plotter("TASK 2 – Supervised neural agent", "Training round", "Average score");
+        plotter = new common.Plotter("Task 2 – Supervised neural agent", "Training round", "Average score", trainingRounds);
     }
 
     private void runSimulation(){
@@ -31,7 +31,7 @@ class Simulator2 {
             plotter.addData(i, roundAvgScore);
         }
         System.out.println(String.format("%s%.1f", "--------------------------\nTotal avg score: ", totalScore/trainingRounds));
-        System.out.println("\nTASK 2 – Supervised neural agent");
+        System.out.println("\nTask 2 – Supervised neural agent");
         System.out.println("\nSETTINGS");
         System.out.println("Training rounds: " + trainingRounds);
         System.out.println("Trials: " + trials);

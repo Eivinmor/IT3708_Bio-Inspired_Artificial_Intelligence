@@ -19,7 +19,7 @@ class Simulator4 {
         trials = 100;
         steps = 50;
         stepByStep = false;
-        plotter = new common.Plotter("TASK 4 – Extended reinforced neural agent", "Training round", "Average score");
+        plotter = new common.Plotter("Task 4 – Extended reinforced neural agent", "Training round", "Average score", trainingRounds);
     }
 
     private void runSimulation(){
@@ -32,7 +32,7 @@ class Simulator4 {
             plotter.addData(i, roundAvgScore);
         }
         System.out.println(String.format("%s%.1f", "--------------------------\nTotal avg score: ", totalScore/trainingRounds));
-        System.out.println("\nTASK 4 – Extended reinforced neural agent");
+        System.out.println("\nTask 4 – Extended reinforced neural agent");
         System.out.println("\nSETTINGS");
         System.out.println("Training rounds: " + trainingRounds);
         System.out.println("Trials: " + trials);

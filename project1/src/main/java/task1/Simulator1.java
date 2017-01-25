@@ -14,7 +14,7 @@ class Simulator1 {
         trials = 1000;
         steps = 50;
         stepByStep = false;
-        plotter = new common.Plotter("TASK 1 – Baseline agent", "Trial", "Score");
+        plotter = new common.Plotter("Task 1 – Baseline agent", "Trial", "Score", trials);
     }
 
     private void runSimulation(){
@@ -27,7 +27,7 @@ class Simulator1 {
             plotter.addData(i, trialScore);
         }
         System.out.println(String.format("%s%.1f", "--------------------------\nTotal avg score: ", (double)totalScore/trials));
-        System.out.println("\nTASK 1 – Baseline agent");
+        System.out.println("\nTask 1 – Baseline agent");
         System.out.println("\nSETTINGS");
         System.out.println("Trials: " + trials);
         plotter.plot();
