@@ -1,7 +1,7 @@
 package task3;
 
 import task1.World;
-
+import common.Plotter;
 import java.util.Scanner;
 
 
@@ -10,7 +10,7 @@ class Simulator3 {
     private Scanner sc;
     private int trials, trainingRounds, steps;
     private boolean stepByStep;
-    private common.Plotter plotter;
+    private Plotter plotter;
 
     private Simulator3(){
         sc = new Scanner(System.in);
@@ -18,7 +18,7 @@ class Simulator3 {
         trials = 100;
         steps = 50;
         stepByStep = false;
-        plotter = new common.Plotter("Task 3 – Reinforced neural agent", "Training round", "Average score", trainingRounds);
+        plotter = new Plotter("Task 3 – Reinforced neural agent", "Training round", "Average score", trainingRounds);
 
     }
 

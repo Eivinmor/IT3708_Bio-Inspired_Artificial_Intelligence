@@ -1,5 +1,6 @@
 package task2;
 
+import task1.World;
 import task1.BaselineAgent;
 import java.util.HashMap;
 import java.util.Random;
@@ -7,13 +8,13 @@ import java.util.Random;
 
 class SupervisedNeuralAgent {
 
-    private task1.World world;
+    private World world;
     private Random random;
     private int score, observeDistance, numOfObservedSquares, numOfPossibleSquareStates, numOfPossibleActions;
     private double learningRate;
     private double[][][] weights;
     private HashMap<Character, Integer> inputLayerStatusIndex;
-    private task1.BaselineAgent teacher;
+    private BaselineAgent teacher;
 
     SupervisedNeuralAgent(){
         random = new Random();

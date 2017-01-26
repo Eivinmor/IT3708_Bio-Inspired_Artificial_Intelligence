@@ -1,20 +1,27 @@
 package task1;
 
+import javafx.application.Application;
+import common.Plotter;
+import common.GUI;
 import java.util.Scanner;
+
 
 class Simulator1 {
 
     private Scanner sc;
     private int trials, steps;
     private boolean stepByStep;
-    private common.Plotter plotter;
+    private Plotter plotter;
+    private GUI gui;
 
     private Simulator1(){
         sc = new Scanner(System.in);
         trials = 1000;
         steps = 50;
         stepByStep = false;
-        plotter = new common.Plotter("Task 1 – Baseline agent", "Trial", "Score", trials);
+        plotter = new Plotter("Task 1 – Baseline agent", "Trial", "Score", trials);
+        gui = new GUI();
+        Application.launch(gui.getClass());
     }
 
     private void runSimulation(){
@@ -44,6 +51,7 @@ class Simulator1 {
         }
         int step = 1;
         while(!world.simulationEnd && step <= steps) {
+            gui.drawGrid(world.getGrid());
             if (stepByStep) {
                 sc.nextLine();
                 agent.step();
