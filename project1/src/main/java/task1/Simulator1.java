@@ -2,6 +2,8 @@ package task1;
 
 import common.Plotter;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Simulator1 {
@@ -10,7 +12,7 @@ public class Simulator1 {
     private int trials, steps;
     private boolean stepByStep;
     private Plotter plotter;
-    private char[][][][][] gridStorage;
+    private ArrayList<ArrayList<ArrayList<ArrayList<ArrayList<Character>>>>> gridStorage;
 
 
     public Simulator1(){
@@ -19,11 +21,12 @@ public class Simulator1 {
         steps = 50;
         stepByStep = false;
         plotter = new Plotter("Task 1 – Baseline agent", "Trial", "Score", trials);
-        gridStorage = new char[1][trials][steps][10][10];
+        gridStorage = new ArrayList<>();
     }
 
-    public char[][][][][] runSimulation(){
+    public ArrayList<ArrayList<ArrayList<ArrayList<ArrayList<Character>>>>> runSimulation(){
         BaselineAgent agent = new BaselineAgent();
+        gridStorage.add(new ArrayList<>());
         int totalScore = 0;
         for (int i = 1; i <= trials; i++) {
             int trialScore = runTrial(agent, i);
@@ -48,9 +51,11 @@ public class Simulator1 {
             printGrid(world.getGrid());
             System.out.println();
         }
+        gridStorage.get(0).add(new ArrayList<>());
         int step = 1;
         while(!world.simulationEnd && step <= steps) {
-            gridStorage[0][trial-1][step-1] = world.getGrid();
+            gridStorage.get(0).get(trial-1).add(world.getGridArrayList());
+//            gridStorage[0][trial-1][step-1] = world.getGrid();
             if (stepByStep) {
                 sc.nextLine();
                 agent.step();

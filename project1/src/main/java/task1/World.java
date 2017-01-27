@@ -1,5 +1,6 @@
 package task1;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -90,6 +91,17 @@ public class World {
     }
 
     public char[][] getGrid(){return gridCopy(grid);}
+    
+    public ArrayList<ArrayList<Character>> getGridArrayList(){
+        ArrayList<ArrayList<Character>> gridArrayList = new ArrayList<>();
+        for (int i = 0; i < grid.length; i++) {
+            gridArrayList.add(new ArrayList<>());
+            for (int j = 0; j < grid[i].length; j++) {
+                gridArrayList.get(i).add(grid[i][j]);
+            }
+        }
+        return gridArrayList;
+    }
 
     public char[][] getInitialGrid(){return gridCopy(initialGrid);}
 

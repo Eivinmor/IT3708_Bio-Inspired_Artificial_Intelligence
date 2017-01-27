@@ -14,10 +14,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
 import javafx.util.Duration;
+import org.jfree.util.ArrayUtilities;
 import task1.*;
 import task2.*;
 import task3.*;
@@ -30,7 +33,7 @@ public class GUI extends Application{
     private HashMap<Character, String> iconPathArray;
     private int trainingRound, trial, step, renderInterval;
     private Timeline timeline;
-    private char[][][][][] gridStorage;
+    private ArrayList<ArrayList<ArrayList<ArrayList<ArrayList<Character>>>>> gridStorage;
     private Button playButton;
     private TextField renderIntervalField, trainingRoundsField, trialsField, stepsField;
 
@@ -127,8 +130,8 @@ public class GUI extends Application{
         trainingRoundsField.setPrefWidth(50);
         trainingRoundsField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) trainingRoundsField.setText(newValue.replaceAll("[^\\d]", ""));
-            else if (Integer.parseInt(trainingRoundsField.getText()) > gridStorage.length) {
-                trainingRoundsField.setText(Integer.toString(gridStorage.length));
+            else if (Integer.parseInt(trainingRoundsField.getText()) > gridStorage.size()) {
+                trainingRoundsField.setText(Integer.toString(gridStorage.size()));
             }
         });
         HBox trainingRoundsHbox = new HBox(2);
@@ -141,8 +144,8 @@ public class GUI extends Application{
         trialsField.setPrefWidth(50);
         trialsField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) trialsField.setText(newValue.replaceAll("[^\\d]", ""));
-            else if (Integer.parseInt(trialsField.getText()) > gridStorage[0].length) {
-                trialsField.setText(Integer.toString(gridStorage[0].length));
+            else if (Integer.parseInt(trialsField.getText()) > gridStorage.get(0).size()) {
+                trialsField.setText(Integer.toString(gridStorage.get(0).size()));
             }
         });
         HBox trialsHbox = new HBox(2);
@@ -155,8 +158,8 @@ public class GUI extends Application{
         stepsField.setPrefWidth(35);
         stepsField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) stepsField.setText(newValue.replaceAll("[^\\d]", ""));
-            else if (Integer.parseInt(stepsField.getText()) > gridStorage[0][0].length) {
-                stepsField.setText(Integer.toString(gridStorage[0][0].length));
+            else if (Integer.parseInt(stepsField.getText()) > gridStorage.get(0).get(0).size()) {
+                stepsField.setText(Integer.toString(gridStorage.get(0).get(0).size()));
             }
         });
         HBox stepsHbox = new HBox(2);
@@ -175,18 +178,30 @@ public class GUI extends Application{
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        drawGrid(gridStorage[0][0][0]);
+        drawGrid(gridStorage.get(0).get(0).get(0));
         
     }
 
 
 
-    private void drawGrid(char[][]charGrid){
+//    private void drawGrid(char[][] charGrid){
+//        mapPane.getChildren().clear();
+//        mapPane.setGridLinesVisible(true);
+//        for (int i = 0; i < charGrid.length; i++) {
+//            for (int j = 0; j < charGrid[i].length; j++) {
+//                Image image = new Image(iconPathArray.get(charGrid[i][j]), 48, 48, false, false);
+//                ImageView imageView = new ImageView(image);
+//                mapPane.add(imageView, j, i);
+//            }
+//        }
+//    }
+
+    private void drawGrid(ArrayList<ArrayList<Character>> charGrid){
         mapPane.getChildren().clear();
         mapPane.setGridLinesVisible(true);
-        for (int i = 0; i < charGrid.length; i++) {
-            for (int j = 0; j < charGrid[i].length; j++) {
-                Image image = new Image(iconPathArray.get(charGrid[i][j]), 48, 48, false, false);
+        for (int i = 0; i < charGrid.size(); i++) {
+            for (int j = 0; j < charGrid.get(i).size(); j++) {
+                Image image = new Image(iconPathArray.get(charGrid.get(i).get(j)), 48, 48, false, false);
                 ImageView imageView = new ImageView(image);
                 mapPane.add(imageView, j, i);
             }
@@ -197,14 +212,15 @@ public class GUI extends Application{
         timeline.stop();
         timeline.getKeyFrames().setAll(
         new KeyFrame(Duration.millis(renderIntervalMillis), event -> {
-            drawGrid(gridStorage[trainingRound-1][trial-1][step-1]);
-            if (step < gridStorage[0][0].length) step++;
-            else if (trial < gridStorage[0].length) {
+            drawGrid(gridStorage.get(trainingRound-1).get(trial-1).get(step-1));
+//            drawGrid(gridStorage[trainingRound-1][trial-1][step-1]);
+            if (step < gridStorage.get(0).get(0).size()) step++;
+            else if (trial < gridStorage.get(0).size()) {
                 step = 1;
                 trial++;
                 trialsField.setText(Integer.toString(trial));
             }
-            else if (trainingRound < gridStorage.length) {
+            else if (trainingRound < gridStorage.size()) {
                 step = 1;
                 trial = 1;
                 trainingRound++;
