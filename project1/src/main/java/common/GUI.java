@@ -21,9 +21,13 @@ import task1.*;
 
 public class GUI extends Application{
 
-    private GridPane gridPane;
+    private GridPane mapPane;
+    private HBox configRow;
     private HashMap<Character, String> iconPathArray;
     private int trial, step;
+    private KeyFrame keyframe;
+    private Timeline timeline;
+    private char[][][][] gridStorage;
 
     public GUI(){
         iconPathArray = new HashMap<>(7);
@@ -34,72 +38,71 @@ public class GUI extends Application{
         iconPathArray.put('⇒', "File:C:\\Users\\Eivind\\IdeaProjects\\IT3708_Bio-Inspired_Artificial_Intelligence\\project1\\src\\main\\java\\common\\icons\\agentEast.png");
         iconPathArray.put('⇓', "File:C:\\Users\\Eivind\\IdeaProjects\\IT3708_Bio-Inspired_Artificial_Intelligence\\project1\\src\\main\\java\\common\\icons\\agentSouth.png");
         iconPathArray.put('⇐', "File:C:\\Users\\Eivind\\IdeaProjects\\IT3708_Bio-Inspired_Artificial_Intelligence\\project1\\src\\main\\java\\common\\icons\\agentWest.png");
+        timeline = new Timeline();
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         Simulator1 sim = new Simulator1();
-        char[][][][] gridStorage = sim.runSimulation();
+        gridStorage = sim.runSimulation();
 
+        GridPane rootPane = new GridPane();
 
-        primaryStage.setTitle("Flatland world");
-        gridPane = new GridPane();
-        gridPane.setAlignment(Pos.CENTER);
-        gridPane.setPadding(new Insets(10, 10, 10, 10));
-        gridPane.setGridLinesVisible(true);
-
+        mapPane = new GridPane();
+        mapPane.setAlignment(Pos.CENTER);
+        mapPane.setPadding(new Insets(2, 1, 1, 2));
+        mapPane.setStyle("-fx-background-color: #161616;");
         for (int i = 0; i < 10; i++) {
-            gridPane.getColumnConstraints().add(new ColumnConstraints(50));
-            gridPane.getRowConstraints().add(new RowConstraints(50));
+            mapPane.getColumnConstraints().add(new ColumnConstraints(50));
+            mapPane.getRowConstraints().add(new RowConstraints(50));
         }
 
-        Scene scene = new Scene(gridPane);
+        configRow = new HBox();
+        configRow.setMinHeight(50);
+        configRow.setPadding(new Insets(10, 10, 10, 10));
+
+
+
+        rootPane.add(configRow, 0, 0);
+        rootPane.add(mapPane, 0, 1);
+        Scene scene = new Scene(rootPane);
+        primaryStage.setTitle("Flatland world");
         primaryStage.setScene(scene);
         primaryStage.show();
 
         trial = 0;
         step = 0;
 
-//        gridPane.setOnMousePressed(new EventHandler<MouseEvent>() {
-//            @Override
-//            public void handle(MouseEvent event) {
-//                if (event.getButton() == MouseButton.PRIMARY){
-//                    drawGrid(gridStorage[trial][step]);
-//                    if (step < 49) step++;
-//                    else{
-//                        step = 0;
-//                        trial++;
-//                    }
-//                }
-//
-//            }
-//        });
+        newRenderInterval(300);
+    }
 
-        KeyFrame keyframe = new KeyFrame(Duration.millis(100), event -> {
+
+
+    private void drawGrid(char[][]charGrid){
+        mapPane.getChildren().clear();
+        mapPane.setGridLinesVisible(true);
+        for (int i = 0; i < charGrid.length; i++) {
+            for (int j = 0; j < charGrid[i].length; j++) {
+                Image image = new Image(iconPathArray.get(charGrid[i][j]), 48, 48, false, false);
+                ImageView imageView = new ImageView(image);
+                mapPane.add(imageView, j, i);
+            }
+        }
+    }
+
+    private void newRenderInterval(int renderIntervalMillis){
+        timeline.stop();
+        timeline.getKeyFrames().setAll(
+        keyframe = new KeyFrame(Duration.millis(renderIntervalMillis), event -> {
             drawGrid(gridStorage[trial][step]);
             if (step < gridStorage[0].length-1) step++;
             else{
                 step = 0;
                 trial++;
             }
-        });
-
-        Timeline timeline = new Timeline(keyframe);
+        }));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
-    }
-
-
-
-    private void drawGrid(char[][]charGrid){
-        gridPane.getChildren().clear();
-        for (int i = 0; i < charGrid.length; i++) {
-            for (int j = 0; j < charGrid[i].length; j++) {
-                Image image = new Image(iconPathArray.get(charGrid[i][j]), 40, 40, false, false);
-                ImageView imageView = new ImageView(image);
-                gridPane.add(imageView, j, i);
-            }
-        }
     }
 
     public static void main(String[] args) {
