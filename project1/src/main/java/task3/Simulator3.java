@@ -1,75 +1,67 @@
 package task3;
 
+import common.Plotter;
 import task1.World;
 
-import java.util.Scanner;
+import java.util.ArrayList;
 
 
-class Simulator3 {
+public class Simulator3 {
 
-    private Scanner sc;
     private int trials, trainingRounds, steps;
-    private boolean stepByStep;
-    private common.Plotter plotter;
+    private Plotter plotter;
 
-    private Simulator3(){
-        sc = new Scanner(System.in);
+
+    public Simulator3(){
         trainingRounds = 100;
         trials = 100;
         steps = 50;
-        stepByStep = false;
-        plotter = new common.Plotter("Task 3 – Reinforced neural agent", "Training round", "Average score", trainingRounds);
-
+        plotter = new Plotter("Task 3 – Reinforced neural agent", "Training round", "Average score", trainingRounds);
     }
 
-    private void runSimulation(){
+    public ArrayList<ArrayList<ArrayList<ArrayList<ArrayList<Character>>>>> runSimulation(){
         ReinforcedNeuralAgent agent = new ReinforcedNeuralAgent();
-        double totalScore = 0;
+        ArrayList<ArrayList<ArrayList<ArrayList<ArrayList<Character>>>>> gridStorage = new ArrayList<>(trainingRounds);
+
         for (int i = 1; i <= trainingRounds; i++) {
-            double roundAvgScore = runTrainingRound(agent);
-            System.out.println(String.format("%s%5d%s%6.1f", "Training round", i, "  avg score:", roundAvgScore));
-            totalScore += roundAvgScore;
-            plotter.addData(i, roundAvgScore);
+            gridStorage.add(runTrainingRound(agent, i));
         }
-        System.out.println(String.format("%s%.1f", "--------------------------\nTotal avg score: ", totalScore/trainingRounds));
+        System.out.println("--------------------------");
         System.out.println("\nTask 3 – Reinforced neural agent");
         System.out.println("\nSETTINGS");
         System.out.println("Training rounds: " + trainingRounds);
         System.out.println("Trials: " + trials);
         plotter.plot();
+        return gridStorage;
     }
 
-    private double runTrainingRound(ReinforcedNeuralAgent agent){
+    private ArrayList<ArrayList<ArrayList<ArrayList<Character>>>> runTrainingRound(ReinforcedNeuralAgent agent, int number){
+        ArrayList<ArrayList<ArrayList<ArrayList<Character>>>> trainingRoundGridStorage = new ArrayList<>(trials);
         double roundScore = 0;
         for (int i = 1; i <= trials; i++) {
-            int trialScore = runTrial(agent);
-            roundScore += trialScore;
+            trainingRoundGridStorage.add(runTrial(agent));
+            roundScore += agent.getScore();
         }
-//        agent.printWeights();
-        return roundScore/trials;
+        double roundAvgScore = roundScore/trials;
+        System.out.println(String.format("%s%5d%s%6.1f", "Training round", number, "  avg score:", roundAvgScore));
+        plotter.addData(number, roundAvgScore);
+        return trainingRoundGridStorage;
     }
 
-    private int runTrial(ReinforcedNeuralAgent agent){
+    private ArrayList<ArrayList<ArrayList<Character>>> runTrial(ReinforcedNeuralAgent agent){
+        ArrayList<ArrayList<ArrayList<Character>>> trialGridStorage = new ArrayList<>(steps);
         World world = new World();
         agent.registerNewWorld(world);
         world.placeAgentRandom();
-        if (stepByStep) {
-            System.out.println("Initial world:");
-            printGrid(world.getGrid());
-            System.out.println();
-        }
+
         int step = 1;
+        trialGridStorage.add(world.getGridArrayList());
         while(!world.simulationEnd && step <= steps) {
-            if (stepByStep) {
-                sc.nextLine();
-                agent.step();
-                printGrid(world.getGrid());
-                System.out.println("Step " + step + " score: " + agent.getScore() + "\n");
-            }
-            else agent.step();
+            agent.step();
+            trialGridStorage.add(world.getGridArrayList());
             step++;
         }
-        return agent.getScore();
+        return trialGridStorage;
     }
 
     private void printGrid(char[][] grid){
@@ -82,7 +74,7 @@ class Simulator3 {
     }
 
     public static void main(String[] args) {
-        Simulator3 simulator3 = new Simulator3();
-        simulator3.runSimulation();
+        Simulator3 simulator2 = new Simulator3();
+        simulator2.runSimulation();
     }
 }

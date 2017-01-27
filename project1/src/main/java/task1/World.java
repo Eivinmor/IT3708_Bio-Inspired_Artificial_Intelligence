@@ -1,14 +1,13 @@
 package task1;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 
 public class World {
 
     private int n, agentCardinalDirection, agentY, agentX;
-    private char[][] initialGrid, grid;
+    private char[][] grid;
     private int[][] cardinalCoordsArray;
     private Random random;
     public boolean simulationEnd;
@@ -57,7 +56,6 @@ public class World {
         agentY = random.nextInt(n);
         agentX = random.nextInt(n);
         grid[agentY][agentX] = agentDirectionSymbols[agentCardinalDirection];
-        initialGrid = gridCopy(grid);
     }
 
     public int moveAgent(int moveDirection){
@@ -72,6 +70,7 @@ public class World {
             agentX = newAgentX;
             return reward;
         }
+        grid[agentY][agentX] = 'X';
         simulationEnd = true;
         return reward;
     }
@@ -102,8 +101,6 @@ public class World {
         }
         return gridArrayList;
     }
-
-    public char[][] getInitialGrid(){return gridCopy(initialGrid);}
 
     private char[][] gridCopy(char[][] grid){
         char[][] gridCopy = new char[grid.length][grid[0].length];

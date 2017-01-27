@@ -4,35 +4,32 @@ import common.Plotter;
 import task1.World;
 
 import java.util.ArrayList;
-import java.util.Scanner;
 
 
 public class Simulator2 {
 
-    private Scanner sc;
     private int trials, trainingRounds, steps;
-    private boolean stepByStep;
     private Plotter plotter;
+    private String taskName;
 
 
     public Simulator2(){
-        sc = new Scanner(System.in);
-        trainingRounds = 100;
+        trainingRounds = 1000;
         trials = 100;
         steps = 50;
-        stepByStep = false;
-        plotter = new Plotter("Task 2 – Supervised neural agent", "Training round", "Average score", trainingRounds);
+        taskName = "Task 2 – Supervised neural agent";
+        plotter = new Plotter(taskName, "Training round", "Average score", trainingRounds);
     }
 
     public ArrayList<ArrayList<ArrayList<ArrayList<ArrayList<Character>>>>> runSimulation(){
         SupervisedNeuralAgent agent = new SupervisedNeuralAgent();
-        ArrayList<ArrayList<ArrayList<ArrayList<ArrayList<Character>>>>> gridStorage = new ArrayList<>();
+        ArrayList<ArrayList<ArrayList<ArrayList<ArrayList<Character>>>>> gridStorage = new ArrayList<>(trainingRounds);
 
         for (int i = 1; i <= trainingRounds; i++) {
             gridStorage.add(runTrainingRound(agent, i));
         }
         System.out.println("--------------------------");
-        System.out.println("\nTask 2 – Supervised neural agent");
+        System.out.println("\n" + taskName);
         System.out.println("\nSETTINGS");
         System.out.println("Training rounds: " + trainingRounds);
         System.out.println("Trials: " + trials);
@@ -41,7 +38,7 @@ public class Simulator2 {
     }
 
     private ArrayList<ArrayList<ArrayList<ArrayList<Character>>>> runTrainingRound(SupervisedNeuralAgent agent, int number){
-        ArrayList<ArrayList<ArrayList<ArrayList<Character>>>> trainingRoundGridStorage = new ArrayList<>();
+        ArrayList<ArrayList<ArrayList<ArrayList<Character>>>> trainingRoundGridStorage = new ArrayList<>(trials);
         double roundScore = 0;
         for (int i = 1; i <= trials; i++) {
             trainingRoundGridStorage.add(runTrial(agent));
@@ -54,7 +51,7 @@ public class Simulator2 {
     }
 
     private ArrayList<ArrayList<ArrayList<Character>>> runTrial(SupervisedNeuralAgent agent){
-        ArrayList<ArrayList<ArrayList<Character>>> trialGridStorage = new ArrayList<>();
+        ArrayList<ArrayList<ArrayList<Character>>> trialGridStorage = new ArrayList<>(steps);
         World world = new World();
         agent.registerNewWorld(world);
         world.placeAgentRandom();
