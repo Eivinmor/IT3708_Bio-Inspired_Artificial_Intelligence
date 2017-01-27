@@ -10,11 +10,13 @@ public class BaselineAgent {
     private Random random;
     private int score;
     private int observeDistance;
+    private char[] statusOrder;
 
     public BaselineAgent(){
         random = new Random();
         score = 0;
         observeDistance = 1;
+        statusOrder = new char[] {'F', ' ', 'P'};
     }
 
     private char[] observe(){
@@ -28,7 +30,7 @@ public class BaselineAgent {
     }
 
     public int chooseMoveDirection(char[] observations){
-        for (char status : new char[] {'F', ' ', 'P'} ) {
+        for (char status : statusOrder) {
             if (observations[1] == status) return 1; // Forward
             HashSet<Integer> statusDirectionsSet = new HashSet<Integer>(2);
             if (observations[0] == status) statusDirectionsSet.add(0);   // Left
