@@ -3,10 +3,6 @@ package common;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -15,7 +11,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.HashMap;
@@ -27,13 +22,11 @@ import task1.*;
 public class GUI extends Application{
 
     private GridPane mapPane;
-    private HBox configRow;
     private HashMap<Character, String> iconPathArray;
-    private int trial, step, renderInterval;
-    private KeyFrame keyframe;
+    private int trainingRound, trial, step, renderInterval;
     private Timeline timeline;
-    private char[][][][] gridStorage;
-    private Button playButton, applyRenderIntervalButton;
+    private char[][][][][] gridStorage;
+    private Button playButton;
     private TextField renderIntervalField;
 
     public GUI(){
@@ -52,7 +45,10 @@ public class GUI extends Application{
     public void start(Stage primaryStage) throws Exception {
         Simulator1 sim = new Simulator1();
         gridStorage = sim.runSimulation();
-        renderInterval = 1000;
+        renderInterval = 300;
+        trainingRound = 1;
+        trial = 1;
+        step = 1;
 
         GridPane rootPane = new GridPane();
 
@@ -65,18 +61,20 @@ public class GUI extends Application{
             mapPane.getRowConstraints().add(new RowConstraints(50));
         }
 
-        configRow = new HBox(20);
+        // CONFIG ROW
+        HBox configRow = new HBox(20);
         configRow.setMinHeight(50);
         configRow.setPadding(new Insets(10, 10, 10, 10));
-
+        configRow.setAlignment(Pos.CENTER_LEFT);
 
         // PLAY BUTTON
         playButton = new Button("Play");
-        playButton.setMinWidth(50);
+        playButton.setMinWidth(56);
+        playButton.setPadding(new Insets(10, 10, 10, 10));
         playButton.setOnAction(event -> {
             if (playButton.getText() == "Play"){
-                newRenderInterval(renderInterval);
                 playButton.setText("Pause");
+                newRenderInterval(renderInterval);
             }
             else {
                 timeline.stop();
@@ -86,26 +84,44 @@ public class GUI extends Application{
         configRow.getChildren().add(playButton);
 
 
-        // APPLY RENDER INTERVAL BUTTON
-        applyRenderIntervalButton = new Button("Apply");
-        applyRenderIntervalButton.setMinWidth(40);
-        applyRenderIntervalButton.setOnAction(event -> {
-            renderInterval = (Integer.parseInt(renderIntervalField.getText()));
-            newRenderInterval(renderInterval);
-        });
-        configRow.getChildren().add(applyRenderIntervalButton);
+        // RENDER SETTINGS HBOX
+            // APPLY RENDER INTERVAL BUTTON
+            Button applyRenderIntervalButton = new Button("Apply");
+            applyRenderIntervalButton.setMinWidth(40);
+            applyRenderIntervalButton.setPadding(new Insets(4, 10, 4, 10));
+            applyRenderIntervalButton.setOnAction(event -> {
+                renderInterval = (Integer.parseInt(renderIntervalField.getText()));
+                newRenderInterval(renderInterval);
+            });
 
-        // RENDER INTERVAL FIELD
-        renderIntervalField = new TextField(Integer.toString(renderInterval));
-        renderIntervalField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*")) {
-                renderIntervalField.setText(newValue.replaceAll("[^\\d]", ""));
-            }
-        });
+            // RENDER INTERVAL FIELD
+            renderIntervalField = new TextField(Integer.toString(renderInterval));
+            renderIntervalField.setPrefWidth(50);
+            renderIntervalField.setAlignment(Pos.BASELINE_RIGHT);
+            renderIntervalField.textProperty().addListener((observable, oldValue, newValue) -> {
+                if (!newValue.matches("\\d*")) {
+                    renderIntervalField.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            });
+
+            HBox renderSettingsHbox = new HBox();
+            renderSettingsHbox.setAlignment(Pos.BOTTOM_LEFT);
+            renderSettingsHbox.getChildren().addAll(applyRenderIntervalButton, renderIntervalField);
 
 
-        configRow.getChildren().add(renderIntervalField);
+        // ITERATION SETTINGS HBOX
+            // TRIALS FIELD
+            TextField trainingRoundsField = new TextField(Integer.toString(trainingRound));
 
+            // TRIALS FIELD
+            TextField trialsField = new TextField(Integer.toString(trial));
+
+
+            HBox iterationSettingsHbox = new HBox();
+            iterationSettingsHbox.setAlignment(Pos.BOTTOM_LEFT);
+            iterationSettingsHbox.getChildren().addAll(trainingRoundsField, trialsField);
+
+        configRow.getChildren().add(renderSettingsHbox);
 
 
         rootPane.add(configRow, 0, 0);
@@ -115,8 +131,7 @@ public class GUI extends Application{
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        trial = 0;
-        step = 0;
+        drawGrid(gridStorage[0][0][0]);
         
     }
 
@@ -137,16 +152,17 @@ public class GUI extends Application{
     private void newRenderInterval(int renderIntervalMillis){
         timeline.stop();
         timeline.getKeyFrames().setAll(
-        keyframe = new KeyFrame(Duration.millis(renderIntervalMillis), event -> {
-            drawGrid(gridStorage[trial][step]);
-            if (step < gridStorage[0].length-1) step++;
-            else{
-                step = 0;
+        new KeyFrame(Duration.millis(renderIntervalMillis), event -> {
+            drawGrid(gridStorage[trainingRound][trial][step]);
+            if (step < gridStorage[0].length) step++;
+            else if (trial >= gridStorage.length) timeline.stop();
+            else {
+                step = 1;
                 trial++;
             }
         }));
         timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.play();
+        if (playButton.getText() == "Pause") timeline.play();
     }
 
     public static void main(String[] args) {

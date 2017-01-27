@@ -12,7 +12,7 @@ public class Simulator1 {
     private int trials, steps;
     private boolean stepByStep;
     private Plotter plotter;
-    private char[][][][] gridStorage;
+    private char[][][][][] gridStorage;
 
     public Simulator1(){
         sc = new Scanner(System.in);
@@ -20,10 +20,10 @@ public class Simulator1 {
         steps = 50;
         stepByStep = false;
         plotter = new Plotter("Task 1 – Baseline agent", "Trial", "Score", trials);
-        gridStorage = new char[trials][steps][10][10];
+        gridStorage = new char[1][trials][steps][10][10];
     }
 
-    public char[][][][] runSimulation(){
+    public char[][][][][] runSimulation(){
         BaselineAgent agent = new BaselineAgent();
         int totalScore = 0;
         for (int i = 1; i <= trials; i++) {
@@ -58,7 +58,7 @@ public class Simulator1 {
                 System.out.println("Step " + step + " score: " + agent.getScore() + "\n");
             }
             else agent.step();
-            gridStorage[trialNumber-1][step-1] = world.getGrid();
+            gridStorage[0][trialNumber-1][step-1] = world.getGrid();
             step++;
         }
         return agent.getScore();
