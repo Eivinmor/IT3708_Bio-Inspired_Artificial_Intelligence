@@ -10,7 +10,7 @@ class Simulator4 {
     private String taskName;
 
     private Simulator4(){
-        taskName = "Task 4 – Extended einforced neural agent";
+        taskName = "Task 4 – Extended reinforced neural agent";
         trainingRounds = 100;
         trials = 100;
         steps = 50;

@@ -5,9 +5,10 @@ import common.Plotter;
 
 class Simulator2 {
 
-    private int trials, trainingRounds, steps;
+    private int trainingRounds, trials, steps, currentTrainingRound, currentTrial;
     private Plotter plotter;
     private String taskName;
+    private char[][][][][] gridStorage;
 
     private Simulator2(){
         taskName = "Task 2 – Supervised neural agent";
@@ -15,12 +16,14 @@ class Simulator2 {
         trials = 100;
         steps = 50;
         plotter = new Plotter(taskName, "Training round", "Average score", trainingRounds);
+        gridStorage = new char[trainingRounds][trials][steps+1][10][10];
     }
 
     private void runSimulation(){
         SupervisedNeuralAgent agent = new SupervisedNeuralAgent();
         double totalScore = 0;
         for (int i = 1; i <= trainingRounds; i++) {
+            currentTrainingRound = i;
             double roundAvgScore = runTrainingRound(agent);
             System.out.println(String.format("%s%5d%s%6.1f", "Training round", i, "  avg score:", roundAvgScore));
             totalScore += roundAvgScore;
@@ -37,6 +40,7 @@ class Simulator2 {
     private double runTrainingRound(SupervisedNeuralAgent agent){
         double roundScore = 0;
         for (int i = 1; i <= trials; i++) {
+            currentTrial = i;
             int trialScore = runTrial(agent);
             roundScore += trialScore;
         }
@@ -48,9 +52,11 @@ class Simulator2 {
         agent.registerNewWorld(world);
         world.placeAgentRandom();
         int step = 1;
+        gridStorage[currentTrainingRound-1][currentTrial-1][step-1] = world.getGrid();
         while(!world.simulationEnd && step <= steps) {
             agent.step();
             step++;
+            gridStorage[currentTrainingRound-1][currentTrial-1][step-1] = world.getGrid();
         }
         return agent.getScore();
     }

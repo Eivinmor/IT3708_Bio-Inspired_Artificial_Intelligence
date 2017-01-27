@@ -1,6 +1,5 @@
 package task1;
 
-import java.util.Scanner;
 
 class Simulator1 {
 
