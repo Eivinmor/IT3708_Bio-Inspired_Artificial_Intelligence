@@ -51,7 +51,9 @@ public class GUI extends Application{
     @Override
     public void start(Stage primaryStage) throws Exception {
         Simulator2 sim = new Simulator2();
-        gridStorage = sim.runSimulation();
+        sim.runSimulation();
+        char[][][][][] gridStorageArray = sim.getGridStorage();
+        gridStorage = arrayToArrayList(gridStorageArray);
         renderInterval = 300;
         trainingRound = 1;
         trial = 1;
@@ -74,6 +76,8 @@ public class GUI extends Application{
         buttonRow.setMinHeight(50);
         buttonRow.setPadding(new Insets(10, 10, 10, 10));
         buttonRow.setAlignment(Pos.BOTTOM_LEFT);
+
+
 
         // PLAY BUTTON
         playButton = new Button("Play");
@@ -99,11 +103,14 @@ public class GUI extends Application{
             newRenderInterval(renderInterval);
             trainingRound = Integer.parseInt(trainingRoundsField.getText());
             trial = Integer.parseInt(trialsField.getText());
-            step = Integer.parseInt(stepsField.getText());
+            step = 0;
+            stepsField.setText(Integer.toString(step));
             drawGrid(gridStorage.get(trainingRound-1).get(trial-1).get(step));
         });
 
         buttonRow.getChildren().addAll(playButton, appySettingsButton);
+
+
 
         // SETTINGS ROW
 
@@ -218,6 +225,32 @@ public class GUI extends Application{
         );
         timeline.setCycleCount(Timeline.INDEFINITE);
         if (Objects.equals(playButton.getText(), "Pause")) timeline.play();
+    }
+
+    private ArrayList<ArrayList<ArrayList<ArrayList<ArrayList<Character>>>>> arrayToArrayList(char[][][][][] gridStorage) {
+        ArrayList<ArrayList<ArrayList<ArrayList<ArrayList<Character>>>>> gridStorageArrayList = new ArrayList<>();
+        for (int i = 0; i < gridStorage.length; i++) {  // training round
+            gridStorageArrayList.add(new ArrayList<>());
+
+            for (int j = 0; j < gridStorage[i].length; j++) {   // trial
+                gridStorageArrayList.get(i).add(new ArrayList<>());
+
+                for (int k = 0; k < gridStorage[i][j].length; k++) {    // step
+                    char cellCharacter = gridStorage[i][j][k][0][0];
+                    if ((int)cellCharacter==0) break;
+                    gridStorageArrayList.get(i).get(j).add(new ArrayList<>());
+
+                    for (int l = 0; l < gridStorage[i][j][k].length; l++) {
+                        gridStorageArrayList.get(i).get(j).get(k).add(new ArrayList<>());
+
+                        for (int m = 0; m < gridStorage[i][j][k][l].length; m++) {
+                            gridStorageArrayList.get(i).get(j).get(k).get(l).add(gridStorage[i][j][k][l][m]);
+                        }
+                    }
+                }
+            }
+        }
+        return gridStorageArrayList;
     }
 
     public static void main(String[] args) {

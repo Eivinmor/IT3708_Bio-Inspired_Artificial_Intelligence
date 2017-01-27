@@ -3,14 +3,14 @@ package task2;
 import task1.World;
 import common.Plotter;
 
-class Simulator2 {
+public class Simulator2 {
 
     private int trainingRounds, trials, steps, currentTrainingRound, currentTrial;
     private Plotter plotter;
     private String taskName;
     private char[][][][][] gridStorage;
 
-    private Simulator2(){
+    public Simulator2(){
         taskName = "Task 2 – Supervised neural agent";
         trainingRounds = 100;
         trials = 100;
@@ -19,7 +19,7 @@ class Simulator2 {
         gridStorage = new char[trainingRounds][trials][steps+1][10][10];
     }
 
-    private void runSimulation(){
+    public void runSimulation(){
         SupervisedNeuralAgent agent = new SupervisedNeuralAgent();
         double totalScore = 0;
         for (int i = 1; i <= trainingRounds; i++) {
@@ -60,6 +60,11 @@ class Simulator2 {
         }
         return agent.getScore();
     }
+
+    public char[][][][][] getGridStorage(){
+        return gridStorage;
+    }
+
 
     private void printGrid(char[][] grid){
         for (int i = 0; i < grid.length; i++) {
