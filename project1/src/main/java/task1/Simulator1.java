@@ -1,9 +1,7 @@
 package task1;
 
-import javafx.application.Application;
-import common.*;
+import common.Plotter;
 
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Simulator1 {
@@ -13,6 +11,7 @@ public class Simulator1 {
     private boolean stepByStep;
     private Plotter plotter;
     private char[][][][][] gridStorage;
+
 
     public Simulator1(){
         sc = new Scanner(System.in);
@@ -40,7 +39,7 @@ public class Simulator1 {
         return gridStorage;
     }
 
-    private int runTrial(BaselineAgent agent, int trialNumber){
+    private int runTrial(BaselineAgent agent, int trial){
         World world = new World();
         agent.registerNewWorld(world);
         world.placeAgentRandom();
@@ -51,6 +50,7 @@ public class Simulator1 {
         }
         int step = 1;
         while(!world.simulationEnd && step <= steps) {
+            gridStorage[0][trial-1][step-1] = world.getGrid();
             if (stepByStep) {
                 sc.nextLine();
                 agent.step();
@@ -58,7 +58,6 @@ public class Simulator1 {
                 System.out.println("Step " + step + " score: " + agent.getScore() + "\n");
             }
             else agent.step();
-            gridStorage[0][trialNumber-1][step-1] = world.getGrid();
             step++;
         }
         return agent.getScore();

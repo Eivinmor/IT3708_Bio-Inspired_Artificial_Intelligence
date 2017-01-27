@@ -5,27 +5,30 @@ import task1.World;
 import java.util.Scanner;
 
 
-class Simulator2 {
+public class Simulator2 {
 
     private Scanner sc;
     private int trials, trainingRounds, steps;
     private boolean stepByStep;
-    private common.Plotter plotter;
+    private Plotter plotter;
+    private char[][][][][] gridStorage;
 
-    private Simulator2(){
+
+    public Simulator2(){
         sc = new Scanner(System.in);
         trainingRounds = 100;
         trials = 100;
         steps = 50;
         stepByStep = false;
-        plotter = new common.Plotter("Task 2 – Supervised neural agent", "Training round", "Average score", trainingRounds);
+        plotter = new Plotter("Task 2 – Supervised neural agent", "Training round", "Average score", trainingRounds);
+        gridStorage = new char[trainingRounds][trials][steps][10][10];
     }
 
-    private void runSimulation(){
+    public char[][][][][] runSimulation(){
         SupervisedNeuralAgent agent = new SupervisedNeuralAgent();
         double totalScore = 0;
         for (int i = 1; i <= trainingRounds; i++) {
-            double roundAvgScore = runTrainingRound(agent);
+            double roundAvgScore = runTrainingRound(agent, i);
             System.out.println(String.format("%s%5d%s%6.1f", "Training round", i, "  avg score:", roundAvgScore));
             totalScore += roundAvgScore;
             plotter.addData(i, roundAvgScore);
@@ -36,18 +39,19 @@ class Simulator2 {
         System.out.println("Training rounds: " + trainingRounds);
         System.out.println("Trials: " + trials);
         plotter.plot();
+        return gridStorage;
     }
 
-    private double runTrainingRound(SupervisedNeuralAgent agent){
+    private double runTrainingRound(SupervisedNeuralAgent agent, int trainingRound){
         double roundScore = 0;
         for (int i = 1; i <= trials; i++) {
-            int trialScore = runTrial(agent);
+            int trialScore = runTrial(agent, trainingRound, i);
             roundScore += trialScore;
         }
         return roundScore/trials;
     }
 
-    private int runTrial(SupervisedNeuralAgent agent){
+    private int runTrial(SupervisedNeuralAgent agent, int trainingRound, int trial){
         World world = new World();
         agent.registerNewWorld(world);
         world.placeAgentRandom();
@@ -58,6 +62,7 @@ class Simulator2 {
         }
         int step = 1;
         while(!world.simulationEnd && step <= steps) {
+            gridStorage[trainingRound-1][trial-1][step-1] = world.getGrid();
             if (stepByStep) {
                 sc.nextLine();
                 agent.step();

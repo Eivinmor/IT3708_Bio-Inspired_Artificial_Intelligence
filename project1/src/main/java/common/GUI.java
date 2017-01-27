@@ -19,6 +19,9 @@ import java.util.Objects;
 
 import javafx.util.Duration;
 import task1.*;
+import task2.*;
+import task3.*;
+import task4.*;
 
 
 public class GUI extends Application{
