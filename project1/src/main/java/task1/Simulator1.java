@@ -4,16 +4,12 @@ import java.util.Scanner;
 
 class Simulator1 {
 
-    private Scanner sc;
     private int trials, steps;
-    private boolean stepByStep;
     private common.Plotter plotter;
 
     private Simulator1(){
-        sc = new Scanner(System.in);
         trials = 1000;
         steps = 50;
-        stepByStep = false;
         plotter = new common.Plotter("Task 1 – Baseline agent", "Trial", "Score", trials);
     }
 
@@ -37,20 +33,10 @@ class Simulator1 {
         World world = new World();
         agent.registerNewWorld(world);
         world.placeAgentRandom();
-        if (stepByStep) {
-            System.out.println("Initial world:");
-            printGrid(world.getGrid());
-            System.out.println();
-        }
+
         int step = 1;
         while(!world.simulationEnd && step <= steps) {
-            if (stepByStep) {
-                sc.nextLine();
-                agent.step();
-                printGrid(world.getGrid());
-                System.out.println("Step " + step + " score: " + agent.getScore() + "\n");
-            }
-            else agent.step();
+            agent.step();
             step++;
         }
         return agent.getScore();

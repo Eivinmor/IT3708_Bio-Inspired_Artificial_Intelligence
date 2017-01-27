@@ -1,25 +1,20 @@
 package task4;
 
 import task1.World;
-
-import java.util.Scanner;
-
+import common.Plotter;
 
 class Simulator4 {
 
-    private Scanner sc;
     private int trials, trainingRounds, steps;
-    private boolean stepByStep;
-    private common.Plotter plotter;
-
+    private Plotter plotter;
+    private String taskName;
 
     private Simulator4(){
-        sc = new Scanner(System.in);
+        taskName = "Task 4 – Extended einforced neural agent";
         trainingRounds = 100;
         trials = 100;
         steps = 50;
-        stepByStep = false;
-        plotter = new common.Plotter("Task 4 – Extended reinforced neural agent", "Training round", "Average score", trainingRounds);
+        plotter = new Plotter(taskName, "Training round", "Average score", trainingRounds);
     }
 
     private void runSimulation(){
@@ -32,7 +27,7 @@ class Simulator4 {
             plotter.addData(i, roundAvgScore);
         }
         System.out.println(String.format("%s%.1f", "--------------------------\nTotal avg score: ", totalScore/trainingRounds));
-        System.out.println("\nTask 4 – Extended reinforced neural agent");
+        System.out.println("\n" + taskName);
         System.out.println("\nSETTINGS");
         System.out.println("Training rounds: " + trainingRounds);
         System.out.println("Trials: " + trials);
@@ -52,20 +47,9 @@ class Simulator4 {
         World world = new World();
         agent.registerNewWorld(world);
         world.placeAgentRandom();
-        if (stepByStep) {
-            System.out.println("Initial world:");
-            printGrid(world.getGrid());
-            System.out.println();
-        }
         int step = 1;
         while(!world.simulationEnd && step <= steps) {
-            if (stepByStep) {
-                sc.nextLine();
-                agent.step();
-                printGrid(world.getGrid());
-                System.out.println("Step " + step + " score: " + agent.getScore() + "\n");
-            }
-            else agent.step();
+            agent.step();
             step++;
         }
         return agent.getScore();
@@ -81,7 +65,7 @@ class Simulator4 {
     }
 
     public static void main(String[] args) {
-        Simulator4 simulator4 = new Simulator4();
-        simulator4.runSimulation();
+        Simulator4 simulator3 = new Simulator4();
+        simulator3.runSimulation();
     }
 }
