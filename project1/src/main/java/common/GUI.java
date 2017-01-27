@@ -15,6 +15,7 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 import javafx.util.Duration;
 import task1.*;
@@ -28,7 +29,7 @@ public class GUI extends Application{
     private Timeline timeline;
     private char[][][][][] gridStorage;
     private Button playButton;
-    private TextField renderIntervalField;
+    private TextField renderIntervalField, trainingRoundsField, trialsField, stepsField;
 
     public GUI(){
         iconPathArray = new HashMap<>(7);
@@ -73,7 +74,7 @@ public class GUI extends Application{
         playButton.setMinWidth(56);
         playButton.setPadding(new Insets(10, 10, 10, 10));
         playButton.setOnAction(event -> {
-            if (playButton.getText() == "Play"){
+            if (Objects.equals(playButton.getText(), "Play")){
                 playButton.setText("Pause");
                 newRenderInterval(renderInterval);
             }
@@ -93,6 +94,9 @@ public class GUI extends Application{
             applyRenderIntervalButton.setOnAction(event -> {
                 renderInterval = (Integer.parseInt(renderIntervalField.getText()));
                 newRenderInterval(renderInterval);
+                trainingRound = Integer.parseInt(trainingRoundsField.getText());
+                trial = Integer.parseInt(trialsField.getText());
+                step = Integer.parseInt(stepsField.getText());
             });
 
             // RENDER INTERVAL FIELD
@@ -100,9 +104,7 @@ public class GUI extends Application{
             renderIntervalField.setPrefWidth(50);
             renderIntervalField.setAlignment(Pos.BASELINE_RIGHT);
             renderIntervalField.textProperty().addListener((observable, oldValue, newValue) -> {
-                if (!newValue.matches("\\d*")) {
-                    renderIntervalField.setText(newValue.replaceAll("[^\\d]", ""));
-                }
+                if (!newValue.matches("\\d*")) renderIntervalField.setText(newValue.replaceAll("[^\\d]", ""));
             });
 
             HBox renderSettingsHbox = new HBox();
@@ -112,7 +114,7 @@ public class GUI extends Application{
 
         // ITERATION SETTINGS HBOX
             // TRAINING ROUNDS HBOX
-            TextField trainingRoundsField = new TextField(Integer.toString(trainingRound));
+            trainingRoundsField = new TextField(Integer.toString(trainingRound));
             trainingRoundsField.setAlignment(Pos.BASELINE_RIGHT);
             trainingRoundsField.setPrefWidth(50);
             HBox trainingRoundsHbox = new HBox(2);
@@ -120,17 +122,24 @@ public class GUI extends Application{
             trainingRoundsHbox.getChildren().addAll(new Label("Training round: "), trainingRoundsField);
 
             // TRIALS HBOX
-            TextField trialsField = new TextField(Integer.toString(trial));
+            trialsField = new TextField(Integer.toString(trial));
             trialsField.setAlignment(Pos.BASELINE_RIGHT);
             trialsField.setPrefWidth(50);
             HBox trialsHbox = new HBox(2);
             trialsHbox.setAlignment(Pos.BOTTOM_LEFT);
             trialsHbox.getChildren().addAll(new Label("Trial: "), trialsField);
 
+            // STEPS HBOX
+            stepsField = new TextField(Integer.toString(step));
+            stepsField.setAlignment(Pos.BASELINE_RIGHT);
+            stepsField.setPrefWidth(35);
+            HBox stepsHbox = new HBox(2);
+            stepsHbox.setAlignment(Pos.BOTTOM_LEFT);
+            stepsHbox.getChildren().addAll(new Label("Step: "), stepsField);
 
             HBox iterationSettingsHbox = new HBox(20);
             iterationSettingsHbox.setAlignment(Pos.BOTTOM_LEFT);
-            iterationSettingsHbox.getChildren().addAll(trainingRoundsHbox, trialsHbox);
+            iterationSettingsHbox.getChildren().addAll(trainingRoundsHbox, trialsHbox, stepsHbox);
 
 
         configRow.getChildren().add(renderSettingsHbox);
@@ -171,19 +180,21 @@ public class GUI extends Application{
             else if (trial < gridStorage[0].length) {
                 step = 1;
                 trial++;
+                trialsField.setText(Integer.toString(trial));
             }
             else if (trainingRound < gridStorage.length) {
                 step = 1;
                 trial = 1;
                 trainingRound++;
+                trainingRoundsField.setText(Integer.toString(trainingRound));
             }
             else timeline.stop();
-
+            stepsField.setText(Integer.toString(step));
         }
         )
         );
         timeline.setCycleCount(Timeline.INDEFINITE);
-        if (playButton.getText() == "Pause") timeline.play();
+        if (Objects.equals(playButton.getText(), "Pause")) timeline.play();
     }
 
     public static void main(String[] args) {
