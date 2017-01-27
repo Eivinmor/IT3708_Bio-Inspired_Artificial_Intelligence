@@ -63,11 +63,12 @@ public class GUI extends Application{
             mapPane.getRowConstraints().add(new RowConstraints(50));
         }
 
-        // CONFIG ROW
-        HBox configRow = new HBox(20);
-        configRow.setMinHeight(50);
-        configRow.setPadding(new Insets(10, 10, 10, 10));
-        configRow.setAlignment(Pos.CENTER_LEFT);
+    // BUTTON ROW
+
+        HBox buttonRow = new HBox(20);
+        buttonRow.setMinHeight(50);
+        buttonRow.setPadding(new Insets(10, 10, 10, 10));
+        buttonRow.setAlignment(Pos.BOTTOM_LEFT);
 
         // PLAY BUTTON
         playButton = new Button("Play");
@@ -83,71 +84,89 @@ public class GUI extends Application{
                 playButton.setText("Play");
             }
         });
-        configRow.getChildren().add(playButton);
+
+        // APPLY RENDER INTERVAL BUTTON
+        Button appySettingsButton = new Button("Apply settings");
+        appySettingsButton.setMinWidth(40);
+        appySettingsButton.setPadding(new Insets(4, 10, 4, 10));
+        appySettingsButton.setOnAction(event -> {
+            renderInterval = (Integer.parseInt(renderIntervalField.getText()));
+            newRenderInterval(renderInterval);
+            trainingRound = Integer.parseInt(trainingRoundsField.getText());
+            trial = Integer.parseInt(trialsField.getText());
+            step = Integer.parseInt(stepsField.getText());
+        });
+
+        buttonRow.getChildren().addAll(playButton, appySettingsButton);
+
+    // SETTINGS ROW
+
+        HBox settingsRow = new HBox(20);
+        settingsRow.setMinHeight(50);
+        settingsRow.setPadding(new Insets(10, 10, 10, 10));
+        settingsRow.setAlignment(Pos.CENTER_LEFT);
+
+        // RENDER INTERVAL HBOX
+        renderIntervalField = new TextField(Integer.toString(renderInterval));
+        renderIntervalField.setAlignment(Pos.BASELINE_RIGHT);
+        renderIntervalField.setPrefWidth(50);
+        renderIntervalField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) renderIntervalField.setText(newValue.replaceAll("[^\\d]", ""));
+        });
+        HBox renderIntervalHbox = new HBox(2);
+        renderIntervalHbox.setAlignment(Pos.CENTER_LEFT);
+        renderIntervalHbox.getChildren().addAll(new Label("Render interval: "), renderIntervalField);
 
 
-        // RENDER SETTINGS HBOX
-            // APPLY RENDER INTERVAL BUTTON
-            Button applyRenderIntervalButton = new Button("Apply");
-            applyRenderIntervalButton.setMinWidth(40);
-            applyRenderIntervalButton.setPadding(new Insets(4, 10, 4, 10));
-            applyRenderIntervalButton.setOnAction(event -> {
-                renderInterval = (Integer.parseInt(renderIntervalField.getText()));
-                newRenderInterval(renderInterval);
-                trainingRound = Integer.parseInt(trainingRoundsField.getText());
-                trial = Integer.parseInt(trialsField.getText());
-                step = Integer.parseInt(stepsField.getText());
-            });
+        // TRAINING ROUNDS HBOX
+        trainingRoundsField = new TextField(Integer.toString(trainingRound));
+        trainingRoundsField.setAlignment(Pos.BASELINE_RIGHT);
+        trainingRoundsField.setPrefWidth(50);
+        trainingRoundsField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) trainingRoundsField.setText(newValue.replaceAll("[^\\d]", ""));
+            else if (Integer.parseInt(trainingRoundsField.getText()) > gridStorage.length) {
+                trainingRoundsField.setText(Integer.toString(gridStorage.length));
+            }
+        });
+        HBox trainingRoundsHbox = new HBox(2);
+        trainingRoundsHbox.setAlignment(Pos.CENTER_LEFT);
+        trainingRoundsHbox.getChildren().addAll(new Label("Training round: "), trainingRoundsField);
 
-            // RENDER INTERVAL FIELD
-            renderIntervalField = new TextField(Integer.toString(renderInterval));
-            renderIntervalField.setPrefWidth(50);
-            renderIntervalField.setAlignment(Pos.BASELINE_RIGHT);
-            renderIntervalField.textProperty().addListener((observable, oldValue, newValue) -> {
-                if (!newValue.matches("\\d*")) renderIntervalField.setText(newValue.replaceAll("[^\\d]", ""));
-            });
+        // TRIALS HBOX
+        trialsField = new TextField(Integer.toString(trial));
+        trialsField.setAlignment(Pos.BASELINE_RIGHT);
+        trialsField.setPrefWidth(50);
+        trialsField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) trialsField.setText(newValue.replaceAll("[^\\d]", ""));
+            else if (Integer.parseInt(trialsField.getText()) > gridStorage[0].length) {
+                trialsField.setText(Integer.toString(gridStorage[0].length));
+            }
+        });
+        HBox trialsHbox = new HBox(2);
+        trialsHbox.setAlignment(Pos.CENTER_LEFT);
+        trialsHbox.getChildren().addAll(new Label("Trial: "), trialsField);
 
-            HBox renderSettingsHbox = new HBox();
-            renderSettingsHbox.setAlignment(Pos.BOTTOM_LEFT);
-            renderSettingsHbox.getChildren().addAll(applyRenderIntervalButton, renderIntervalField);
+        // STEPS HBOX
+        stepsField = new TextField(Integer.toString(step));
+        stepsField.setAlignment(Pos.BASELINE_RIGHT);
+        stepsField.setPrefWidth(35);
+        stepsField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) stepsField.setText(newValue.replaceAll("[^\\d]", ""));
+            else if (Integer.parseInt(stepsField.getText()) > gridStorage[0][0].length) {
+                stepsField.setText(Integer.toString(gridStorage[0][0].length));
+            }
+        });
+        HBox stepsHbox = new HBox(2);
+        stepsHbox.setAlignment(Pos.CENTER_LEFT);
+        stepsHbox.getChildren().addAll(new Label("Step: "), stepsField);
 
-
-        // ITERATION SETTINGS HBOX
-            // TRAINING ROUNDS HBOX
-            trainingRoundsField = new TextField(Integer.toString(trainingRound));
-            trainingRoundsField.setAlignment(Pos.BASELINE_RIGHT);
-            trainingRoundsField.setPrefWidth(50);
-            HBox trainingRoundsHbox = new HBox(2);
-            trainingRoundsHbox.setAlignment(Pos.BOTTOM_LEFT);
-            trainingRoundsHbox.getChildren().addAll(new Label("Training round: "), trainingRoundsField);
-
-            // TRIALS HBOX
-            trialsField = new TextField(Integer.toString(trial));
-            trialsField.setAlignment(Pos.BASELINE_RIGHT);
-            trialsField.setPrefWidth(50);
-            HBox trialsHbox = new HBox(2);
-            trialsHbox.setAlignment(Pos.BOTTOM_LEFT);
-            trialsHbox.getChildren().addAll(new Label("Trial: "), trialsField);
-
-            // STEPS HBOX
-            stepsField = new TextField(Integer.toString(step));
-            stepsField.setAlignment(Pos.BASELINE_RIGHT);
-            stepsField.setPrefWidth(35);
-            HBox stepsHbox = new HBox(2);
-            stepsHbox.setAlignment(Pos.BOTTOM_LEFT);
-            stepsHbox.getChildren().addAll(new Label("Step: "), stepsField);
-
-            HBox iterationSettingsHbox = new HBox(20);
-            iterationSettingsHbox.setAlignment(Pos.BOTTOM_LEFT);
-            iterationSettingsHbox.getChildren().addAll(trainingRoundsHbox, trialsHbox, stepsHbox);
+        settingsRow.getChildren().addAll(renderIntervalHbox, trainingRoundsHbox, trialsHbox, stepsHbox);
+        settingsRow.setAlignment(Pos.BOTTOM_LEFT);
 
 
-        configRow.getChildren().add(renderSettingsHbox);
-        configRow.getChildren().add(iterationSettingsHbox);
-
-
-        rootPane.add(configRow, 0, 0);
-        rootPane.add(mapPane, 0, 1);
+        rootPane.add(buttonRow, 0, 0);
+        rootPane.add(settingsRow, 0, 1);
+        rootPane.add(mapPane, 0, 2);
         Scene scene = new Scene(rootPane);
         primaryStage.setTitle("Flatland world");
         primaryStage.setScene(scene);
