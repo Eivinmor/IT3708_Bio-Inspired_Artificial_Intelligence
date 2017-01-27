@@ -1,5 +1,6 @@
 package task1;
 
+import java.util.Arrays;
 import java.util.Random;
 
 
@@ -55,7 +56,7 @@ public class World {
         agentY = random.nextInt(n);
         agentX = random.nextInt(n);
         grid[agentY][agentX] = agentDirectionSymbols[agentCardinalDirection];
-        initialGrid = grid.clone();
+        initialGrid = gridCopy(grid);
     }
 
     public int moveAgent(int moveDirection){
@@ -88,7 +89,15 @@ public class World {
         return newCardinalDirection;
     }
 
-    public char[][] getGrid(){return grid;}
+    public char[][] getGrid(){return gridCopy(grid);}
 
-    public char[][] getInitialGrid(){return initialGrid;}
+    public char[][] getInitialGrid(){return gridCopy(initialGrid);}
+
+    private char[][] gridCopy(char[][] grid){
+        char[][] gridCopy = new char[grid.length][grid[0].length];
+        for (int i = 0; i < grid.length; i++) {
+            gridCopy[i] = grid[i].clone();
+        }
+        return gridCopy;
+    }
 }

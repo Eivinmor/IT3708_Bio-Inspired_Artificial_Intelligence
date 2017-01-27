@@ -1,27 +1,33 @@
 package task1;
 
+import javafx.application.Application;
+import common.*;
+
+import java.util.ArrayList;
 import java.util.Scanner;
 
-class Simulator1 {
+public class Simulator1 {
 
     private Scanner sc;
     private int trials, steps;
     private boolean stepByStep;
-    private common.Plotter plotter;
+    private Plotter plotter;
+    private char[][][][] gridStorage;
 
-    private Simulator1(){
+    public Simulator1(){
         sc = new Scanner(System.in);
         trials = 1000;
         steps = 50;
         stepByStep = false;
-        plotter = new common.Plotter("Task 1 – Baseline agent", "Trial", "Score", trials);
+        plotter = new Plotter("Task 1 – Baseline agent", "Trial", "Score", trials);
+        gridStorage = new char[trials][steps][10][10];
     }
 
-    private void runSimulation(){
+    public char[][][][] runSimulation(){
         BaselineAgent agent = new BaselineAgent();
         int totalScore = 0;
         for (int i = 1; i <= trials; i++) {
-            int trialScore = runTrial(agent);
+            int trialScore = runTrial(agent, i);
             System.out.println(String.format("%s%5d%s%4d", "Trial", i, "  score:", trialScore));
             totalScore += trialScore;
             plotter.addData(i, trialScore);
@@ -31,9 +37,10 @@ class Simulator1 {
         System.out.println("\nSETTINGS");
         System.out.println("Trials: " + trials);
         plotter.plot();
+        return gridStorage;
     }
 
-    private int runTrial(BaselineAgent agent){
+    private int runTrial(BaselineAgent agent, int trialNumber){
         World world = new World();
         agent.registerNewWorld(world);
         world.placeAgentRandom();
@@ -51,6 +58,7 @@ class Simulator1 {
                 System.out.println("Step " + step + " score: " + agent.getScore() + "\n");
             }
             else agent.step();
+            gridStorage[trialNumber-1][step-1] = world.getGrid();
             step++;
         }
         return agent.getScore();
@@ -69,4 +77,6 @@ class Simulator1 {
         Simulator1 simulator1 = new Simulator1();
         simulator1.runSimulation();
     }
+
+
 }
