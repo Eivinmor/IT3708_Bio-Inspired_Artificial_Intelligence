@@ -2,15 +2,13 @@ package task1;
 
 import common.Plotter;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Simulator1 {
 
     private Scanner sc;
-    private int trials, steps;
-    private boolean stepByStep;
+    private int trials, steps, score;
     private Plotter plotter;
     private ArrayList<ArrayList<ArrayList<ArrayList<ArrayList<Character>>>>> gridStorage;
 
@@ -19,7 +17,6 @@ public class Simulator1 {
         sc = new Scanner(System.in);
         trials = 1000;
         steps = 50;
-        stepByStep = false;
         plotter = new Plotter("Task 1 – Baseline agent", "Trial", "Score", trials);
         gridStorage = new ArrayList<>();
     }
@@ -29,12 +26,13 @@ public class Simulator1 {
         gridStorage.add(new ArrayList<>());
         int totalScore = 0;
         for (int i = 1; i <= trials; i++) {
-            int trialScore = runTrial(agent, i);
-            System.out.println(String.format("%s%5d%s%4d", "Trial", i, "  score:", trialScore));
-            totalScore += trialScore;
-            plotter.addData(i, trialScore);
+            gridStorage.get(0).add(runTrial(agent));
+            System.out.println(String.format("%s%5d%s%4d", "Trial", i, "  score:", score));
+            plotter.addData(i, score);
+            totalScore += score;
         }
-        System.out.println(String.format("%s%.1f", "--------------------------\nTotal avg score: ", (double)totalScore/trials));
+        System.out.println(String.format(
+                "%s%.1f", "--------------------------\nTotal avg score: ", (double)totalScore/trials));
         System.out.println("\nTask 1 – Baseline agent");
         System.out.println("\nSETTINGS");
         System.out.println("Trials: " + trials);
@@ -42,30 +40,21 @@ public class Simulator1 {
         return gridStorage;
     }
 
-    private int runTrial(BaselineAgent agent, int trial){
+    private ArrayList<ArrayList<ArrayList<Character>>> runTrial(BaselineAgent agent){
+        ArrayList<ArrayList<ArrayList<Character>>> trialGridStorage = new ArrayList<>();
         World world = new World();
         agent.registerNewWorld(world);
         world.placeAgentRandom();
-        if (stepByStep) {
-            System.out.println("Initial world:");
-            printGrid(world.getGrid());
-            System.out.println();
-        }
-        gridStorage.get(0).add(new ArrayList<>());
+
         int step = 1;
+        trialGridStorage.add(world.getGridArrayList());
         while(!world.simulationEnd && step <= steps) {
-            gridStorage.get(0).get(trial-1).add(world.getGridArrayList());
-//            gridStorage[0][trial-1][step-1] = world.getGrid();
-            if (stepByStep) {
-                sc.nextLine();
-                agent.step();
-                printGrid(world.getGrid());
-                System.out.println("Step " + step + " score: " + agent.getScore() + "\n");
-            }
-            else agent.step();
+            agent.step();
+            trialGridStorage.add(world.getGridArrayList());
             step++;
         }
-        return agent.getScore();
+        score = agent.getScore();
+        return trialGridStorage;
     }
 
     private void printGrid(char[][] grid){

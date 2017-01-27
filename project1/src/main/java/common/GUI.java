@@ -14,13 +14,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
 import javafx.util.Duration;
-import org.jfree.util.ArrayUtilities;
 import task1.*;
 import task2.*;
 import task3.*;
@@ -51,12 +49,12 @@ public class GUI extends Application{
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Simulator1 sim = new Simulator1();
+        Simulator2 sim = new Simulator2();
         gridStorage = sim.runSimulation();
         renderInterval = 300;
         trainingRound = 1;
         trial = 1;
-        step = 1;
+        step = 0;
 
         GridPane rootPane = new GridPane();
 
@@ -101,6 +99,7 @@ public class GUI extends Application{
             trainingRound = Integer.parseInt(trainingRoundsField.getText());
             trial = Integer.parseInt(trialsField.getText());
             step = Integer.parseInt(stepsField.getText());
+            drawGrid(gridStorage.get(trainingRound-1).get(trial-1).get(step));
         });
 
         buttonRow.getChildren().addAll(playButton, appySettingsButton);
@@ -144,8 +143,8 @@ public class GUI extends Application{
         trialsField.setPrefWidth(50);
         trialsField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) trialsField.setText(newValue.replaceAll("[^\\d]", ""));
-            else if (Integer.parseInt(trialsField.getText()) > gridStorage.get(0).size()) {
-                trialsField.setText(Integer.toString(gridStorage.get(0).size()));
+            else if (Integer.parseInt(trialsField.getText()) > gridStorage.get(trainingRound-1).size()) {
+                trialsField.setText(Integer.toString(gridStorage.get(trainingRound-1).size()));
             }
         });
         HBox trialsHbox = new HBox(2);
@@ -158,8 +157,8 @@ public class GUI extends Application{
         stepsField.setPrefWidth(35);
         stepsField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) stepsField.setText(newValue.replaceAll("[^\\d]", ""));
-            else if (Integer.parseInt(stepsField.getText()) > gridStorage.get(0).get(0).size()) {
-                stepsField.setText(Integer.toString(gridStorage.get(0).get(0).size()));
+            else if (Integer.parseInt(stepsField.getText()) > gridStorage.get(trainingRound-1).get(trial-1).size()-1) {
+                stepsField.setText(Integer.toString(gridStorage.get(trainingRound-1).get(trial-1).size()-1));
             }
         });
         HBox stepsHbox = new HBox(2);
@@ -182,20 +181,6 @@ public class GUI extends Application{
         
     }
 
-
-
-//    private void drawGrid(char[][] charGrid){
-//        mapPane.getChildren().clear();
-//        mapPane.setGridLinesVisible(true);
-//        for (int i = 0; i < charGrid.length; i++) {
-//            for (int j = 0; j < charGrid[i].length; j++) {
-//                Image image = new Image(iconPathArray.get(charGrid[i][j]), 48, 48, false, false);
-//                ImageView imageView = new ImageView(image);
-//                mapPane.add(imageView, j, i);
-//            }
-//        }
-//    }
-
     private void drawGrid(ArrayList<ArrayList<Character>> charGrid){
         mapPane.getChildren().clear();
         mapPane.setGridLinesVisible(true);
@@ -212,22 +197,21 @@ public class GUI extends Application{
         timeline.stop();
         timeline.getKeyFrames().setAll(
         new KeyFrame(Duration.millis(renderIntervalMillis), event -> {
-            drawGrid(gridStorage.get(trainingRound-1).get(trial-1).get(step-1));
-//            drawGrid(gridStorage[trainingRound-1][trial-1][step-1]);
-            if (step < gridStorage.get(0).get(0).size()) step++;
-            else if (trial < gridStorage.get(0).size()) {
-                step = 1;
+            if (step < gridStorage.get(trainingRound-1).get(trial-1).size()-1) step++;
+            else if (trial < gridStorage.get(trainingRound-1).size()) {
+                step = 0;
                 trial++;
                 trialsField.setText(Integer.toString(trial));
             }
             else if (trainingRound < gridStorage.size()) {
-                step = 1;
+                step = 0;
                 trial = 1;
                 trainingRound++;
                 trainingRoundsField.setText(Integer.toString(trainingRound));
             }
             else timeline.stop();
             stepsField.setText(Integer.toString(step));
+            drawGrid(gridStorage.get(trainingRound-1).get(trial-1).get(step));
         }
         )
         );
