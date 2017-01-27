@@ -3,14 +3,19 @@ package common;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.HashMap;
@@ -24,10 +29,12 @@ public class GUI extends Application{
     private GridPane mapPane;
     private HBox configRow;
     private HashMap<Character, String> iconPathArray;
-    private int trial, step;
+    private int trial, step, renderInterval;
     private KeyFrame keyframe;
     private Timeline timeline;
     private char[][][][] gridStorage;
+    private Button playButton, applyRenderIntervalButton;
+    private TextField renderIntervalField;
 
     public GUI(){
         iconPathArray = new HashMap<>(7);
@@ -45,6 +52,7 @@ public class GUI extends Application{
     public void start(Stage primaryStage) throws Exception {
         Simulator1 sim = new Simulator1();
         gridStorage = sim.runSimulation();
+        renderInterval = 1000;
 
         GridPane rootPane = new GridPane();
 
@@ -57,9 +65,46 @@ public class GUI extends Application{
             mapPane.getRowConstraints().add(new RowConstraints(50));
         }
 
-        configRow = new HBox();
+        configRow = new HBox(20);
         configRow.setMinHeight(50);
         configRow.setPadding(new Insets(10, 10, 10, 10));
+
+
+        // PLAY BUTTON
+        playButton = new Button("Play");
+        playButton.setMinWidth(50);
+        playButton.setOnAction(event -> {
+            if (playButton.getText() == "Play"){
+                newRenderInterval(renderInterval);
+                playButton.setText("Pause");
+            }
+            else {
+                timeline.stop();
+                playButton.setText("Play");
+            }
+        });
+        configRow.getChildren().add(playButton);
+
+
+        // APPLY RENDER INTERVAL BUTTON
+        applyRenderIntervalButton = new Button("Apply");
+        applyRenderIntervalButton.setMinWidth(40);
+        applyRenderIntervalButton.setOnAction(event -> {
+            renderInterval = (Integer.parseInt(renderIntervalField.getText()));
+            newRenderInterval(renderInterval);
+        });
+        configRow.getChildren().add(applyRenderIntervalButton);
+
+        // RENDER INTERVAL FIELD
+        renderIntervalField = new TextField(Integer.toString(renderInterval));
+        renderIntervalField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                renderIntervalField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
+
+
+        configRow.getChildren().add(renderIntervalField);
 
 
 
@@ -72,8 +117,7 @@ public class GUI extends Application{
 
         trial = 0;
         step = 0;
-
-        newRenderInterval(300);
+        
     }
 
 
