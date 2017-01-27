@@ -7,6 +7,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -110,18 +111,30 @@ public class GUI extends Application{
 
 
         // ITERATION SETTINGS HBOX
-            // TRIALS FIELD
+            // TRAINING ROUNDS HBOX
             TextField trainingRoundsField = new TextField(Integer.toString(trainingRound));
+            trainingRoundsField.setAlignment(Pos.BASELINE_RIGHT);
+            trainingRoundsField.setPrefWidth(50);
+            HBox trainingRoundsHbox = new HBox(2);
+            trainingRoundsHbox.setAlignment(Pos.BOTTOM_LEFT);
+            trainingRoundsHbox.getChildren().addAll(new Label("Training round: "), trainingRoundsField);
 
-            // TRIALS FIELD
+            // TRIALS HBOX
             TextField trialsField = new TextField(Integer.toString(trial));
+            trialsField.setAlignment(Pos.BASELINE_RIGHT);
+            trialsField.setPrefWidth(50);
+            HBox trialsHbox = new HBox(2);
+            trialsHbox.setAlignment(Pos.BOTTOM_LEFT);
+            trialsHbox.getChildren().addAll(new Label("Trial: "), trialsField);
 
 
-            HBox iterationSettingsHbox = new HBox();
+            HBox iterationSettingsHbox = new HBox(20);
             iterationSettingsHbox.setAlignment(Pos.BOTTOM_LEFT);
-            iterationSettingsHbox.getChildren().addAll(trainingRoundsField, trialsField);
+            iterationSettingsHbox.getChildren().addAll(trainingRoundsHbox, trialsHbox);
+
 
         configRow.getChildren().add(renderSettingsHbox);
+        configRow.getChildren().add(iterationSettingsHbox);
 
 
         rootPane.add(configRow, 0, 0);
@@ -153,14 +166,22 @@ public class GUI extends Application{
         timeline.stop();
         timeline.getKeyFrames().setAll(
         new KeyFrame(Duration.millis(renderIntervalMillis), event -> {
-            drawGrid(gridStorage[trainingRound][trial][step]);
-            if (step < gridStorage[0].length) step++;
-            else if (trial >= gridStorage.length) timeline.stop();
-            else {
+            drawGrid(gridStorage[trainingRound-1][trial-1][step-1]);
+            if (step < gridStorage[0][0].length) step++;
+            else if (trial < gridStorage[0].length) {
                 step = 1;
                 trial++;
             }
-        }));
+            else if (trainingRound < gridStorage.length) {
+                step = 1;
+                trial = 1;
+                trainingRound++;
+            }
+            else timeline.stop();
+
+        }
+        )
+        );
         timeline.setCycleCount(Timeline.INDEFINITE);
         if (playButton.getText() == "Pause") timeline.play();
     }
