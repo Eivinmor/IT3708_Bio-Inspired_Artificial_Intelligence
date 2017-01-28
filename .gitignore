@@ -62,8 +62,6 @@ buildNumber.properties
 .mvn/timing.properties
 
 
-project3/weights.plot
-project3/weights_temp.plot
-project3/cities.plot
+project1/src/java/common/gridStorageFile.txt
 
 
