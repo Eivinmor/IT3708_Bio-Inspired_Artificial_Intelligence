@@ -15,6 +15,7 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
@@ -34,28 +35,29 @@ public class GUI extends Application{
     private File gridStorageFile;
     private ArrayList<ArrayList<Integer>> roundIndexes;
 
-    public GUI(){
-        iconPathArray = new HashMap<>(8);
-        iconPathArray.put(' ', "File:C:\\Users\\Eivind\\IdeaProjects\\IT3708_Bio-Inspired_Artificial_Intelligence\\project1\\src\\main\\java\\common\\icons\\blank.png");
-        iconPathArray.put('F', "File:C:\\Users\\Eivind\\IdeaProjects\\IT3708_Bio-Inspired_Artificial_Intelligence\\project1\\src\\main\\java\\common\\icons\\food.png");
-        iconPathArray.put('P', "File:C:\\Users\\Eivind\\IdeaProjects\\IT3708_Bio-Inspired_Artificial_Intelligence\\project1\\src\\main\\java\\common\\icons\\poison.png");
-        iconPathArray.put('X', "File:C:\\Users\\Eivind\\IdeaProjects\\IT3708_Bio-Inspired_Artificial_Intelligence\\project1\\src\\main\\java\\common\\icons\\bang.png");
-        iconPathArray.put('⇑', "File:C:\\Users\\Eivind\\IdeaProjects\\IT3708_Bio-Inspired_Artificial_Intelligence\\project1\\src\\main\\java\\common\\icons\\agentNorth.png");
-        iconPathArray.put('⇒', "File:C:\\Users\\Eivind\\IdeaProjects\\IT3708_Bio-Inspired_Artificial_Intelligence\\project1\\src\\main\\java\\common\\icons\\agentEast.png");
-        iconPathArray.put('⇓', "File:C:\\Users\\Eivind\\IdeaProjects\\IT3708_Bio-Inspired_Artificial_Intelligence\\project1\\src\\main\\java\\common\\icons\\agentSouth.png");
-        iconPathArray.put('⇐', "File:C:\\Users\\Eivind\\IdeaProjects\\IT3708_Bio-Inspired_Artificial_Intelligence\\project1\\src\\main\\java\\common\\icons\\agentWest.png");
-
-    }
-
     @Override
     public void start(Stage primaryStage) throws Exception {
+
+        String filePathRoot = System.getProperty("user.dir");
+
+        iconPathArray = new HashMap<>(8);
+        iconPathArray.put(' ', "File:" + filePathRoot + "\\src\\main\\java\\common\\icons\\blank.png");
+        iconPathArray.put('F', "File:" + filePathRoot + "\\src\\main\\java\\common\\icons\\food.png");
+        iconPathArray.put('P', "File:" + filePathRoot + "\\src\\main\\java\\common\\icons\\poison.png");
+        iconPathArray.put('X', "File:" + filePathRoot + "\\src\\main\\java\\common\\icons\\bang.png");
+        iconPathArray.put('⇑', "File:" + filePathRoot + "\\src\\main\\java\\common\\icons\\agentNorth.png");
+        iconPathArray.put('⇒', "File:" + filePathRoot + "\\src\\main\\java\\common\\icons\\agentEast.png");
+        iconPathArray.put('⇓', "File:" + filePathRoot + "\\src\\main\\java\\common\\icons\\agentSouth.png");
+        iconPathArray.put('⇐', "File:" + filePathRoot + "\\src\\main\\java\\common\\icons\\agentWest.png");
+
         renderInterval = 300;
         trainingRound = 1;
         trial = 1;
         step = 0;
 
         timeline = new Timeline();
-        gridStorageFile = new File("C:\\Users\\Eivind\\IdeaProjects\\IT3708_Bio-Inspired_Artificial_Intelligence\\project1\\src\\main\\java\\common\\gridStorageFile.txt");
+        gridStorageFile = new File(filePathRoot + "\\src\\main\\java\\common\\gridStorageFile.txt");
+
         roundIndexes = indexRoundsInFile();
         roundGridStorage = readRoundGridData(trainingRound-1);
 
