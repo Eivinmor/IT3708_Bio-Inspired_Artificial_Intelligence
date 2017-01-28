@@ -1,7 +1,9 @@
 package task2;
 
+import javafx.application.Application;
 import task1.World;
 import common.Plotter;
+import common.GUI;
 import java.io.*;
 
 class Simulator2 {
@@ -90,5 +92,7 @@ class Simulator2 {
     public static void main(String[] args) throws IOException {
         Simulator2 simulator2 = new Simulator2();
         simulator2.runSimulation();
+        GUI gui = new GUI();
+        Application.launch(gui.getClass());
     }
 }
