@@ -93,7 +93,7 @@ class ReinforcedNeuralAgent {
 
     int getScore(){return score;}
 
-   private void generateStartWeights(double low, double high){
+    private void generateStartWeights(double low, double high){
         for (int i = 0; i < weights.length; i++) {
             for (int j = 0; j < weights[i].length; j++) {
                 for (int k = 0; k < weights[i][j].length; k++) {
