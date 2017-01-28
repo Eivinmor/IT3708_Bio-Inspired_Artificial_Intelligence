@@ -29,11 +29,12 @@ public class GUI extends Application{
 
     private GridPane mapPane;
     private HashMap<Character, String> iconPathArray;
-    private int trainingRound, trial, step, renderInterval;
+    private int trainingRound, trial, step, renderInterval, agentX, agentY;
     private Timeline timeline;
-    private ArrayList<ArrayList<ArrayList<ArrayList<ArrayList<Character>>>>> gridStorage;
     private Button playButton;
     private TextField renderIntervalField, trainingRoundsField, trialsField, stepsField;
+    private char[][][][] initialGrids;
+    private ArrayList<ArrayList<ArrayList<ArrayList<Integer>>>> positionStorage;
 
     public GUI(){
         iconPathArray = new HashMap<>(8);
@@ -52,8 +53,8 @@ public class GUI extends Application{
     public void start(Stage primaryStage) throws Exception {
         Simulator2 sim = new Simulator2();
         sim.runSimulation();
-        char[][][][][] gridStorageArray = sim.getGridStorage();
-        gridStorage = arrayToArrayList(gridStorageArray);
+        initialGrids = sim.getInitialGrids();
+        positionStorage = sim.getPositionStorage();
         renderInterval = 300;
         trainingRound = 1;
         trial = 1;
@@ -105,7 +106,7 @@ public class GUI extends Application{
             trial = Integer.parseInt(trialsField.getText());
             step = 0;
             stepsField.setText(Integer.toString(step));
-            drawGrid(gridStorage.get(trainingRound-1).get(trial-1).get(step));
+            drawGrid(trainingRound-1, trial-1);
         });
 
         buttonRow.getChildren().addAll(playButton, appySettingsButton);
@@ -137,8 +138,8 @@ public class GUI extends Application{
         trainingRoundsField.setPrefWidth(50);
         trainingRoundsField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) trainingRoundsField.setText(newValue.replaceAll("[^\\d]", ""));
-            else if (Integer.parseInt(trainingRoundsField.getText()) > gridStorage.size()) {
-                trainingRoundsField.setText(Integer.toString(gridStorage.size()));
+            else if (Integer.parseInt(trainingRoundsField.getText()) > positionStorage.size()) {
+                trainingRoundsField.setText(Integer.toString(positionStorage.size()));
             }
         });
         HBox trainingRoundsHbox = new HBox(2);
@@ -151,8 +152,8 @@ public class GUI extends Application{
         trialsField.setPrefWidth(50);
         trialsField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) trialsField.setText(newValue.replaceAll("[^\\d]", ""));
-            else if (Integer.parseInt(trialsField.getText()) > gridStorage.get(trainingRound-1).size()) {
-                trialsField.setText(Integer.toString(gridStorage.get(trainingRound-1).size()));
+            else if (Integer.parseInt(trialsField.getText()) > positionStorage.get(trainingRound-1).size()) {
+                trialsField.setText(Integer.toString(positionStorage.get(trainingRound-1).size()));
             }
         });
         HBox trialsHbox = new HBox(2);
@@ -165,8 +166,8 @@ public class GUI extends Application{
         stepsField.setPrefWidth(35);
         stepsField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) stepsField.setText(newValue.replaceAll("[^\\d]", ""));
-            else if (Integer.parseInt(stepsField.getText()) > gridStorage.get(trainingRound-1).get(trial-1).size()-1) {
-                stepsField.setText(Integer.toString(gridStorage.get(trainingRound-1).get(trial-1).size()-1));
+            else if (Integer.parseInt(stepsField.getText()) > positionStorage.get(trainingRound-1).get(trial-1).size()-1) {
+                stepsField.setText(Integer.toString(positionStorage.get(trainingRound-1).get(trial-1).size()));
             }
         });
         HBox stepsHbox = new HBox(2);
@@ -184,73 +185,77 @@ public class GUI extends Application{
         primaryStage.setTitle("Flatland world");
         primaryStage.setScene(scene);
         primaryStage.show();
-
-        drawGrid(gridStorage.get(0).get(0).get(0));
+        drawGrid(0, 0);
 
     }
 
-    private void drawGrid(ArrayList<ArrayList<Character>> charGrid){
+    private void drawGrid(int trainingRound, int trial){
         mapPane.getChildren().clear();
-        mapPane.setGridLinesVisible(true);
-        for (int i = 0; i < charGrid.size(); i++) {
-            for (int j = 0; j < charGrid.get(i).size(); j++) {
-                Image image = new Image(iconPathArray.get(charGrid.get(i).get(j)), 48, 48, false, false);
+        char[][] specificGrid = initialGrids[trainingRound][trial];
+        for (int i = 0; i < specificGrid.length; i++) {
+            for (int j = 0; j < specificGrid[i].length; j++) {
+                char icon = specificGrid[i][j];
+                if (icon == '⇑' || icon ==  '⇒' || icon ==  '⇓' || icon ==  '⇐' ){
+                    agentX = i;
+                    agentY = j;
+                }
+                Image image = new Image(iconPathArray.get(specificGrid[i][j]), 48, 48, false, false);
                 ImageView imageView = new ImageView(image);
                 mapPane.add(imageView, j, i);
             }
         }
     }
 
+    private void updateGrid(int newX, int newY){
+        char dir = 'X';
+        if ((newY >= 10 || newY < 0) && (newX >= 10 || newX < 0) ) {
+            newX = agentX;
+            newY = agentY;
+        }
+        else if (newY > agentY) dir = '⇒';
+        else if (newX > agentX) dir = '⇓';
+        else if (newY < agentY) dir = '⇐';
+        else if (newX < agentX) dir = '⇑';
+
+        Image oldImage = new Image(iconPathArray.get(' '), 48, 48, false, false);
+        ImageView oldImageView = new ImageView(oldImage);
+
+        Image agentImage = new Image(iconPathArray.get(dir), 48, 48, false, false);
+        ImageView agentImageView = new ImageView(agentImage);
+
+        mapPane.add(oldImageView, agentY, agentX);
+        mapPane.add(agentImageView, newY, newX);
+        agentX = newX;
+        agentY = newY;
+    }
+
     private void newRenderInterval(int renderIntervalMillis){
         timeline.stop();
         timeline.getKeyFrames().setAll(
                 new KeyFrame(Duration.millis(renderIntervalMillis), event -> {
-                    if (step < gridStorage.get(trainingRound-1).get(trial-1).size()-1) step++;
-                    else if (trial < gridStorage.get(trainingRound-1).size()) {
+                    if (step < positionStorage.get(trainingRound-1).get(trial-1).size()-1) step++;
+                    else if (trial < positionStorage.get(trainingRound-1).size()) {
                         step = 0;
                         trial++;
                         trialsField.setText(Integer.toString(trial));
+                        drawGrid(trainingRound-1, trial-1);
                     }
-                    else if (trainingRound < gridStorage.size()) {
+                    else if (trainingRound < positionStorage.size()) {
                         step = 0;
                         trial = 1;
                         trainingRound++;
                         trainingRoundsField.setText(Integer.toString(trainingRound));
+                        drawGrid(trainingRound-1, trial-1);
                     }
                     else timeline.stop();
                     stepsField.setText(Integer.toString(step));
-                    drawGrid(gridStorage.get(trainingRound-1).get(trial-1).get(step));
+                    ArrayList<Integer> coords = positionStorage.get(trainingRound-1).get(trial-1).get(step);
+                    updateGrid(coords.get(1), coords.get(0));
                 }
                 )
         );
         timeline.setCycleCount(Timeline.INDEFINITE);
         if (Objects.equals(playButton.getText(), "Pause")) timeline.play();
-    }
-
-    private ArrayList<ArrayList<ArrayList<ArrayList<ArrayList<Character>>>>> arrayToArrayList(char[][][][][] gridStorage) {
-        ArrayList<ArrayList<ArrayList<ArrayList<ArrayList<Character>>>>> gridStorageArrayList = new ArrayList<>();
-        for (int i = 0; i < gridStorage.length; i++) {  // training round
-            gridStorageArrayList.add(new ArrayList<>());
-
-            for (int j = 0; j < gridStorage[i].length; j++) {   // trial
-                gridStorageArrayList.get(i).add(new ArrayList<>());
-
-                for (int k = 0; k < gridStorage[i][j].length; k++) {    // step
-                    char cellCharacter = gridStorage[i][j][k][0][0];
-                    if ((int)cellCharacter==0) break;
-                    gridStorageArrayList.get(i).get(j).add(new ArrayList<>());
-
-                    for (int l = 0; l < gridStorage[i][j][k].length; l++) {
-                        gridStorageArrayList.get(i).get(j).get(k).add(new ArrayList<>());
-
-                        for (int m = 0; m < gridStorage[i][j][k][l].length; m++) {
-                            gridStorageArrayList.get(i).get(j).get(k).get(l).add(gridStorage[i][j][k][l][m]);
-                        }
-                    }
-                }
-            }
-        }
-        return gridStorageArrayList;
     }
 
     public static void main(String[] args) {

@@ -1,5 +1,6 @@
 package task1;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 
@@ -97,6 +98,13 @@ public class World {
             gridCopy[i] = grid[i].clone();
         }
         return gridCopy;
+    }
+
+    public ArrayList<Integer> getAgentPosition(){
+        return new ArrayList<Integer>(){{
+            add(agentX);
+            add(agentY);
+        }};
     }
 
     public char[][] getInitialGrid(){return initialGrid;}
