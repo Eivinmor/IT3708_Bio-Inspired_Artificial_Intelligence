@@ -20,7 +20,7 @@ class Simulator2 {
         trials = 100;
         steps = 50;
         plotter = new Plotter(taskName, "Training round", "Average score", trainingRounds);
-        gridStorageFile = new File("C:\\Users\\Eivind\\IdeaProjects\\IT3708_Bio-Inspired_Artificial_Intelligence\\project1\\src\\main\\java\\common\\gridStorageFile.txt");
+        gridStorageFile = new File(System.getProperty("user.dir") + "\\src\\main\\java\\common\\gridStorageFile.txt");
         writer = new BufferedWriter(new PrintWriter(gridStorageFile));
     }
 
