@@ -71,7 +71,7 @@ public class GUI extends Application{
             mapPane.getRowConstraints().add(new RowConstraints(50));
         }
 
-        // BUTTON ROW
+        // --- BUTTON ROW ---
 
         HBox buttonRow = new HBox(20);
         buttonRow.setMinHeight(50);
@@ -122,7 +122,7 @@ public class GUI extends Application{
 
 
 
-        // SETTINGS ROW
+        // --- SETTINGS ROW ---
 
         HBox settingsRow = new HBox(20);
         settingsRow.setMinHeight(50);
