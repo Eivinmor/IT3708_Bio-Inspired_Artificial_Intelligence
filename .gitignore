@@ -62,6 +62,6 @@ buildNumber.properties
 .mvn/timing.properties
 
 
-project1/src/java/common/gridStorageFile.txt
+project1/src/main/java/common/gridStorageFile.txt
 
 
