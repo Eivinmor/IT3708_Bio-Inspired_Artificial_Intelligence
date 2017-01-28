@@ -15,7 +15,6 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import java.io.*;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
@@ -106,12 +105,15 @@ public class GUI extends Application{
             newRenderInterval(renderInterval);
             trainingRound = Integer.parseInt(trainingRoundsField.getText());
             trial = Integer.parseInt(trialsField.getText());
-            step = 0;
-            stepsField.setText(Integer.toString(step));
             try {
                 roundGridStorage = readRoundGridData(trainingRound-1);
             } catch (IOException e) {
                 e.printStackTrace();
+            }
+            step = Integer.parseInt(stepsField.getText());
+            if (step >= roundGridStorage.get(trial-1).size()) { // Checks that steps is not higher than number of steps for the chosen trial
+                step = roundGridStorage.get(trial-1).size() - 1;
+                stepsField.setText(Integer.toString(step));
             }
             drawGrid(roundGridStorage.get(trial-1).get(step));
 
@@ -146,7 +148,7 @@ public class GUI extends Application{
         trainingRoundsField.setPrefWidth(50);
         trainingRoundsField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) trainingRoundsField.setText(newValue.replaceAll("[^\\d]", ""));
-            else if (Integer.parseInt(trainingRoundsField.getText()) > roundIndexes.size()) {
+            else if (trainingRoundsField.getText().length() > 0 && Integer.parseInt(trainingRoundsField.getText()) > roundIndexes.size()) {
                 trainingRoundsField.setText(Integer.toString(roundIndexes.size()));
             }
         });
@@ -160,7 +162,7 @@ public class GUI extends Application{
         trialsField.setPrefWidth(50);
         trialsField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) trialsField.setText(newValue.replaceAll("[^\\d]", ""));
-            else if (Integer.parseInt(trialsField.getText()) > roundGridStorage.size()) {
+            else if (trialsField.getText().length() > 0 && Integer.parseInt(trialsField.getText()) > roundGridStorage.size()) {
                 trialsField.setText(Integer.toString(roundGridStorage.size()));
             }
         });
@@ -174,7 +176,7 @@ public class GUI extends Application{
         stepsField.setPrefWidth(35);
         stepsField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) stepsField.setText(newValue.replaceAll("[^\\d]", ""));
-            else if (Integer.parseInt(stepsField.getText()) > roundGridStorage.get(trial-1).size()-1) {
+            else if (stepsField.getText().length() > 0 && Integer.parseInt(stepsField.getText()) > roundGridStorage.get(trial-1).size()-1) {
                 stepsField.setText(Integer.toString(roundGridStorage.get(trial-1).size()-1));
             }
         });

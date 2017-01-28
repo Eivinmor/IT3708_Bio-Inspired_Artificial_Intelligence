@@ -8,11 +8,10 @@ import java.io.*;
 
 class Simulator2 {
 
-    private int trials, trainingRounds, steps;
+    private int trainingRounds, trials, steps;
     private Plotter plotter;
     private String taskName;
     private BufferedWriter writer;
-    private File gridStorageFile;
 
     private Simulator2() throws FileNotFoundException {
         taskName = "Task 2 – Supervised neural agent";
@@ -20,7 +19,7 @@ class Simulator2 {
         trials = 100;
         steps = 50;
         plotter = new Plotter(taskName, "Training round", "Average score", trainingRounds);
-        gridStorageFile = new File(System.getProperty("user.dir") + "\\src\\main\\java\\common\\gridStorageFile.txt");
+        File gridStorageFile = new File(System.getProperty("user.dir") + "\\src\\main\\java\\common\\gridStorageFile.txt");
         writer = new BufferedWriter(new PrintWriter(gridStorageFile));
     }
 
@@ -79,7 +78,6 @@ class Simulator2 {
         writer.newLine();
     }
 
-
     private void printGrid(char[][] grid){
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
@@ -90,8 +88,8 @@ class Simulator2 {
     }
 
     public static void main(String[] args) throws IOException {
-        Simulator2 simulator2 = new Simulator2();
-        simulator2.runSimulation();
+        Simulator2 simulator = new Simulator2();
+        simulator.runSimulation();
         GUI gui = new GUI();
         Application.launch(gui.getClass());
     }
