@@ -70,6 +70,7 @@ public class World {
             agentX = newAgentX;
             return reward;
         }
+        grid[agentY][agentX] = 'X';
         simulationEnd = true;
         return reward;
     }
@@ -88,7 +89,15 @@ public class World {
         return newCardinalDirection;
     }
 
-    public char[][] getGrid(){return grid;}
+    public char[][] getGrid(){return gridCopy(grid);}
+
+    private char[][] gridCopy(char[][] grid){
+        char[][] gridCopy = new char[grid.length][grid[0].length];
+        for (int i = 0; i < grid.length; i++) {
+            gridCopy[i] = grid[i].clone();
+        }
+        return gridCopy;
+    }
 
     public char[][] getInitialGrid(){return initialGrid;}
 }
