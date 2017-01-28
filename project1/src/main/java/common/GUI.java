@@ -21,7 +21,6 @@ import java.util.Objects;
 import javafx.util.Duration;
 
 
-
 public class GUI extends Application{
 
     private GridPane mapPane;
