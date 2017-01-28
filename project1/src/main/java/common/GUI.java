@@ -290,7 +290,6 @@ public class GUI extends Application{
             index++;
         }
         reader.close();
-        System.out.println(roundGridData.get(0).get(0).get(0).get(0));
         return roundGridData;
     }
 
