@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 
-class ExtendedReinforcedNeuralAgent {
+class ExtendedReinforcementNeuralAgent {
 
     private task1.World world;
     private Random random;
@@ -14,7 +14,7 @@ class ExtendedReinforcedNeuralAgent {
     private HashMap<Character, Integer> inputLayerStatusIndex;
 
 
-    ExtendedReinforcedNeuralAgent(){
+    ExtendedReinforcementNeuralAgent(){
         random = new Random();
         score = 0;
         observeDistance = 3;
