@@ -78,8 +78,8 @@ class ReinforcedNeuralAgent {
         }
     }
 
-    private double deltaRule(int reward, double output, double nextMaxOutputValue) {
-        return (reward + discountFactor * nextMaxOutputValue - output);
+    private double deltaRule(int reward, double outputValue, double nextMaxOutputValue) {
+        return (reward + discountFactor * nextMaxOutputValue - outputValue);
     }
 
     private int[][] calculateNeuralInput(char[] observations){
