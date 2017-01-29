@@ -307,7 +307,6 @@ public class GUI extends Application{
                         else if (c == ':') {
                             StringBuilder stepScoreStringBuilder = new StringBuilder();
                             for (int j = i+1; j < line.length(); j++) {
-//                                System.out.println(Character.getNumericValue(c));
                                 stepScoreStringBuilder.append(line.charAt(j));
                             }
                             roundScoreData.get(roundScoreData.size()-1).add(Integer.parseInt(stepScoreStringBuilder.toString()));
