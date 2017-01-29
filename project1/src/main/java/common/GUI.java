@@ -212,33 +212,32 @@ public class GUI extends Application{
 
     private void newRenderInterval(int renderIntervalMillis){
         timeline.stop();
-        timeline.getKeyFrames().setAll(
-                new KeyFrame(Duration.millis(renderIntervalMillis), event -> {
-                    if (step < roundGridStorage.get(trial-1).size()-1) step++;
-                    else if (trial < roundGridStorage.size()) {
-                        step = 0;
-                        trial++;
-                        trialsField.setText(Integer.toString(trial));
-                    }
-                    else if (trainingRound < roundIndexes.size()) {
-                        step = 0;
-                        trial = 1;
-                        trainingRound++;
-                        trainingRoundsField.setText(Integer.toString(trainingRound));
-                        try {
-                            roundGridStorage = readRoundGridData(trainingRound-1);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    else timeline.stop();
-                    stepsField.setText(Integer.toString(step));
-                    drawGrid(roundGridStorage.get(trial-1).get(step));
-                }
-                )
-        );
+        timeline.getKeyFrames().setAll(new KeyFrame(Duration.millis(renderIntervalMillis), event -> renderNextStep()));
         timeline.setCycleCount(Timeline.INDEFINITE);
         if (Objects.equals(playButton.getText(), "Pause")) timeline.play();
+    }
+
+    private void renderNextStep() {
+        if (step < roundGridStorage.get(trial-1).size()-1) step++;
+        else if (trial < roundGridStorage.size()) {
+            step = 0;
+            trial++;
+            trialsField.setText(Integer.toString(trial));
+        }
+        else if (trainingRound < roundIndexes.size()) {
+            step = 0;
+            trial = 1;
+            trainingRound++;
+            trainingRoundsField.setText(Integer.toString(trainingRound));
+            try {
+                roundGridStorage = readRoundGridData(trainingRound-1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else timeline.stop();
+        stepsField.setText(Integer.toString(step));
+        drawGrid(roundGridStorage.get(trial-1).get(step));
     }
 
     private ArrayList<ArrayList<Integer>> indexRoundsInFile() throws IOException {
@@ -285,9 +284,7 @@ public class GUI extends Application{
                         else {
                             tempRow.add(c);
                         }
-
                     }
-
                 }
             }
             index++;

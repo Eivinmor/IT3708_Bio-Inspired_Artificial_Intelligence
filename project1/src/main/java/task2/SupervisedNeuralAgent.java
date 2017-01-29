@@ -87,7 +87,7 @@ class SupervisedNeuralAgent {
         }
     }
 
-    private double deltaRule(double specificOutput, double sumExpOutput, int correctChoice) {
+    private double deltaRule(double specificOutput, double sumExpOutput, int correctChoice){
         double specificExpOutput = Math.exp(specificOutput);
         return - (specificExpOutput/sumExpOutput) + (double)correctChoice;
     }
