@@ -11,6 +11,7 @@ class Simulator1 {
     private common.Plotter plotter;
     private String taskName;
     private BufferedWriter writer;
+    private BaselineAgent agent;
 
     private Simulator1() throws FileNotFoundException {
         taskName = "Task 1 – Baseline agent";
@@ -24,7 +25,7 @@ class Simulator1 {
     private void runSimulation() throws IOException {
         writer.write("Round");
         writer.newLine();
-        BaselineAgent agent = new BaselineAgent();
+        agent = new BaselineAgent();
         int totalScore = 0;
         for (int i = 1; i <= trials; i++) {
             writer.write("Trial");
@@ -62,6 +63,7 @@ class Simulator1 {
             writer.write(grid[i]);
             writer.write(",");
         }
+        writer.write(":" + agent.getScore());
         writer.newLine();
     }
 

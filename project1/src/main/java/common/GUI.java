@@ -12,6 +12,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.io.*;
@@ -28,10 +31,12 @@ public class GUI extends Application{
     private int trainingRound, trial, step, renderInterval;
     private Timeline timeline;
     private ArrayList<ArrayList<ArrayList<ArrayList<Character>>>> roundGridStorage;
+    private ArrayList<ArrayList<Integer>> roundScoreStorage;
     private Button playButton;
     private TextField renderIntervalField, trainingRoundsField, trialsField, stepsField;
     private File gridStorageFile;
     private ArrayList<ArrayList<Integer>> roundIndexes;
+    private Text scoreText;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -57,7 +62,7 @@ public class GUI extends Application{
         gridStorageFile = new File(filePathRoot + "\\src\\main\\java\\common\\gridStorageFile.txt");
 
         roundIndexes = indexRoundsInFile();
-        roundGridStorage = readRoundGridData(trainingRound-1);
+        readRoundData(trainingRound-1);
 
 
         GridPane rootPane = new GridPane();
@@ -71,7 +76,7 @@ public class GUI extends Application{
             mapPane.getRowConstraints().add(new RowConstraints(50));
         }
 
-        // --- BUTTON ROW ---
+// --- BUTTON ROW ---
 
         HBox buttonRow = new HBox(20);
         buttonRow.setMinHeight(50);
@@ -80,7 +85,7 @@ public class GUI extends Application{
 
 
 
-        // PLAY BUTTON
+    // PLAY BUTTON
         playButton = new Button("Play");
         playButton.setMinWidth(56);
         playButton.setPadding(new Insets(10, 10, 10, 10));
@@ -95,7 +100,7 @@ public class GUI extends Application{
             }
         });
 
-        // APPLY RENDER INTERVAL BUTTON
+    // APPLY RENDER INTERVAL BUTTON
         Button appySettingsButton = new Button("Apply settings");
         appySettingsButton.setMinWidth(40);
         appySettingsButton.setPadding(new Insets(4, 10, 4, 10));
@@ -105,7 +110,7 @@ public class GUI extends Application{
             trainingRound = Integer.parseInt(trainingRoundsField.getText());
             trial = Integer.parseInt(trialsField.getText());
             try {
-                roundGridStorage = readRoundGridData(trainingRound-1);
+                readRoundData(trainingRound-1);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -114,22 +119,37 @@ public class GUI extends Application{
                 step = roundGridStorage.get(trial-1).size() - 1;
                 stepsField.setText(Integer.toString(step));
             }
+            scoreText.setText(Integer.toString(roundScoreStorage.get(trial-1).get(step)));
             drawGrid(roundGridStorage.get(trial-1).get(step));
 
         });
 
-        buttonRow.getChildren().addAll(playButton, appySettingsButton);
+    // SCORE HBOX
+        scoreText = new Text("0");
+        scoreText.setFont(Font.font("Verdana", 20));
+        scoreText.setTextAlignment(TextAlignment.RIGHT);
+        scoreText.setWrappingWidth(50);
+
+        HBox scoreHbox = new HBox(2);
+        scoreHbox.setPadding(new Insets(0, 0, 0, 150));
+        scoreHbox.setAlignment(Pos.CENTER_LEFT);
+        Label scoreLabel = new Label("Score: ");
+        scoreLabel.setFont(Font.font("Verdana", 20));
+        scoreHbox.getChildren().addAll(scoreLabel, scoreText);
+
+
+        buttonRow.getChildren().addAll(playButton, appySettingsButton, scoreHbox);
 
 
 
-        // --- SETTINGS ROW ---
+// --- SETTINGS ROW ---
 
         HBox settingsRow = new HBox(20);
         settingsRow.setMinHeight(50);
         settingsRow.setPadding(new Insets(10, 10, 10, 10));
         settingsRow.setAlignment(Pos.CENTER_LEFT);
 
-        // RENDER INTERVAL HBOX
+    // RENDER INTERVAL HBOX
         renderIntervalField = new TextField(Integer.toString(renderInterval));
         renderIntervalField.setAlignment(Pos.BASELINE_RIGHT);
         renderIntervalField.setPrefWidth(50);
@@ -141,7 +161,7 @@ public class GUI extends Application{
         renderIntervalHbox.getChildren().addAll(new Label("Render interval: "), renderIntervalField);
 
 
-        // TRAINING ROUNDS HBOX
+    // TRAINING ROUNDS HBOX
         trainingRoundsField = new TextField(Integer.toString(trainingRound));
         trainingRoundsField.setAlignment(Pos.BASELINE_RIGHT);
         trainingRoundsField.setPrefWidth(50);
@@ -155,7 +175,7 @@ public class GUI extends Application{
         trainingRoundsHbox.setAlignment(Pos.CENTER_LEFT);
         trainingRoundsHbox.getChildren().addAll(new Label("Training round: "), trainingRoundsField);
 
-        // TRIALS HBOX
+    // TRIALS HBOX
         trialsField = new TextField(Integer.toString(trial));
         trialsField.setAlignment(Pos.BASELINE_RIGHT);
         trialsField.setPrefWidth(50);
@@ -169,7 +189,7 @@ public class GUI extends Application{
         trialsHbox.setAlignment(Pos.CENTER_LEFT);
         trialsHbox.getChildren().addAll(new Label("Trial: "), trialsField);
 
-        // STEPS HBOX
+    // STEPS HBOX
         stepsField = new TextField(Integer.toString(step));
         stepsField.setAlignment(Pos.BASELINE_RIGHT);
         stepsField.setPrefWidth(35);
@@ -230,13 +250,14 @@ public class GUI extends Application{
             trainingRound++;
             trainingRoundsField.setText(Integer.toString(trainingRound));
             try {
-                roundGridStorage = readRoundGridData(trainingRound-1);
+                readRoundData(trainingRound-1);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
         else timeline.stop();
         stepsField.setText(Integer.toString(step));
+        scoreText.setText(Integer.toString(roundScoreStorage.get(trial-1).get(step)));
         drawGrid(roundGridStorage.get(trial-1).get(step));
     }
 
@@ -259,9 +280,10 @@ public class GUI extends Application{
         return indexes;
     }
 
-    private ArrayList<ArrayList<ArrayList<ArrayList<Character>>>> readRoundGridData(int trainingRound) throws IOException {
+    private void readRoundData(int trainingRound) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(gridStorageFile));
         ArrayList<ArrayList<ArrayList<ArrayList<Character>>>> roundGridData = new ArrayList<>();
+        ArrayList<ArrayList<Integer>> roundScoreData = new ArrayList<>();
         int indexMin = roundIndexes.get(trainingRound).get(0);
         int indexMax = roundIndexes.get(trainingRound).get(1);
         ArrayList<Character> tempRow = new ArrayList<>();
@@ -272,6 +294,7 @@ public class GUI extends Application{
             if (index >= indexMin && index <= indexMax) {
                 if (line.equals("Trial")) {
                     roundGridData.add(new ArrayList<>());
+                    roundScoreData.add(new ArrayList<>());
                 }
                 else if (!line.equals("Round") && !line.equals("End of round")){
                     roundGridData.get(roundGridData.size()-1).add(new ArrayList<>());
@@ -280,6 +303,15 @@ public class GUI extends Application{
                         if (c == ',') {
                             roundGridData.get(roundGridData.size()-1).get(roundGridData.get(roundGridData.size()-1).size()-1).add(tempRow);
                             tempRow = new ArrayList<>();
+                        }
+                        else if (c == ':') {
+                            StringBuilder stepScoreStringBuilder = new StringBuilder();
+                            for (int j = i+1; j < line.length(); j++) {
+//                                System.out.println(Character.getNumericValue(c));
+                                stepScoreStringBuilder.append(line.charAt(j));
+                            }
+                            roundScoreData.get(roundScoreData.size()-1).add(Integer.parseInt(stepScoreStringBuilder.toString()));
+                            break;
                         }
                         else {
                             tempRow.add(c);
@@ -290,7 +322,8 @@ public class GUI extends Application{
             index++;
         }
         reader.close();
-        return roundGridData;
+        roundScoreStorage = roundScoreData;
+        roundGridStorage = roundGridData;
     }
 
     public static void main(String[] args) {
