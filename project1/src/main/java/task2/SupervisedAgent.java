@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 
-class SupervisedNeuralAgent {
+class SupervisedAgent {
 
     private task1.World world;
     private Random random;
@@ -15,7 +15,7 @@ class SupervisedNeuralAgent {
     private HashMap<Character, Integer> inputLayerStatusIndex;
     private task1.BaselineAgent teacher;
 
-    SupervisedNeuralAgent(){
+    SupervisedAgent(){
         random = new Random();
         score = 0;
         observeDistance = 1;

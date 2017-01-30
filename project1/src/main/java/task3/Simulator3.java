@@ -12,7 +12,7 @@ class Simulator3 {
     private Plotter plotter;
     private String taskName;
     private BufferedWriter writer;
-    private ReinforcementNeuralAgent agent;
+    private ReinforcementAgent agent;
 
     private Simulator3() throws FileNotFoundException {
         taskName = "Task 3 – Reinforcement neural agent";
@@ -25,7 +25,7 @@ class Simulator3 {
     }
 
     private void runSimulation() throws IOException {
-        agent = new ReinforcementNeuralAgent();
+        agent = new ReinforcementAgent();
         double totalScore = 0;
         for (int i = 1; i <= trainingRounds; i++) {
             writer.write("Round");
@@ -46,7 +46,7 @@ class Simulator3 {
         plotter.plot();
     }
 
-    private double runTrainingRound(ReinforcementNeuralAgent agent) throws IOException {
+    private double runTrainingRound(ReinforcementAgent agent) throws IOException {
         double roundScore = 0;
         for (int i = 1; i <= trials; i++) {
             writer.write("Trial");
@@ -57,7 +57,7 @@ class Simulator3 {
         return roundScore/trials;
     }
 
-    private int runTrial(ReinforcementNeuralAgent agent) throws IOException {
+    private int runTrial(ReinforcementAgent agent) throws IOException {
         World world = new World();
         agent.registerNewWorld(world);
         world.placeAgentRandom();

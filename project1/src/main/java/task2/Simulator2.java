@@ -12,7 +12,7 @@ class Simulator2 {
     private Plotter plotter;
     private String taskName;
     private BufferedWriter writer;
-    private SupervisedNeuralAgent agent;
+    private SupervisedAgent agent;
 
     private Simulator2() throws FileNotFoundException {
         taskName = "Task 2 – Supervised neural agent";
@@ -25,7 +25,7 @@ class Simulator2 {
     }
 
     private void runSimulation() throws IOException {
-        agent = new SupervisedNeuralAgent();
+        agent = new SupervisedAgent();
         double totalScore = 0;
         for (int i = 1; i <= trainingRounds; i++) {
             writer.write("Round");
@@ -46,7 +46,7 @@ class Simulator2 {
         plotter.plot();
     }
 
-    private double runTrainingRound(SupervisedNeuralAgent agent) throws IOException {
+    private double runTrainingRound(SupervisedAgent agent) throws IOException {
         double roundScore = 0;
         for (int i = 1; i <= trials; i++) {
             writer.write("Trial");
@@ -57,7 +57,7 @@ class Simulator2 {
         return roundScore/trials;
     }
 
-    private int runTrial(SupervisedNeuralAgent agent) throws IOException {
+    private int runTrial(SupervisedAgent agent) throws IOException {
         World world = new World();
         agent.registerNewWorld(world);
         world.placeAgentRandom();
