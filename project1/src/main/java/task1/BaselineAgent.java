@@ -32,17 +32,20 @@ public class BaselineAgent {
     public int chooseMoveDirection(char[] observations){
         for (char status : statusOrder) {
             if (observations[1] == status) return 1; // Forward
-            HashSet<Integer> statusDirectionsSet = new HashSet<>(2);
-            if (observations[0] == status) statusDirectionsSet.add(0);   // Left
-            if (observations[2] == status) statusDirectionsSet.add(2);  // Right
-            if (!statusDirectionsSet.isEmpty()) {
-                int randIndex = random.nextInt(statusDirectionsSet.size());
-                int i = 0;
-                for (int direction : statusDirectionsSet) {
-                    if (i == randIndex) return direction;
-                    i++;
-                }
-            }
+            if (observations[0] == status) return 0;   // Left
+            if (observations[2] == status) return 2;  // Right
+
+//            HashSet<Integer> statusDirectionsSet = new HashSet<>(2);
+//            if (observations[0] == status) statusDirectionsSet.add(0);   // Left
+//            if (observations[2] == status) statusDirectionsSet.add(2);  // Right
+//            if (!statusDirectionsSet.isEmpty()) {
+//                int randIndex = random.nextInt(statusDirectionsSet.size());
+//                int i = 0;
+//                for (int direction : statusDirectionsSet) {
+//                    if (i == randIndex) return direction;
+//                    i++;
+//                }
+//            }
         }
         System.out.println("AGENT: No possible move");
         return -1;
