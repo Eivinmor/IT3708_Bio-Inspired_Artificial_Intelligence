@@ -32,7 +32,7 @@ public class BaselineAgent {
     public int chooseMoveDirection(char[] observations){
         for (char status : statusOrder) {
             if (observations[1] == status) return 1; // Forward
-            HashSet<Integer> statusDirectionsSet = new HashSet<Integer>(2);
+            HashSet<Integer> statusDirectionsSet = new HashSet<>(2);
             if (observations[0] == status) statusDirectionsSet.add(0);   // Left
             if (observations[2] == status) statusDirectionsSet.add(2);  // Right
             if (!statusDirectionsSet.isEmpty()) {
