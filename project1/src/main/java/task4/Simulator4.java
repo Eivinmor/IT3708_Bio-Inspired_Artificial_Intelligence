@@ -15,8 +15,8 @@ class Simulator4 {
     private ReinforcementAgentExt agent;
 
     private Simulator4() throws FileNotFoundException {
-        taskName = "Task 4 – Extended reinforcement neural agent";
-        trainingRounds = 100;
+        taskName = "Task 4 – Extended reinforcement agent";
+        trainingRounds = 50;
         trials = 100;
         steps = 50;
         plotter = new Plotter(taskName, "Training round", "Average score", trainingRounds);

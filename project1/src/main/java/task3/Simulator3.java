@@ -15,7 +15,7 @@ class Simulator3 {
     private ReinforcementAgent agent;
 
     private Simulator3() throws FileNotFoundException {
-        taskName = "Task 3 – Reinforcement neural agent";
+        taskName = "Task 3 – Reinforcement agent";
         trainingRounds = 100;
         trials = 100;
         steps = 50;

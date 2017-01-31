@@ -15,8 +15,8 @@ class Simulator2 {
     private SupervisedAgent agent;
 
     private Simulator2() throws FileNotFoundException {
-        taskName = "Task 2 – Supervised neural agent";
-        trainingRounds = 100;
+        taskName = "Task 2 – Supervised agent";
+        trainingRounds = 50;
         trials = 100;
         steps = 50;
         plotter = new Plotter(taskName, "Training round", "Average score", trainingRounds);

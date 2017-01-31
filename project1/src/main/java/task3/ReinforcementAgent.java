@@ -125,6 +125,23 @@ class ReinforcementAgent {
         System.out.println("------------------------------\n");
     }
 
+    private void printInput(int[][] input){
+        for (int i = 0; i < input.length; i++) {
+            for (int j = 0; j < input[i].length; j++) {
+                System.out.print(input[i][j]);
+            }
+            System.out.print(" - ");
+        }
+        System.out.println();
+    }
+
+    private void printOutput(double[]output){
+        for (int i = 0; i < output.length; i++) {
+            System.out.print("O: " + output[i]);
+        }
+        System.out.println();
+    }
+
     void step() {
         char[] observations = observe();
         int[][] neuronInputs = calculateNeuralInput(observations);
@@ -132,6 +149,8 @@ class ReinforcementAgent {
         int chosenMoveDirection = chooseMoveDirection(neuronOutputs);
         int reward = world.moveAgent(chosenMoveDirection);
         score += reward;
+//        printInput(neuronInputs);
+//        printOutput(neuronOutputs);
 
         char[] nextObservations = observe();
         int[][] nextNeuronInputs = calculateNeuralInput(nextObservations);
