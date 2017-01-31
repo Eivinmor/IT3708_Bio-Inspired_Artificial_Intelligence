@@ -16,7 +16,7 @@ class Simulator3 {
 
     private Simulator3() throws FileNotFoundException {
         taskName = "Task 3 – Reinforcement agent";
-        trainingRounds = 100;
+        trainingRounds = 50;
         trials = 100;
         steps = 50;
         plotter = new Plotter(taskName, "Training round", "Average score", trainingRounds);
