@@ -15,6 +15,7 @@ import org.jfree.ui.RefineryUtilities;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
 
 
 public class Plotter {
@@ -30,50 +31,47 @@ public class Plotter {
 
     public void plot(){
         ApplicationFrame applicationFrame = new ApplicationFrame(chartTitle);
-
         XYPlot plot = new XYPlot();
 
-        // SCATTER
-        XYItemRenderer dotRenderer = new XYLineAndShapeRenderer(false, true);
-        dotRenderer.setSeriesShape(0, new Ellipse2D.Double(-4.0, -4.0, 8.0, 8.0));
-        dotRenderer.setSeriesPaint(0, Color.BLACK);
-        dotRenderer.setSeriesShape(1, new Ellipse2D.Double(-3.0, -3.0, 6.0, 6.0));
-        dotRenderer.setSeriesPaint(1, Color.GRAY);
-        ValueAxis domain = new NumberAxis();
-        domain.setVisible(false);
-        ValueAxis range = new NumberAxis();
-        range.setVisible(false);
 
-        plot.setDataset(0, depotsAndCustomersCollection);
-        plot.setRenderer(0, dotRenderer);
+        // DOMAIN AND RANGE
+        ValueAxis domain = new NumberAxis();
+        ValueAxis range = new NumberAxis();
+        domain.setVisible(false);
+        range.setVisible(false);
         plot.setDomainAxis(0, domain);
         plot.setRangeAxis(0, range);
 
+
+        // SCATTER PLOT
+        XYItemRenderer dotRenderer = new XYLineAndShapeRenderer(false, true);
+//        dotRenderer.setSeriesShape(0, new Ellipse2D.Double(-5.0, -5.0, 10.0, 10.0));
+        dotRenderer.setSeriesShape(0, new Rectangle2D.Double(-7.0, -7.0, 14.0, 14.0));
+        dotRenderer.setSeriesPaint(0, Color.BLACK);
+        dotRenderer.setSeriesShape(1, new Ellipse2D.Double(-3.0, -3.0, 6.0, 6.0));
+        dotRenderer.setSeriesPaint(1, Color.GRAY);
+        plot.setDataset(0, depotsAndCustomersCollection);
+        plot.setRenderer(0, dotRenderer);
         plot.mapDatasetToDomainAxis(0, 0);
         plot.mapDatasetToRangeAxis(0, 0);
 
 
-        // LINES
+        // LINES PLOT
         XYItemRenderer lineRenderer = new XYLineAndShapeRenderer(true, false);
         ((AbstractRenderer)lineRenderer).setAutoPopulateSeriesStroke(false);
         lineRenderer.setBaseStroke(new BasicStroke(2));
-
         plot.setDataset(1, routeSequenceCollection);
         plot.setRenderer(1, lineRenderer);
-        plot.setDomainAxis(1, domain);
-        plot.setRangeAxis(1, range);
+        plot.mapDatasetToDomainAxis(1, 0);
+        plot.mapDatasetToRangeAxis(1, 0);
 
-        plot.mapDatasetToDomainAxis(1, 1);
-        plot.mapDatasetToRangeAxis(1, 1);
 
+        // DISPLAY AND STYLING
+        plot.setBackgroundPaint(Color.WHITE);
+        plot.setDomainGridlinesVisible(false);
+        plot.setRangeGridlinesVisible(false);
 
         JFreeChart chart = new JFreeChart(chartTitle, JFreeChart.DEFAULT_TITLE_FONT, plot, true);
-        plot.setBackgroundPaint(Color.WHITE);
-
-        plot.setRangeZeroBaselineVisible(true);
-        plot.setRangeZeroBaselineStroke(new BasicStroke(1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, new float[] {6.0f, 6.0f}, 0.0f));
-        plot.setRangeZeroBaselinePaint(Color.GRAY);
-
         TextTitle newTitle = new TextTitle(chartTitle, new Font("SansSerif", Font.BOLD, 16));
         newTitle.setPaint(Color.DARK_GRAY);
         chart.setTitle(newTitle);
@@ -88,24 +86,16 @@ public class Plotter {
         RefineryUtilities.positionFrameOnScreen(applicationFrame, 0.0, 0.92);
     }
 
-    public void addDepotsSeries(int[][] coordinates) {
-        XYSeries newSeries = new XYSeries("Depots", false, true);
+    public void addScatterSeries(String key, int[][] coordinates) {
+        XYSeries newSeries = new XYSeries(key, false, true);
         for (int i = 0; i < coordinates.length; i++) {
             newSeries.add(coordinates[i][0], coordinates[i][1]);
         }
         depotsAndCustomersCollection.addSeries(newSeries);
     }
 
-    public void addCustomersSeries(int[][] coordinates) {
-        XYSeries newSeries = new XYSeries("Customers", false, true);
-        for (int i = 0; i < coordinates.length; i++) {
-            newSeries.add(coordinates[i][0], coordinates[i][1]);
-        }
-        depotsAndCustomersCollection.addSeries(newSeries);
-    }
-
-    public void addRouteSeries(String name, int[][] coordinates){
-        XYSeries newSeries = new XYSeries(name, false, true);
+    public void addLineSeries(String key, int[][] coordinates){
+        XYSeries newSeries = new XYSeries(key, false, true);
         for (int i = 0; i < coordinates.length; i++) {
             newSeries.add(coordinates[i][0], coordinates[i][1]);
         }
