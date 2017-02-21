@@ -4,9 +4,11 @@ public class Map {
 
     private int maxVehiclesPerDepot, numOfCustomers, numOfDepots;
     private int[][] depotData, customerData;
+    private String name;
 
-    public Map(int maxVehiclesPerDepot, int numOfCustomers, int numOfDepots,
+    public Map(String name, int maxVehiclesPerDepot, int numOfCustomers, int numOfDepots,
                int[][] depotData, int[][] customerData) {
+        this.name = name;
         this.maxVehiclesPerDepot = maxVehiclesPerDepot;
         this.numOfCustomers = numOfCustomers;
         this.numOfDepots = numOfDepots;
@@ -31,6 +33,8 @@ public class Map {
         }
         return customerCoords;
     }
+
+    public String getName() {return name;}
 
 
 }

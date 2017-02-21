@@ -4,12 +4,11 @@ import java.util.concurrent.TimeUnit;
 
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
-        String mapName = "p11";
-        Map map = DataReader.readMapData(mapName);
+        Map map = DataReader.readMapData("p11");
         int[][] depotCoords = map.getDepotCoords();
         int[][] customerCoords = map.getcustomerCoords();
 
-        Plotter plotter = new Plotter(mapName);
+        Plotter plotter = new Plotter(map.getName());
         plotter.plot();
         plotter.addScatterSeries("Depots", depotCoords);
         plotter.addScatterSeries("Customers", customerCoords);

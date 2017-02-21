@@ -40,7 +40,7 @@ public class DataReader {
             depotData[i][3] = Integer.valueOf(lineArray[2]);                // y - y coordinate
         }
 
-        Map map = new Map(maxVehiclesPerDepot, numOfCustomers, numOfDepots, depotData, customerData);
+        Map map = new Map(fileName, maxVehiclesPerDepot, numOfCustomers, numOfDepots, depotData, customerData);
         return map;
     }
 
