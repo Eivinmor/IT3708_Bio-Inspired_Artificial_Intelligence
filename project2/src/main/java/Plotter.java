@@ -4,6 +4,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.AbstractRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.title.TextTitle;
@@ -54,6 +55,8 @@ public class Plotter {
 
         // LINES
         XYItemRenderer lineRenderer = new XYLineAndShapeRenderer(true, false);
+        ((AbstractRenderer)lineRenderer).setAutoPopulateSeriesStroke(false);
+        lineRenderer.setBaseStroke(new BasicStroke(2));
 
         plot.setDataset(1, routeSequenceCollection);
         plot.setRenderer(1, lineRenderer);
