@@ -6,8 +6,8 @@ import org.apache.commons.lang3.StringUtils;
 public class DataReader {
 
     public static Map readMapData(String fileName) throws IOException {
-        String filePathRoot = System.getProperty("user.dir") + "\\src\\main\\java";
-        File dataFile = new File(filePathRoot + "\\Data\\" + fileName);
+        String filePathRoot = System.getProperty("user.dir") + "\\src\\main\\java\\Data";
+        File dataFile = new File(filePathRoot + "\\Maps\\" + fileName);
         BufferedReader reader = new BufferedReader(new FileReader(dataFile));
 
         // Read meta data

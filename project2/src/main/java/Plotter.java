@@ -1,4 +1,3 @@
-
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
@@ -94,7 +93,7 @@ public class Plotter {
         depotsAndCustomersCollection.addSeries(newSeries);
     }
 
-
+    // Convert to taking a list, making a new SeriesCollection and the replacing the old?
     public void addLineSeries(String key, int[][] coordinates){
         XYSeries newSeries = new XYSeries(key, false, true);
         for (int i = 0; i < coordinates.length; i++) {
