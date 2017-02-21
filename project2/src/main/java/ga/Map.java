@@ -2,13 +2,13 @@ package ga;
 
 public class Map {
 
-    private int maxVehiclesPerDepot, numOfCustomers, numOfDepots;
-    private double[] depotDuration, depotVehicleMaxLoad, customerDuration, customerDemand;
-    private double[][] depotCoords, customerCoords;
-    private String name;
+    final int maxVehiclesPerDepot, numOfCustomers, numOfDepots;
+    final double[] depotMaxDuration, depotMaxLoad, customerDuration, customerDemand;
+    final double[][] depotCoords, customerCoords;
+    final String name;
 
     public Map(String name, int maxVehiclesPerDepot, int numOfCustomers, int numOfDepots,
-               double[] depotDuration, double[] depotVehicleMaxLoad, double[][] depotCoords,
+               double[] depotMaxDuration, double[] depotMaxLoad, double[][] depotCoords,
                double[][] customerCoords, double[] customerDuration, double[] customerDemand) {
 
         this.name = name;
@@ -17,22 +17,12 @@ public class Map {
         this.numOfDepots = numOfDepots;
 
         this.depotCoords = depotCoords;
-        this.depotDuration = depotDuration;
-        this.depotVehicleMaxLoad = depotVehicleMaxLoad;
+        this.depotMaxDuration = depotMaxDuration;
+        this.depotMaxLoad = depotMaxLoad;
 
         this.customerCoords = customerCoords;
         this.customerDuration = customerDuration;
         this.customerDemand = customerDemand;
     }
-
-    double[][] getDepotCoords(){
-        return depotCoords;
-    }
-
-    double[][] getCustomerCoords(){
-        return customerCoords;
-    }
-
-    String getName() {return name;}
 
 }

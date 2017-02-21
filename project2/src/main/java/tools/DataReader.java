@@ -18,12 +18,12 @@ public class DataReader {
         int numOfDepots = Integer.valueOf(firstLineArray[2]);               // t - number of depots
 
         // Read depot data
-        double[] depotDuration = new double[numOfDepots];
-        double[] depotVehicleMaxLoad = new double[numOfDepots];
+        double[] depotMaxDuration = new double[numOfDepots];
+        double[] depotMaxLoad = new double[numOfDepots];
         for (int i = 0; i < numOfDepots; i++) {
             String[] lineArray = StringUtils.split(reader.readLine());
-            depotDuration[i] = Double.valueOf(lineArray[0]);                // D - maximum route duration
-            depotVehicleMaxLoad[i] = Double.valueOf(lineArray[1]);          // Q - maximum allowed vehicle load
+            depotMaxDuration[i] = Double.valueOf(lineArray[0]);                // D - maximum route duration
+            depotMaxLoad[i] = Double.valueOf(lineArray[1]);          // Q - maximum allowed vehicle load
         }
         // Read customer data
         double[][] customerCoords = new double[numOfCustomers][2];
@@ -45,7 +45,7 @@ public class DataReader {
         }
 
         Map map = new Map(fileName, maxVehiclesPerDepot, numOfCustomers, numOfDepots,
-                depotDuration, depotVehicleMaxLoad, depotCoords,
+                depotMaxDuration, depotMaxLoad, depotCoords,
                 customerCoords, customerDuration, customerDemand);
         return map;
     }

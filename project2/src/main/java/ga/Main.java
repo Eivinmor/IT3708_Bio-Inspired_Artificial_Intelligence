@@ -11,14 +11,19 @@ import java.util.concurrent.TimeUnit;
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
         Map map = DataReader.readMapData("p01");
-        double[][] depotCoords = map.getDepotCoords();
-        double[][] customerCoords = map.getCustomerCoords();
+        double[][] depotCoords = map.depotCoords;
+        double[][] customerCoords = map.customerCoords;
 
-        Plotter plotter = new Plotter(map.getName());
+        Plotter plotter = new Plotter(map.name);
         plotter.plot();
         plotter.addScatterSeries("Depots", depotCoords);
         plotter.addScatterSeries("Customers", customerCoords);
 
+        testLinePlotting(plotter, depotCoords, customerCoords);
+
+    }
+
+    static void testLinePlotting(Plotter plotter, double[][] depotCoords, double[][] customerCoords) throws InterruptedException {
         Random random = new Random();
         for (int k = 0; k < 10; k++) {
             for (int i = 0; i < 7; i++) {
@@ -34,4 +39,7 @@ public class Main {
             plotter.clearLineSeries();
         }
     }
+
+
+    // Arrays.sort(solutions) kan brukes pga Comparable :))
 }
