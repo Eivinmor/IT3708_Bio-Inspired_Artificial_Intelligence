@@ -1,13 +1,13 @@
+package ga;
 
-
-class Map {
+public class Map {
 
     private int maxVehiclesPerDepot, numOfCustomers, numOfDepots;
     private double[] depotDuration, depotVehicleMaxLoad, customerDuration, customerDemand;
     private double[][] depotCoords, customerCoords;
     private String name;
 
-    Map(String name, int maxVehiclesPerDepot, int numOfCustomers, int numOfDepots,
+    public Map(String name, int maxVehiclesPerDepot, int numOfCustomers, int numOfDepots,
                double[] depotDuration, double[] depotVehicleMaxLoad, double[][] depotCoords,
                double[][] customerCoords, double[] customerDuration, double[] customerDemand) {
 

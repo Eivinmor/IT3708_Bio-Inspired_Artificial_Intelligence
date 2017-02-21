@@ -1,13 +1,14 @@
+package tools;
+
 import java.io.*;
-
 import org.apache.commons.lang3.StringUtils;
+import ga.Map;
 
+public class DataReader {
 
-class DataReader {
-
-    static Map readMapData(String fileName) throws IOException {
-        String filePathRoot = System.getProperty("user.dir") + "\\src\\main\\java\\Data";
-        File dataFile = new File(filePathRoot + "\\Maps\\" + fileName);
+    public static Map readMapData(String fileName) throws IOException {
+        String filePathRoot = System.getProperty("user.dir") + "\\src\\main\\java\\data";
+        File dataFile = new File(filePathRoot + "\\maps\\" + fileName);
         BufferedReader reader = new BufferedReader(new FileReader(dataFile));
 
         // Read meta data
@@ -50,7 +51,7 @@ class DataReader {
     }
 
 //    public void readSolutionData(String fileName) throws IOException {
-//        File dataFile = new File(filePathRoot + "\\Solutions\\" + fileName + ".res");
+//        File dataFile = new File(filePathRoot + "\\solutions\\" + fileName + ".res");
 //        BufferedReader reader = new BufferedReader(new FileReader(dataFile));
 //        double distance = Double.valueOf(reader.readLine());
 //
@@ -74,7 +75,7 @@ class DataReader {
 //            }
 //            solutionSequences.add(routeSequence);
 //        }
-//        Solution solution = new Solution(depotNumbers, vehicleNumbers, routeDurations, vehicleLoad, solutionSequences);
+//        ga.Solution solution = new ga.Solution(depotNumbers, vehicleNumbers, routeDurations, vehicleLoad, solutionSequences);
 //    }
 
 }

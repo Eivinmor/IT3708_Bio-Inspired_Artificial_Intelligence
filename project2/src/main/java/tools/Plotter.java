@@ -1,3 +1,5 @@
+package tools;
+
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
@@ -17,18 +19,18 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 
 
-class Plotter {
+public class Plotter {
 
     private String chartTitle;
     private XYSeriesCollection depotsAndCustomersCollection, routeSequenceCollection;
 
-    Plotter(String chartTitle){
+    public Plotter(String chartTitle){
         this.chartTitle = chartTitle;
         depotsAndCustomersCollection = new XYSeriesCollection();
         routeSequenceCollection = new XYSeriesCollection();
     }
 
-    void plot(){
+    public void plot(){
         ApplicationFrame applicationFrame = new ApplicationFrame(chartTitle);
         XYPlot plot = new XYPlot();
 
@@ -85,7 +87,7 @@ class Plotter {
         RefineryUtilities.positionFrameOnScreen(applicationFrame, 0.0, 0.92);
     }
 
-    void addScatterSeries(String key, double[][] coordinates) {
+    public void addScatterSeries(String key, double[][] coordinates) {
         XYSeries newSeries = new XYSeries(key, false, true);
         for (int i = 0; i < coordinates.length; i++) {
             newSeries.add(coordinates[i][0], coordinates[i][1]);
@@ -94,7 +96,7 @@ class Plotter {
     }
 
     // Convert to taking a list, making a new SeriesCollection and the replacing the old?
-    void addLineSeries(String key, double[][] coordinates){
+    public void addLineSeries(String key, double[][] coordinates){
         XYSeries newSeries = new XYSeries(key, false, true);
         for (int i = 0; i < coordinates.length; i++) {
             newSeries.add(coordinates[i][0], coordinates[i][1]);
@@ -102,7 +104,7 @@ class Plotter {
         routeSequenceCollection.addSeries(newSeries);
     }
 
-    void clearLineSeries() {
+    public void clearLineSeries() {
         routeSequenceCollection.removeAllSeries();
     }
 }
