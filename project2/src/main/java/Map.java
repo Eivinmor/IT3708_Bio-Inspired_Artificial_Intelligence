@@ -3,38 +3,35 @@
 public class Map {
 
     private int maxVehiclesPerDepot, numOfCustomers, numOfDepots;
-    private int[][] depotData, customerData;
+    private double[] depotDuration, depotVehicleMaxLoad, customerDuration, customerDemand;
+    private double[][] depotCoords, customerCoords;
     private String name;
 
     public Map(String name, int maxVehiclesPerDepot, int numOfCustomers, int numOfDepots,
-               int[][] depotData, int[][] customerData) {
+               double[] depotDuration, double[] depotVehicleMaxLoad, double[][] depotCoords,
+               double[][] customerCoords, double[] customerDuration, double[] customerDemand) {
         this.name = name;
         this.maxVehiclesPerDepot = maxVehiclesPerDepot;
         this.numOfCustomers = numOfCustomers;
         this.numOfDepots = numOfDepots;
-        this.depotData = depotData;                     // max route duration, max vehicle load, x, y
-        this.customerData = customerData;               // number, x, y, service duration req., demand
+
+        this.depotCoords = depotCoords;
+        this.depotDuration = depotDuration;
+        this.depotVehicleMaxLoad = depotVehicleMaxLoad;
+
+        this.customerCoords = customerCoords;
+        this.customerDuration = customerDuration;
+        this.customerDemand = customerDemand;
     }
 
-    public int[][] getDepotCoords(){
-        int[][] depotCoords = new int[numOfDepots][2];
-        for (int i = 0; i < numOfDepots; i++) {
-            depotCoords[i][0] = depotData[i][2];
-            depotCoords[i][1] = depotData[i][3];
-        }
+    public double[][] getDepotCoords(){
         return depotCoords;
     }
 
-    public int[][] getcustomerCoords(){
-        int[][] customerCoords = new int[numOfCustomers][2];
-        for (int i = 0; i < numOfCustomers; i++) {
-            customerCoords[i][0] = customerData[i][1];
-            customerCoords[i][1] = customerData[i][2];
-        }
+    public double[][] getCustomerCoords(){
         return customerCoords;
     }
 
     public String getName() {return name;}
-
 
 }

@@ -85,7 +85,7 @@ public class Plotter {
         RefineryUtilities.positionFrameOnScreen(applicationFrame, 0.0, 0.92);
     }
 
-    public void addScatterSeries(String key, int[][] coordinates) {
+    public void addScatterSeries(String key, double[][] coordinates) {
         XYSeries newSeries = new XYSeries(key, false, true);
         for (int i = 0; i < coordinates.length; i++) {
             newSeries.add(coordinates[i][0], coordinates[i][1]);
@@ -94,7 +94,7 @@ public class Plotter {
     }
 
     // Convert to taking a list, making a new SeriesCollection and the replacing the old?
-    public void addLineSeries(String key, int[][] coordinates){
+    public void addLineSeries(String key, double[][] coordinates){
         XYSeries newSeries = new XYSeries(key, false, true);
         for (int i = 0; i < coordinates.length; i++) {
             newSeries.add(coordinates[i][0], coordinates[i][1]);

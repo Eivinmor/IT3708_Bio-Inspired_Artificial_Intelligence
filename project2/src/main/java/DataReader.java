@@ -17,30 +17,35 @@ public class DataReader {
         int numOfDepots = Integer.valueOf(firstLineArray[2]);               // t - number of depots
 
         // Read depot data
-        int[][] depotData = new int[numOfDepots][4];
+        double[] depotDuration = new double[numOfDepots];
+        double[] depotVehicleMaxLoad = new double[numOfDepots];
         for (int i = 0; i < numOfDepots; i++) {
             String[] lineArray = StringUtils.split(reader.readLine());
-            depotData[i][0] = Integer.valueOf(lineArray[0]);                // D - maximum route duration
-            depotData[i][1] = Integer.valueOf(lineArray[1]);                // Q - maximum allowed vehicle load
+            depotDuration[i] = Double.valueOf(lineArray[0]);                // D - maximum route duration
+            depotVehicleMaxLoad[i] = Double.valueOf(lineArray[1]);          // Q - maximum allowed vehicle load
         }
         // Read customer data
-        int[][] customerData = new int[numOfCustomers][5];
+        double[][] customerCoords = new double[numOfCustomers][2];
+        double[] customerDuration = new double[numOfCustomers];
+        double[] customerDemand = new double[numOfCustomers];
         for (int i = 0; i < numOfCustomers; i++) {
             String[] lineArray = StringUtils.split(reader.readLine());
-            customerData[i][0] = Integer.valueOf(lineArray[0]);             // i - customer number
-            customerData[i][1] = Integer.valueOf(lineArray[1]);             // x - x coordinate
-            customerData[i][2] = Integer.valueOf(lineArray[2]);             // y - y coordinate
-            customerData[i][3] = Integer.valueOf(lineArray[3]);             // d - service duration requirement
-            customerData[i][4] = Integer.valueOf(lineArray[4]);             // q - demand
+            customerCoords[i][0] = Double.valueOf(lineArray[1]);           // x - x coordinate
+            customerCoords[i][1] = Double.valueOf(lineArray[2]);           // y - y coordinate
+            customerDuration[i] = Double.valueOf(lineArray[3]);            // d - service duration requirement
+            customerDemand[i] = Double.valueOf(lineArray[4]);              // q - demand
         }
         // Read depot coordinates
+        double[][] depotCoords = new double[numOfDepots][2];
         for (int i = 0; i < numOfDepots; i++) {
             String[] lineArray = StringUtils.split(reader.readLine());
-            depotData[i][2] = Integer.valueOf(lineArray[1]);                // x - x coordinate
-            depotData[i][3] = Integer.valueOf(lineArray[2]);                // y - y coordinate
+            depotCoords[i][0] = Double.valueOf(lineArray[1]);                // x - x coordinate
+            depotCoords[i][1] = Double.valueOf(lineArray[2]);                // y - y coordinate
         }
 
-        Map map = new Map(fileName, maxVehiclesPerDepot, numOfCustomers, numOfDepots, depotData, customerData);
+        Map map = new Map(fileName, maxVehiclesPerDepot, numOfCustomers, numOfDepots,
+                depotDuration, depotVehicleMaxLoad, depotCoords,
+                customerCoords, customerDuration, customerDemand);
         return map;
     }
 

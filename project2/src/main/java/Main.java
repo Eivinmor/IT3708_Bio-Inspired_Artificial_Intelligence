@@ -5,8 +5,8 @@ import java.util.concurrent.TimeUnit;
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
         Map map = DataReader.readMapData("p11");
-        int[][] depotCoords = map.getDepotCoords();
-        int[][] customerCoords = map.getcustomerCoords();
+        double[][] depotCoords = map.getDepotCoords();
+        double[][] customerCoords = map.getCustomerCoords();
 
         Plotter plotter = new Plotter(map.getName());
         plotter.plot();
@@ -17,7 +17,7 @@ public class Main {
         for (int k = 0; k < 10; k++) {
             for (int i = 0; i < 7; i++) {
                 TimeUnit.SECONDS.sleep(1);
-                int[][] randomRoute = new int[7][];
+                double[][] randomRoute = new double[7][];
                 randomRoute[0] = depotCoords[random.nextInt(depotCoords.length)];
                 for (int j = 1; j < 6; j++) {
                     randomRoute[j] = customerCoords[random.nextInt(customerCoords.length)];
