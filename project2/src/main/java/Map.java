@@ -1,15 +1,16 @@
 
 
-public class Map {
+class Map {
 
     private int maxVehiclesPerDepot, numOfCustomers, numOfDepots;
     private double[] depotDuration, depotVehicleMaxLoad, customerDuration, customerDemand;
     private double[][] depotCoords, customerCoords;
     private String name;
 
-    public Map(String name, int maxVehiclesPerDepot, int numOfCustomers, int numOfDepots,
+    Map(String name, int maxVehiclesPerDepot, int numOfCustomers, int numOfDepots,
                double[] depotDuration, double[] depotVehicleMaxLoad, double[][] depotCoords,
                double[][] customerCoords, double[] customerDuration, double[] customerDemand) {
+
         this.name = name;
         this.maxVehiclesPerDepot = maxVehiclesPerDepot;
         this.numOfCustomers = numOfCustomers;
@@ -24,14 +25,14 @@ public class Map {
         this.customerDemand = customerDemand;
     }
 
-    public double[][] getDepotCoords(){
+    double[][] getDepotCoords(){
         return depotCoords;
     }
 
-    public double[][] getCustomerCoords(){
+    double[][] getCustomerCoords(){
         return customerCoords;
     }
 
-    public String getName() {return name;}
+    String getName() {return name;}
 
 }

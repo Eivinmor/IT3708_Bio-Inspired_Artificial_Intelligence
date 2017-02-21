@@ -17,18 +17,18 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 
 
-public class Plotter {
+class Plotter {
 
     private String chartTitle;
     private XYSeriesCollection depotsAndCustomersCollection, routeSequenceCollection;
 
-    public Plotter(String chartTitle){
+    Plotter(String chartTitle){
         this.chartTitle = chartTitle;
         depotsAndCustomersCollection = new XYSeriesCollection();
         routeSequenceCollection = new XYSeriesCollection();
     }
 
-    public void plot(){
+    void plot(){
         ApplicationFrame applicationFrame = new ApplicationFrame(chartTitle);
         XYPlot plot = new XYPlot();
 
@@ -85,7 +85,7 @@ public class Plotter {
         RefineryUtilities.positionFrameOnScreen(applicationFrame, 0.0, 0.92);
     }
 
-    public void addScatterSeries(String key, double[][] coordinates) {
+    void addScatterSeries(String key, double[][] coordinates) {
         XYSeries newSeries = new XYSeries(key, false, true);
         for (int i = 0; i < coordinates.length; i++) {
             newSeries.add(coordinates[i][0], coordinates[i][1]);
@@ -94,7 +94,7 @@ public class Plotter {
     }
 
     // Convert to taking a list, making a new SeriesCollection and the replacing the old?
-    public void addLineSeries(String key, double[][] coordinates){
+    void addLineSeries(String key, double[][] coordinates){
         XYSeries newSeries = new XYSeries(key, false, true);
         for (int i = 0; i < coordinates.length; i++) {
             newSeries.add(coordinates[i][0], coordinates[i][1]);
@@ -102,7 +102,7 @@ public class Plotter {
         routeSequenceCollection.addSeries(newSeries);
     }
 
-    public void clearLineSeries() {
+    void clearLineSeries() {
         routeSequenceCollection.removeAllSeries();
     }
 }
