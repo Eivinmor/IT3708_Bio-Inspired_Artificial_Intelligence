@@ -94,11 +94,16 @@ public class Plotter {
         depotsAndCustomersCollection.addSeries(newSeries);
     }
 
+
     public void addLineSeries(String key, int[][] coordinates){
         XYSeries newSeries = new XYSeries(key, false, true);
         for (int i = 0; i < coordinates.length; i++) {
             newSeries.add(coordinates[i][0], coordinates[i][1]);
         }
         routeSequenceCollection.addSeries(newSeries);
+    }
+
+    public void clearLineSeries() {
+        routeSequenceCollection.removeAllSeries();
     }
 }
