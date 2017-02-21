@@ -5,8 +5,6 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.AbstractRenderer;
-import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.data.xy.XYSeries;
@@ -45,7 +43,7 @@ public class Plotter {
 
 
         // SCATTER PLOT
-        XYItemRenderer dotRenderer = new XYLineAndShapeRenderer(false, true);
+        XYLineAndShapeRenderer dotRenderer = new XYLineAndShapeRenderer(false, true);
 //        dotRenderer.setSeriesShape(0, new Ellipse2D.Double(-5.0, -5.0, 10.0, 10.0));
         dotRenderer.setSeriesShape(0, new Rectangle2D.Double(-7.0, -7.0, 14.0, 14.0));
         dotRenderer.setSeriesPaint(0, Color.BLACK);
@@ -58,9 +56,10 @@ public class Plotter {
 
 
         // LINES PLOT
-        XYItemRenderer lineRenderer = new XYLineAndShapeRenderer(true, false);
-        ((AbstractRenderer)lineRenderer).setAutoPopulateSeriesStroke(false);
+        XYLineAndShapeRenderer  lineRenderer = new XYLineAndShapeRenderer(true, false);
+        lineRenderer.setAutoPopulateSeriesStroke(false);
         lineRenderer.setBaseStroke(new BasicStroke(2));
+
         plot.setDataset(1, routeSequenceCollection);
         plot.setRenderer(1, lineRenderer);
         plot.mapDatasetToDomainAxis(1, 0);

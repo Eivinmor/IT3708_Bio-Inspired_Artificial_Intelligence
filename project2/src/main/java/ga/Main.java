@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
-        Map map = DataReader.readMapData("p11");
+        Map map = DataReader.readMapData("p01");
         double[][] depotCoords = map.getDepotCoords();
         double[][] customerCoords = map.getCustomerCoords();
 
