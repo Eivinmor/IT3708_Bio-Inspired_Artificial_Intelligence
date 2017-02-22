@@ -3,6 +3,6 @@ package representation;
 
 public abstract class Unit {
 
-    abstract double getX();
-    abstract double getY();
+    public abstract double getX();
+    public abstract double getY();
 }

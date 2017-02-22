@@ -3,8 +3,8 @@ package representation;
 public class Map {
 
     public final int maxVehiclesPerDepot, numOfCustomers, numOfDepots;
-    Depot[] depots;
-    Customer[] customers;
+    public final Depot[] depots;
+    public final Customer[] customers;
     public final String name;
 
     public Map(String name, int maxVehiclesPerDepot, int numOfCustomers, int numOfDepots,

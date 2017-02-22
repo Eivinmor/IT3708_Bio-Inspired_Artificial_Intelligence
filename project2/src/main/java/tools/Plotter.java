@@ -11,6 +11,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
+import representation.Unit;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
@@ -86,10 +87,10 @@ public class Plotter {
         RefineryUtilities.positionFrameOnScreen(applicationFrame, 0.0, 0.92);
     }
 
-    public void addScatterSeries(String key, double[][] coordinates) {
+    public void addScatterSeries(String key, Unit[] units) {
         XYSeries newSeries = new XYSeries(key, false, true);
-        for (int i = 0; i < coordinates.length; i++) {
-            newSeries.add(coordinates[i][0], coordinates[i][1]);
+        for (Unit unit : units) {
+            newSeries.add(unit.getX(), unit.getY());
         }
         depotsAndCustomersCollection.addSeries(newSeries);
     }
