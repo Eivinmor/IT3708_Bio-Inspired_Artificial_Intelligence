@@ -2,6 +2,7 @@ package tools;
 
 import java.io.*;
 import org.apache.commons.lang3.StringUtils;
+import representation.Customer;
 import representation.Map;
 
 public class DataReader {
@@ -26,15 +27,14 @@ public class DataReader {
             depotMaxLoad[i] = Double.valueOf(lineArray[1]);          // Q - maximum allowed vehicle load
         }
         // Read customer data
-        double[][] customerCoords = new double[numOfCustomers][2];
-        double[] customerDuration = new double[numOfCustomers];
-        double[] customerDemand = new double[numOfCustomers];
+        Customer[] customers = new Customer[numOfCustomers];
         for (int i = 0; i < numOfCustomers; i++) {
             String[] lineArray = StringUtils.split(reader.readLine());
-            customerCoords[i][0] = Double.valueOf(lineArray[1]);           // x - x coordinate
-            customerCoords[i][1] = Double.valueOf(lineArray[2]);           // y - y coordinate
-            customerDuration[i] = Double.valueOf(lineArray[3]);            // d - service duration requirement
-            customerDemand[i] = Double.valueOf(lineArray[4]);              // q - demand
+            double x = Double.valueOf(lineArray[1]);           // x - x coordinate
+            double y = Double.valueOf(lineArray[2]);           // y - y coordinate
+            double serviceDuration = Double.valueOf(lineArray[3]);            // d - service duration requirement
+            double demand = Double.valueOf(lineArray[4]);              // q - demand
+            customers[i] = new Customer(x, y, serviceDuration, demand);
         }
         // Read depot coordinates
         double[][] depotCoords = new double[numOfDepots][2];
