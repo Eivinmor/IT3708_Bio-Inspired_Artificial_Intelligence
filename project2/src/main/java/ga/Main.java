@@ -14,6 +14,7 @@ public class Main {
         double[][] depotCoords = map.depotCoords;
         double[][] customerCoords = map.customerCoords;
 
+
         Plotter plotter = new Plotter(map.name);
         plotter.plot();
         plotter.addScatterSeries("Depots", depotCoords);

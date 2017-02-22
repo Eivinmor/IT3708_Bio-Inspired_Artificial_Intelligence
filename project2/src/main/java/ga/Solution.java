@@ -6,6 +6,7 @@ import java.util.Random;
 
 public class Solution implements Comparable<Solution> {
 
+    private double totalCost;
     private Map map;
     ArrayList<ArrayList<Double>> depot_vehicle_routeData;
 
@@ -17,6 +18,7 @@ public class Solution implements Comparable<Solution> {
     @Override
     public int compareTo(Solution o) {
         return 0;
+        // Forskjell på distance vs forskjell på antall kjøretøy
     }
 
     private boolean isValid(){

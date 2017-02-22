@@ -25,4 +25,21 @@ public class Map {
         this.customerDemand = customerDemand;
     }
 
+    double getEuclideanDistance(boolean aIsDepot, int a, boolean bIsDepot, int b) {
+        double[] aCoords;
+        if (aIsDepot) aCoords = depotCoords[a];
+        else aCoords = customerCoords[a];
+        double aX = aCoords[0];
+        double aY = aCoords[1];
+
+        double[] bCoords;
+        if (bIsDepot) bCoords = depotCoords[b];
+        else bCoords = customerCoords[b];
+        double bX = bCoords[0];
+        double bY = bCoords[1];
+
+        return Math.sqrt(Math.pow(aX - bX, 2) + Math.pow(aY - bY, 2));
+    }
+
+
 }
