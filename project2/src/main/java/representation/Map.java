@@ -1,11 +1,11 @@
-package ga;
+package representation;
 
 public class Map {
 
-    final int maxVehiclesPerDepot, numOfCustomers, numOfDepots;
-    final double[] depotMaxDuration, depotMaxLoad, customerDuration, customerDemand;
-    final double[][] depotCoords, customerCoords;
-    final String name;
+    public final int maxVehiclesPerDepot, numOfCustomers, numOfDepots;
+    public final double[] depotMaxDuration, depotMaxLoad, customerDuration, customerDemand;
+    public final double[][] depotCoords, customerCoords;
+    public final String name;
 
     public Map(String name, int maxVehiclesPerDepot, int numOfCustomers, int numOfDepots,
                double[] depotMaxDuration, double[] depotMaxLoad, double[][] depotCoords,
@@ -25,7 +25,7 @@ public class Map {
         this.customerDemand = customerDemand;
     }
 
-    double getEuclideanDistance(boolean aIsDepot, int a, boolean bIsDepot, int b) {
+    double euclideanDistance(boolean aIsDepot, int a, boolean bIsDepot, int b) {
         double[] aCoords;
         if (aIsDepot) aCoords = depotCoords[a];
         else aCoords = customerCoords[a];
@@ -39,6 +39,19 @@ public class Map {
         double bY = bCoords[1];
 
         return Math.sqrt(Math.pow(aX - bX, 2) + Math.pow(aY - bY, 2));
+    }
+
+    public int getClosestDepot(int customer) {
+        int closestDepot = -1;
+        double closestDistance = Double.MAX_VALUE;
+        for (int i = 0; i < numOfDepots; i++) {
+            double distance = euclideanDistance(false, customer, true, i);
+            if (distance < closestDistance) {
+                closestDepot = i;
+                closestDistance = distance;
+            }
+        }
+        return closestDepot;
     }
 
 

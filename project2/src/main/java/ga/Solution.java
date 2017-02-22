@@ -1,14 +1,16 @@
 package ga;
 
+import representation.Map;
+
 import java.util.ArrayList;
-import java.util.Random;
 
 
 public class Solution implements Comparable<Solution> {
 
     private double totalCost;
+    private double weightedScore;
     private Map map;
-    ArrayList<ArrayList<Double>> depot_vehicle_routeData;
+    ArrayList<ArrayList<ArrayList<Integer>>> depot_vehicle_routeData;       // Distance, Load, customers...
 
 
     public Solution(Map map){
@@ -18,7 +20,7 @@ public class Solution implements Comparable<Solution> {
     @Override
     public int compareTo(Solution o) {
         return 0;
-        // Forskjell på distance vs forskjell på antall kjøretøy
+        // Weighted score basert på distance og antall kjøretøy
     }
 
     private boolean isValid(){
@@ -26,14 +28,18 @@ public class Solution implements Comparable<Solution> {
     }
 
     void generateRandomSolution() {
-        depot_vehicle_routeData = new ArrayList<>(map.numOfDepots);
-        Random random = new Random();
-        int customerCount = 0;
-        for (int i = 0; i < map.numOfCustomers; i++) {
-            int depot = random.nextInt(map.numOfDepots);
-            int vehicle = random.nextInt(map.maxVehiclesPerDepot);
-
+        // Make arraylist
+        ArrayList<ArrayList<Integer>> customersPerDepot = new ArrayList<>(map.numOfDepots);
+        for (int i = 0; i < map.numOfDepots; i++) {
+            customersPerDepot.add(new ArrayList<>());
         }
+        // Assign customers to depots
+        for (int i = 0; i < map.numOfCustomers; i++) {
+            customersPerDepot.get(map.getClosestDepot(i)).add(i);
+        }
+        // Assign customers to routes
+
+
     }
 
 

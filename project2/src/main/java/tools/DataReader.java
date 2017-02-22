@@ -2,7 +2,7 @@ package tools;
 
 import java.io.*;
 import org.apache.commons.lang3.StringUtils;
-import ga.Map;
+import representation.Map;
 
 public class DataReader {
 
