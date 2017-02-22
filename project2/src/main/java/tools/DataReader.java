@@ -2,8 +2,7 @@ package tools;
 
 import java.io.*;
 import org.apache.commons.lang3.StringUtils;
-import representation.Customer;
-import representation.Map;
+import representation.*;
 
 public class DataReader {
 
@@ -26,56 +25,32 @@ public class DataReader {
             depotMaxDuration[i] = Double.valueOf(lineArray[0]);                // D - maximum route duration
             depotMaxLoad[i] = Double.valueOf(lineArray[1]);          // Q - maximum allowed vehicle load
         }
-        // Read customer data
+        // Read customer data and create Customers
         Customer[] customers = new Customer[numOfCustomers];
         for (int i = 0; i < numOfCustomers; i++) {
             String[] lineArray = StringUtils.split(reader.readLine());
-            double x = Double.valueOf(lineArray[1]);           // x - x coordinate
-            double y = Double.valueOf(lineArray[2]);           // y - y coordinate
-            double serviceDuration = Double.valueOf(lineArray[3]);            // d - service duration requirement
-            double demand = Double.valueOf(lineArray[4]);              // q - demand
-            customers[i] = new Customer(x, y, serviceDuration, demand);
+            int number = Integer.valueOf(lineArray[0]);
+            double x = Double.valueOf(lineArray[1]);                            // x - x coordinate
+            double y = Double.valueOf(lineArray[2]);                            // y - y coordinate
+            double serviceDuration = Double.valueOf(lineArray[3]);              // d - service duration requirement
+            double demand = Double.valueOf(lineArray[4]);                       // q - demand
+            customers[i] = new Customer(number, x, y, serviceDuration, demand);
         }
-        // Read depot coordinates
-        double[][] depotCoords = new double[numOfDepots][2];
+        // Read depot coordinates and create Depots
+        Depot[] depots = new Depot[numOfDepots];
         for (int i = 0; i < numOfDepots; i++) {
             String[] lineArray = StringUtils.split(reader.readLine());
-            depotCoords[i][0] = Double.valueOf(lineArray[1]);                // x - x coordinate
-            depotCoords[i][1] = Double.valueOf(lineArray[2]);                // y - y coordinate
+            int number = Integer.valueOf(lineArray[0]);
+            double x = Double.valueOf(lineArray[1]);           // x - x coordinate
+            double y = Double.valueOf(lineArray[2]);           // y - y coordinate
+            double maxRouteDuration = depotMaxDuration[i];
+            double maxLoadPerVehicle = depotMaxLoad[i];
+            depots[i] = new Depot(number, x, y, maxRouteDuration, maxLoadPerVehicle);
         }
 
-        Map map = new Map(fileName, maxVehiclesPerDepot, numOfCustomers, numOfDepots,
-                depotMaxDuration, depotMaxLoad, depotCoords,
-                customerCoords, customerDuration, customerDemand);
+        Map map = new Map(fileName, maxVehiclesPerDepot, numOfCustomers, numOfDepots, depots, customers);
         return map;
     }
 
-//    public void readSolutionData(String fileName) throws IOException {
-//        File dataFile = new File(filePathRoot + "\\solutions\\" + fileName + ".res");
-//        BufferedReader reader = new BufferedReader(new FileReader(dataFile));
-//        double distance = Double.valueOf(reader.readLine());
-//
-//        ArrayList<Integer> depotNumbers = new ArrayList<>();
-//        ArrayList<Integer> vehicleNumbers = new ArrayList<>();
-//        ArrayList<Double> routeDurations = new ArrayList<>();
-//        ArrayList<Integer> vehicleLoad = new ArrayList<>();
-//        ArrayList<ArrayList<Integer>> solutionSequences = new ArrayList<>();
-//
-//        String line;
-//        while (((line = reader.readLine()) != null) && !("".equals(line))) {
-//            String[] lineArray = StringUtils.split(line);
-//            depotNumbers.add(Integer.valueOf(lineArray[0]));
-//            vehicleNumbers.add(Integer.valueOf(lineArray[1]));
-//            routeDurations.add(Double.valueOf(lineArray[2]));
-//            vehicleLoad.add(Integer.valueOf(lineArray[3]));
-//
-//            ArrayList<Integer> routeSequence = new ArrayList<>();
-//            for (int j = 4; j < lineArray.length; j++) {
-//                routeSequence.add(Integer.valueOf(lineArray[j]));
-//            }
-//            solutionSequences.add(routeSequence);
-//        }
-//        ga.Solution solution = new ga.Solution(depotNumbers, vehicleNumbers, routeDurations, vehicleLoad, solutionSequences);
-//    }
 
 }
