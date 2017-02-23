@@ -11,7 +11,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
-import representation.Unit;
+import representation.*;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;

@@ -56,5 +56,15 @@ public class Map {
         return distances;
     }
 
+    public double getDistance (Unit unit1, Unit unit2) {
+        if (unit1.getClass().getSimpleName().equals("Customer") && unit2.getClass().getSimpleName().equals("Customer"))
+            return customerDistances[unit1.number-1][unit2.number-1];
+        else if (unit1.getClass().getSimpleName().equals("Depot") && unit2.getClass().getSimpleName().equals("Customer"))
+            return depotCustomerDistances[unit1.number-1][unit2.number-1];
+        else if (unit1.getClass().getSimpleName().equals("Customer") && unit2.getClass().getSimpleName().equals("Depot"))
+            return depotCustomerDistances[unit2.number-1][unit1.number-1];
+        else return Double.MAX_VALUE;
+    }
+
 
 }
