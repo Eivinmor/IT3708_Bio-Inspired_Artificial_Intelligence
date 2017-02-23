@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        Map map = DataReader.readMapData("p20");
+        Map map = DataReader.readMapData("p01");
 
         Plotter plotter = new Plotter(map.name);
         plotter.plot();
@@ -15,10 +15,6 @@ public class Main {
         plotter.addScatterSeries("Depots", map.depots);
         plotter.addScatterSeries("Customers", map.customers);
 
-
-        Solution solution = new Solution(map);
-        solution.generateRandomSolution();
-        int key = 0;
 
     }
 }

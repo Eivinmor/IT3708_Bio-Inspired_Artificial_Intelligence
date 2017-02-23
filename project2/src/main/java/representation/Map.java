@@ -8,6 +8,7 @@ public class Map {
     public final int maxVehiclesPerDepot, numOfCustomers, numOfDepots;
     public final Depot[] depots;
     public final Customer[] customers;
+    public final double[][] customerDistances, depotCustomerDistances;
 
     public Map(String name, int maxVehiclesPerDepot, int numOfCustomers, int numOfDepots,
                Depot[] depots, Customer[] customers) {
@@ -17,20 +18,42 @@ public class Map {
         this.numOfDepots = numOfDepots;
         this.depots = depots;
         this.customers = customers;
+        this.customerDistances = calculateC2CDistances();
+        this.depotCustomerDistances = calculateD2CDistances();
 
     }
 
     public Depot getClosestDepot(Customer customer) {
-        Depot closestDepot = depots[0];
+        int closestDepot = 0;
         double closestDistance = Double.MAX_VALUE;
-        for (Depot depot : depots) {
-            double distance = Formulas.euclideanDistance(customer, depot);
+        for (int i = 0; i < numOfDepots; i++) {
+            double distance = depotCustomerDistances[i][customer.number -1];
             if (distance < closestDistance) {
-                closestDepot = depot;
+                closestDepot = i;
                 closestDistance = distance;
             }
         }
-        return closestDepot;
+        return depots[closestDepot];
+    }
+
+    private double[][] calculateC2CDistances() {
+        double[][] distances = new double[numOfCustomers][numOfCustomers];
+        for (int i = 0; i < numOfCustomers; i++) {
+            for (int j = 0; j < numOfCustomers; j++) {
+                distances[i][j] = Formulas.euclideanDistance(customers[i], customers[j]);
+            }
+        }
+        return distances;
+    }
+
+    private double[][] calculateD2CDistances() {
+        double[][] distances = new double[numOfDepots][numOfCustomers];
+        for (int i = 0; i < numOfDepots; i++) {
+            for (int j = 0; j < numOfCustomers; j++) {
+                distances[i][j] = Formulas.euclideanDistance(depots[i], customers[j]);
+            }
+        }
+        return distances;
     }
 
 
