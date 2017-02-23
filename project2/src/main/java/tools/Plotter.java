@@ -1,5 +1,6 @@
 package tools;
 
+import ga.Solution;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
@@ -30,7 +31,7 @@ public class Plotter {
         routeSequenceCollection = new XYSeriesCollection();
     }
 
-    public void plot(){
+    public void init(){
         ApplicationFrame applicationFrame = new ApplicationFrame(chartTitle);
         XYPlot plot = new XYPlot();
 
@@ -102,6 +103,26 @@ public class Plotter {
             newSeries.add(unit.x, unit.y);
         }
         routeSequenceCollection.addSeries(newSeries);
+    }
+
+    public void plotSolution(Solution solution) {
+        ArrayList<Unit>[] routes = solution.getRoutes();
+        for (int i = 0; i < routes.length; i++) {
+            ArrayList<Unit> route = new ArrayList<>();
+            route.add(routes[i].get(0));
+            int j;
+            for (j = 1; j < routes[i].size(); j++) {
+                Unit unit = routes[i].get(j);
+                if (unit.getClass().getSimpleName().equals("Depot")) {
+                    route.add(unit);
+                    addLineSeries((i+1) + "," + (j+1), route);
+                    route = new ArrayList<>();
+                }
+                route.add(unit);
+            }
+            addLineSeries((i+1) + "," + (j+1), route);
+        }
+
     }
 
     public void clearLineSeries() {

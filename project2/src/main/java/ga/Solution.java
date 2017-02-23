@@ -3,6 +3,7 @@ package ga;
 import representation.*;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 
 public class Solution implements Comparable<Solution> {
@@ -14,8 +15,8 @@ public class Solution implements Comparable<Solution> {
 
     Solution(Map map){
         this.map = map;
-        depotCustomersArray = new ArrayList[4];
-        depotRoutesArray = new ArrayList[4];
+        depotCustomersArray = new ArrayList[map.numOfDepots];
+        depotRoutesArray = new ArrayList[map.numOfDepots];
         for (int i = 0; i < map.numOfDepots; i++) {
             depotCustomersArray[i] = new ArrayList<>();
             depotRoutesArray[i] = new ArrayList<>();
@@ -30,6 +31,7 @@ public class Solution implements Comparable<Solution> {
     void generateInitialSolution() {
         clustering();
         routingAndScheduling();
+        mutate();
     }
 
     void clustering() {
@@ -79,7 +81,20 @@ public class Solution implements Comparable<Solution> {
         }
     }
 
-    ArrayList<Unit>[] getRoutes() {
+    void mutate() {
+        Random random = new Random();
+        for (int i = 0; i < map.numOfDepots; i++) {
+            int swapId1 = random.nextInt(depotRoutesArray[i].size());
+            Unit swapUnit1 = depotRoutesArray[i].get(swapId1);
+            int swapId2 = random.nextInt(depotRoutesArray[i].size());
+            Unit swapUnit2 = depotRoutesArray[i].get(swapId2);
+            depotRoutesArray[i].set(swapId1, swapUnit2);
+            depotRoutesArray[i].set(swapId2, swapUnit1);
+        }
+    }
+
+
+    public ArrayList<Unit>[] getRoutes() {
         return depotRoutesArray;
     }
 
