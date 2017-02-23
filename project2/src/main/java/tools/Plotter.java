@@ -1,5 +1,6 @@
 package tools;
 
+import ga.Solution;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
@@ -11,11 +12,14 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
+import representation.Customer;
 import representation.Unit;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 
 public class Plotter {
@@ -95,14 +99,14 @@ public class Plotter {
         depotsAndCustomersCollection.addSeries(newSeries);
     }
 
-    // Convert to taking a list, making a new SeriesCollection and the replacing the old?
-    public void addLineSeries(String key, double[][] coordinates){
+    public void addLineSeries(String key, ArrayList<Unit> units){
         XYSeries newSeries = new XYSeries(key, false, true);
-        for (int i = 0; i < coordinates.length; i++) {
-            newSeries.add(coordinates[i][0], coordinates[i][1]);
+        for (Unit unit : units) {
+            newSeries.add(unit.getX(), unit.getY());
         }
         routeSequenceCollection.addSeries(newSeries);
     }
+
 
     public void clearLineSeries() {
         routeSequenceCollection.removeAllSeries();

@@ -1,8 +1,8 @@
 package representation;
 
 
-public abstract class Unit {
+public interface Unit {
 
-    public abstract double getX();
-    public abstract double getY();
+    double getX();
+    double getY();
 }

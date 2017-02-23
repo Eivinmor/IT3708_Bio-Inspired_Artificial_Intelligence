@@ -40,7 +40,7 @@ public class DataReader {
         Depot[] depots = new Depot[numOfDepots];
         for (int i = 0; i < numOfDepots; i++) {
             String[] lineArray = StringUtils.split(reader.readLine());
-            int number = Integer.valueOf(lineArray[0]);
+            int number = Integer.valueOf(i+1);
             double x = Double.valueOf(lineArray[1]);           // x - x coordinate
             double y = Double.valueOf(lineArray[2]);           // y - y coordinate
             double maxRouteDuration = depotMaxDuration[i];

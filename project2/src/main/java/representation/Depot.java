@@ -1,12 +1,14 @@
 package representation;
 
 
-public class Depot extends Unit{
+public class Depot implements Unit{
 
-    private int number;
-    private double x, y, maxRouteDuration, maxLoadPerVehicle;
+    public final int number;
+    public final double maxRouteDuration, maxLoadPerVehicle;
+    private final double x, y;
 
     public Depot(int number, double x, double y, double maxRouteDuration, double maxLoadPerVehicle) {
+        this.number = number;
         this.x = x;
         this.y = y;
         this.maxRouteDuration = maxRouteDuration;
@@ -17,8 +19,6 @@ public class Depot extends Unit{
 
     public double getY() {return y;}
 
-    public void printNumber(){
-        System.out.println(number);
-    }
+    public String toString() {return Integer.toString(number);}
 
 }

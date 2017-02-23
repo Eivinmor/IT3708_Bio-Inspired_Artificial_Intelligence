@@ -1,10 +1,11 @@
 package representation;
 
 
-public class Customer extends Unit{
+public class Customer implements Unit{
 
-    private int number;
-    private double x, y, serviceDuration, demand;
+    public final int number;
+    public final double serviceDuration, demand;
+    private double x, y;
 
     public Customer(int number, double x, double y, double serviceDuration, double demand) {
         this.number = number;
@@ -18,9 +19,7 @@ public class Customer extends Unit{
 
     public double getY() {return y;}
 
-    public void printNumber(){
-        System.out.println(number);
-    }
+    public String toString() {return Integer.toString(number);}
 
 
 }

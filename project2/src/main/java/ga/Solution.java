@@ -1,8 +1,6 @@
 package ga;
 
-import representation.Map;
-
-import java.util.ArrayList;
+import representation.*;
 
 
 public class Solution implements Comparable<Solution> {
@@ -10,11 +8,15 @@ public class Solution implements Comparable<Solution> {
     private double totalCost;
     private double weightedScore;
     private Map map;
-    ArrayList<ArrayList<ArrayList<Integer>>> depot_vehicle_routeData;       // Distance, Load, customers...
+    private SolutionDepot[] solutionDepots;
 
 
-    public Solution(Map map){
+    Solution(Map map){
         this.map = map;
+        solutionDepots = new SolutionDepot[map.numOfDepots];
+        for (Depot depot : map.depots) {
+            solutionDepots[depot.number-1] = new SolutionDepot(depot);
+        }
     }
 
     @Override
@@ -23,24 +25,21 @@ public class Solution implements Comparable<Solution> {
         // Weighted score basert på distance og antall kjøretøy
     }
 
-    private boolean isValid(){
-        return false;
-    }
-
     void generateRandomSolution() {
-        // Make arraylist
-        ArrayList<ArrayList<Integer>> customersPerDepot = new ArrayList<>(map.numOfDepots);
-        for (int i = 0; i < map.numOfDepots; i++) {
-            customersPerDepot.add(new ArrayList<>());
+        for (Customer customer : map.customers) {
+            solutionDepots[map.getClosestDepot(customer).number-1].addCustomer(customer);
         }
-        // Assign customers to depots
-        for (int i = 0; i < map.numOfCustomers; i++) {
-            customersPerDepot.get(map.getClosestDepot(i)).add(i);
+        for (SolutionDepot solutionDepot : solutionDepots) {
+            for (Customer customer : solutionDepot.getCustomers()) {
+                solutionDepot.addCustomerToCurrentRoute(customer);
+            }
         }
-        // Assign customers to routes
-
-
     }
+
+    public SolutionDepot[] getSolutionDepots() {
+        return solutionDepots;
+    }
+
 
 
 }

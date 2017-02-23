@@ -1,11 +1,13 @@
 package representation;
+import tools.Formulas;
+
 
 public class Map {
 
+    public final String name;
     public final int maxVehiclesPerDepot, numOfCustomers, numOfDepots;
     public final Depot[] depots;
     public final Customer[] customers;
-    public final String name;
 
     public Map(String name, int maxVehiclesPerDepot, int numOfCustomers, int numOfDepots,
                Depot[] depots, Customer[] customers) {
@@ -15,19 +17,16 @@ public class Map {
         this.numOfDepots = numOfDepots;
         this.depots = depots;
         this.customers = customers;
+
     }
 
-    double euclideanDistance(Unit a, Unit b) {
-        return Math.sqrt(Math.pow(a.getX() - b.getX(), 2) + Math.pow(a.getX() - b.getY(), 2));
-    }
-
-    public int getClosestDepot(int customer) {
-        int closestDepot = -1;
+    public Depot getClosestDepot(Customer customer) {
+        Depot closestDepot = depots[0];
         double closestDistance = Double.MAX_VALUE;
-        for (int i = 0; i < numOfDepots; i++) {
-            double distance = euclideanDistance(customers[customer], depots[i]);
+        for (Depot depot : depots) {
+            double distance = Formulas.euclideanDistance(customer, depot);
             if (distance < closestDistance) {
-                closestDepot = i;
+                closestDepot = depot;
                 closestDistance = distance;
             }
         }
