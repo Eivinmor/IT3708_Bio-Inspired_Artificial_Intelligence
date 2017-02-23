@@ -8,15 +8,11 @@ public class Solution implements Comparable<Solution> {
     private double totalCost;
     private double weightedScore;
     private Map map;
-    private SolutionDepot[] solutionDepots;
 
 
     Solution(Map map){
         this.map = map;
-        solutionDepots = new SolutionDepot[map.numOfDepots];
-        for (Depot depot : map.depots) {
-            solutionDepots[depot.number-1] = new SolutionDepot(depot);
-        }
+
     }
 
     @Override
@@ -27,17 +23,7 @@ public class Solution implements Comparable<Solution> {
 
     void generateRandomSolution() {
         for (Customer customer : map.customers) {
-            solutionDepots[map.getClosestDepot(customer).number-1].addCustomer(customer);
         }
-        for (SolutionDepot solutionDepot : solutionDepots) {
-            for (Customer customer : solutionDepot.getCustomers()) {
-                solutionDepot.addCustomerToCurrentRoute(customer);
-            }
-        }
-    }
-
-    public SolutionDepot[] getSolutionDepots() {
-        return solutionDepots;
     }
 
 

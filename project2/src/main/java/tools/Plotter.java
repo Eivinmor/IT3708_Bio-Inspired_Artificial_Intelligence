@@ -1,6 +1,5 @@
 package tools;
 
-import ga.Solution;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
@@ -12,13 +11,11 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
-import representation.Customer;
 import representation.Unit;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 
@@ -94,7 +91,7 @@ public class Plotter {
     public void addScatterSeries(String key, Unit[] units) {
         XYSeries newSeries = new XYSeries(key, false, true);
         for (Unit unit : units) {
-            newSeries.add(unit.getX(), unit.getY());
+            newSeries.add(unit.x, unit.y);
         }
         depotsAndCustomersCollection.addSeries(newSeries);
     }
@@ -102,11 +99,10 @@ public class Plotter {
     public void addLineSeries(String key, ArrayList<Unit> units){
         XYSeries newSeries = new XYSeries(key, false, true);
         for (Unit unit : units) {
-            newSeries.add(unit.getX(), unit.getY());
+            newSeries.add(unit.x, unit.y);
         }
         routeSequenceCollection.addSeries(newSeries);
     }
-
 
     public void clearLineSeries() {
         routeSequenceCollection.removeAllSeries();
