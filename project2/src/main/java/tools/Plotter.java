@@ -75,7 +75,7 @@ public class Plotter {
         plot.setDomainGridlinesVisible(false);
         plot.setRangeGridlinesVisible(false);
 
-        JFreeChart chart = new JFreeChart(chartTitle, JFreeChart.DEFAULT_TITLE_FONT, plot, true);
+        JFreeChart chart = new JFreeChart(chartTitle, JFreeChart.DEFAULT_TITLE_FONT, plot, false);
         TextTitle newTitle = new TextTitle(chartTitle, new Font("SansSerif", Font.BOLD, 16));
         newTitle.setPaint(Color.DARK_GRAY);
         chart.setTitle(newTitle);

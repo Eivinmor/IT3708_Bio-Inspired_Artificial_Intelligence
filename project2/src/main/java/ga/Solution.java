@@ -8,7 +8,6 @@ import java.util.Random;
 
 public class Solution implements Comparable<Solution> {
 
-    private double totalDistance, weightedScore;
     private Map map;
     private ArrayList<Customer>[] depotCustomersArray;
     private ArrayList<Unit>[] depotRoutesArray;
@@ -17,9 +16,19 @@ public class Solution implements Comparable<Solution> {
         this.map = map;
         depotCustomersArray = new ArrayList[map.numOfDepots];
         depotRoutesArray = new ArrayList[map.numOfDepots];
-        for (int i = 0; i < map.numOfDepots; i++) {
-            depotCustomersArray[i] = new ArrayList<>();
-            depotRoutesArray[i] = new ArrayList<>();
+        generateInitialSolution();
+    }
+
+    Solution(Solution cloneSolution) {
+        this.map = cloneSolution.map;
+
+        this.depotCustomersArray = new ArrayList[map.numOfDepots];
+        for (int i = 0; i < cloneSolution.depotCustomersArray.length; i++) {
+            this.depotCustomersArray[i] = new ArrayList<>(cloneSolution.depotCustomersArray[i]);
+        }
+        this.depotRoutesArray = new ArrayList[map.numOfDepots];
+        for (int i = 0; i < cloneSolution.depotRoutesArray.length; i++) {
+            this.depotRoutesArray[i] = new ArrayList<>(cloneSolution.depotRoutesArray[i]);
         }
     }
 
@@ -29,18 +38,17 @@ public class Solution implements Comparable<Solution> {
     }
 
     void generateInitialSolution() {
-        depotCustomersArray = clustering();
-        routingAndScheduling();
+        depotCustomersArray = clustering(-10);
+        depotRoutesArray = routingAndScheduling();
 //        mutate();
     }
 
-    ArrayList<Customer>[] clustering() {
+    ArrayList<Customer>[] clustering(int probExponent) {
 //        for (Customer customer : map.customers) {
 //            depotCustomersArray[map.getClosestDepot(customer).number-1].add(customer);
 //        }
         // Set exponential probability to be assigned to depot based on distance
         Random random = new Random();
-        int exponent = -3;
         ArrayList<Customer>[] clusteredCustomers = new ArrayList[map.numOfDepots];
         for (int i = 0; i < map.numOfDepots; i++) {
             clusteredCustomers[i] = new ArrayList<>();
@@ -50,20 +58,18 @@ public class Solution implements Comparable<Solution> {
             // Find distance and calc probability
             double allDepotDistances = 0;
             for (int i = 0; i < map.numOfDepots; i++) {
-                allDepotDistances += Math.pow(map.getDistance(customer, map.depots[i]), exponent);
+                allDepotDistances += Math.pow(map.getDistance(customer, map.depots[i]), probExponent);
             }
             for (int i = 0; i < map.numOfDepots; i++) {
                 double distance = map.getDistance(customer, map.depots[i]);
-                double prob = Math.pow(distance, exponent)/allDepotDistances;
+                double prob = Math.pow(distance, probExponent)/allDepotDistances;
                 depotProb[i] = prob;
             }
             // Choose depot
             double randValue = random.nextDouble();
             for (int i = 0; i < map.numOfDepots; i++) {
-                System.out.println(depotProb[i] + ", " + randValue);
                 if (depotProb[i] > randValue) {
                     clusteredCustomers[i].add(customer);
-                    System.out.println("YES");
                     break;
                 }
                 randValue -= depotProb[i];
@@ -72,9 +78,9 @@ public class Solution implements Comparable<Solution> {
         return clusteredCustomers;
     }
 
-    void routingAndScheduling() {
-
-        for (int i = 0; i < depotCustomersArray.length; i++) {
+    private ArrayList<Unit>[] routingAndScheduling() {
+        ArrayList<Unit>[] depotRoutesArray = new ArrayList[map.numOfDepots];
+        for (int i = 0; i < map.numOfDepots; i++) {
             Depot depot = map.depots[i];
             ArrayList<Customer> depotCustomersPool = new ArrayList<>(depotCustomersArray[i]);
             ArrayList<Unit> depotRoutes = new ArrayList<>();
@@ -86,6 +92,7 @@ public class Solution implements Comparable<Solution> {
             double load = 0;
 
             for (int j = 0; j < depotCustomersArray[i].size(); j++) {
+                // Find closest next customer
                 Customer closestCustomer = depotCustomersPool.get(0);
                 Unit lastUnit = depotRoutes.get(depotRoutes.size()-1);
                 double shortestDistance = map.getDistance(closestCustomer, lastUnit);
@@ -99,11 +106,10 @@ public class Solution implements Comparable<Solution> {
                 }
                 depotCustomersPool.remove(closestCustomer);
 
-                if ( load + closestCustomer.demand > maxLoad || (maxDuration > 0 && duration + map.getDistance(depot, closestCustomer) > maxDuration)) {
+                if ( load + closestCustomer.demand > maxLoad || (maxDuration > 0 && duration + map.getDistance(depot,
+                        closestCustomer) > maxDuration)) {
                     depotRoutes.add(depot);
-                    System.out.println(duration);
                     duration += map.getDistance(lastUnit, depot);
-                    totalDistance += duration;
                     duration = map.getDistance(depot, closestCustomer);
                     load = 0;
                 }
@@ -111,27 +117,49 @@ public class Solution implements Comparable<Solution> {
                 load += closestCustomer.demand;
                 duration += closestCustomer.serviceDuration + shortestDistance;
             }
-            depotRoutes.add(depot);
             duration += map.getDistance(depotRoutes.get(depotRoutes.size()-1), depot);
-            totalDistance += duration;
+            depotRoutes.add(depot);
             depotRoutesArray[i] = depotRoutes;
         }
+        return depotRoutesArray;
     }
 
     void mutate() {
         Random random = new Random();
-        for (int i = 0; i < map.numOfDepots; i++) {
-            int swapId1 = random.nextInt(depotRoutesArray[i].size());
-            Unit swapUnit1 = depotRoutesArray[i].get(swapId1);
-            int swapId2 = random.nextInt(depotRoutesArray[i].size());
-            Unit swapUnit2 = depotRoutesArray[i].get(swapId2);
-            depotRoutesArray[i].set(swapId1, swapUnit2);
-            depotRoutesArray[i].set(swapId2, swapUnit1);
+
+        if (random.nextBoolean()) {
+            for (int i = 0; i < map.numOfDepots; i++) {
+                int swapDepot1 = random.nextInt(map.numOfDepots);
+                int swapId1 = random.nextInt(depotCustomersArray[swapDepot1].size());
+
+                Customer swapUnit1 = depotCustomersArray[swapDepot1].get(swapId1);
+
+                int swapDepot2 = random.nextInt(map.numOfDepots);
+                int swapId2 = random.nextInt(depotCustomersArray[swapDepot2].size());
+                Customer swapUnit2 = depotCustomersArray[swapDepot2].get(swapId2);
+
+                depotCustomersArray[swapDepot1].set(swapId1, swapUnit2);
+                depotCustomersArray[swapDepot2].set(swapId2, swapUnit1);
+            }
         }
+        depotRoutesArray = routingAndScheduling();
+        int randomDepot = random.nextInt(map.numOfDepots);
+        int randomRouteUnit1 = random.nextInt(depotRoutesArray[randomDepot].size());
+        int randomRouteUnit2 = random.nextInt(depotRoutesArray[randomDepot].size());
+        Unit swapUnit1 = depotRoutesArray[randomDepot].get(randomRouteUnit1);
+        Unit swapUnit2 = depotRoutesArray[randomDepot].get(randomRouteUnit2);
+        depotRoutesArray[randomDepot].set(randomRouteUnit1, swapUnit2);
+        depotRoutesArray[randomDepot].set(randomRouteUnit2, swapUnit1);
     }
 
     public double getTotalDistance() {
-        return totalDistance;
+        double distance = 0;
+        for (ArrayList<Unit> route : depotRoutesArray) {
+            for (int i = 0; i < route.size()-1; i++) {
+                distance += map.getDistance(route.get(i), route.get(i+1));
+            }
+        }
+        return distance;
     }
 
 

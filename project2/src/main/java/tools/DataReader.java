@@ -7,7 +7,7 @@ import representation.*;
 public class DataReader {
 
     public static Map readMapData(String fileName) throws IOException {
-        String filePathRoot = System.getProperty("user.dir") + "\\src\\main\\java\\data";
+        String filePathRoot = System.getProperty("user.dir") + "\\src\\main\\resources";
         File dataFile = new File(filePathRoot + "\\maps\\" + fileName);
         BufferedReader reader = new BufferedReader(new FileReader(dataFile));
 

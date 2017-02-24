@@ -1,6 +1,8 @@
 package representation;
 import tools.Formulas;
 
+import java.util.ArrayList;
+
 
 public class Map {
 
@@ -20,7 +22,6 @@ public class Map {
         this.customers = customers;
         this.customerDistances = calculateC2CDistances();
         this.depotCustomerDistances = calculateD2CDistances();
-
     }
 
     public Depot getClosestDepot(Customer customer) {
@@ -64,6 +65,14 @@ public class Map {
         else if (unit1.getClass().getSimpleName().equals("Customer") && unit2.getClass().getSimpleName().equals("Depot"))
             return depotCustomerDistances[unit2.number-1][unit1.number-1];
         else return 0;
+    }
+
+    public double getPathDistance (ArrayList<Unit> path) {
+        double totalDistance = 0;
+        for (int i = 0; i < path.size()-1; i++) {
+            totalDistance = getDistance(path.get(i), path.get(i+1));
+        }
+        return totalDistance;
     }
 
 
