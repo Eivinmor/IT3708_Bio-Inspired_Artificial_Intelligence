@@ -79,7 +79,9 @@ public class Solution {
         double load = 0;
 
         ArrayList<Customer> route = new ArrayList<>();
-        route.add(findClosestCustomer(depot, depotCustomersPool));
+        Customer firstCustomer =  findClosestCustomer(depot, depotCustomersPool);
+        route.add(firstCustomer);
+        depotCustomersPool.remove(firstCustomer);
 
         while (depotCustomersPool.size() > 0) {
             Customer lastCustomer = route.get(route.size()-1);
@@ -92,17 +94,24 @@ public class Solution {
                     || load + stepDemand > maxLoad) {
                 depotRoutes.add(route);
                 route = new ArrayList<>();
-                route.add(findClosestCustomer(depot, depotCustomersPool));
+                closestCustomer = findClosestCustomer(depot, depotCustomersPool);
                 duration = 0;
                 load = 0;
             }
             route.add(closestCustomer);
+//            for (int i = 0; i < route.size(); i++) {
+//                System.out.print(route.get(i) + " ");
+//            }
+//            System.out.println();
             duration += stepDistance + stepService;
             load += stepDemand;
             depotCustomersPool.remove(closestCustomer);
+//            for (int i = 0; i < depotCustomersPool.size(); i++) {
+//                System.out.print(depotCustomersPool.get(i) + " ");
+//            }
+//            System.out.println();
         }
         depotRoutes.add(route);
-        System.out.println(depotRoutes.size());
         return depotRoutes;
 
     }
@@ -125,18 +134,36 @@ public class Solution {
     public ArrayList<ArrayList<Unit>>[] getRoutes() {
         ArrayList<ArrayList<Unit>>[] routesWithDepot = new ArrayList[map.numOfDepots];
         for (int i = 0; i < routes.length; i++) {
-            ArrayList<ArrayList<Unit>> depotRoutes = new ArrayList<>();
+            ArrayList<ArrayList<Unit>> depot = new ArrayList<>();
             for (int j = 0; j < routes[i].size(); j++) {
                 ArrayList<Unit> route = new ArrayList<>();
-                for (int k = 0; k < routes[i].get(j).size(); k++) {
-                    route.add(map.depots[i]);
-                    route.addAll(routes[i].get(j));
+                route.add(map.depots[i]);
+                route.addAll(routes[i].get(j));
+                route.add(map.depots[i]);
+                for (int k = 0; k < route.size(); k++) {
+                    System.out.print(route.get(k) + " ");
                 }
-                depotRoutes.add(route);
+                System.out.println();
+                depot.add(route);
             }
-            routesWithDepot[i] = depotRoutes;
+            routesWithDepot[i] = depot;
         }
         return routesWithDepot;
+    }
+
+    double getTotalDuration() {
+        double totalDuration = map.totalServiceDuration;
+        for (int i = 0; i < routes.length; i++) {
+            Depot depot = map.depots[i];
+            for (int j = 0; j < routes[i].size(); j++) {
+                totalDuration += map.getDistance(depot, routes[i].get(j).get(0));
+                for (int k = 0; k < routes[i].get(j).size()-1; k++) {
+                    totalDuration += map.getDistance(routes[i].get(j).get(k), routes[i].get(j).get(k+1));
+                }
+                totalDuration += map.getDistance(routes[i].get(j).get(routes[i].get(j).size()-1), depot);
+            }
+        }
+        return totalDuration;
     }
 }
 

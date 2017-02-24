@@ -13,23 +13,35 @@ public class GA {
 
     public GA() {
         // SETTINGS
-        mapName = "p01";
+        mapName = "p10";
         popSize = 1000;
 
 
     }
 
-    private Solution runAlgorithm() throws IOException {
+    private void runAlgorithm() throws IOException {
         Map map = DataReader.readMapData(mapName);
         plotter = new Plotter(map.name);
         plotter.addScatterSeries("Depots", map.depots);
         plotter.addScatterSeries("Customers", map.customers);
         plotter.init();
 
-        Solution solution = new Solution(map);
-        plotter.plotSolution(solution);
+        Solution[] population = new Solution[popSize];
 
-        return solution;
+        for (int i = 0; i < popSize; i++) {
+            population[i] = new Solution(map);
+        }
+        Solution bestSolution = population[0];
+        double bestSolutionDuration = bestSolution.getTotalDuration();
+        for (int i = 1; i < popSize; i++) {
+            double solutionDuration = population[i].getTotalDuration();
+            if (solutionDuration < bestSolutionDuration) {
+                bestSolution = population[i];
+                bestSolutionDuration = solutionDuration;
+            }
+        }
+        plotter.plotSolution(bestSolution);
+        System.out.println(bestSolutionDuration);
     }
 
 //    private Solution findBestSolution(Solution[] population) {
