@@ -6,166 +6,137 @@ import java.util.ArrayList;
 import java.util.Random;
 
 
-public class Solution implements Comparable<Solution> {
+public class Solution {
 
     private Map map;
-    private ArrayList<Customer>[] depotCustomersArray;
-    private ArrayList<Unit>[] depotRoutesArray;
+    private ArrayList<Customer>[] clustering;
+    private ArrayList<ArrayList<Customer>>[] routes;
+    private Random random;
+    private int clusterProbExponent;
 
-    Solution(Map map){
+    public Solution(Map map) {
+
+        // SETTINGS
+        clusterProbExponent = -10;
+
+
         this.map = map;
-        depotCustomersArray = new ArrayList[map.numOfDepots];
-        depotRoutesArray = new ArrayList[map.numOfDepots];
-        generateInitialSolution();
+        random = new Random();
+        clustering = clusterCustomersToDepots();
+        routes = calculateAllRoutes();
+
     }
 
-    Solution(Solution cloneSolution) {
-        this.map = cloneSolution.map;
+    private ArrayList<Customer>[] clusterCustomersToDepots() {
 
-        this.depotCustomersArray = new ArrayList[map.numOfDepots];
-        for (int i = 0; i < cloneSolution.depotCustomersArray.length; i++) {
-            this.depotCustomersArray[i] = new ArrayList<>(cloneSolution.depotCustomersArray[i]);
-        }
-        this.depotRoutesArray = new ArrayList[map.numOfDepots];
-        for (int i = 0; i < cloneSolution.depotRoutesArray.length; i++) {
-            this.depotRoutesArray[i] = new ArrayList<>(cloneSolution.depotRoutesArray[i]);
-        }
-    }
-
-    public int compareTo(Solution o) {
-        return 0;
-        // Weighted score basert på distance og antall kjøretøy
-    }
-
-    void generateInitialSolution() {
-        depotCustomersArray = clustering(-10);
-        depotRoutesArray = routingAndScheduling();
-//        mutate();
-    }
-
-    ArrayList<Customer>[] clustering(int probExponent) {
-//        for (Customer customer : map.customers) {
-//            depotCustomersArray[map.getClosestDepot(customer).number-1].add(customer);
-//        }
         // Set exponential probability to be assigned to depot based on distance
-        Random random = new Random();
-        ArrayList<Customer>[] clusteredCustomers = new ArrayList[map.numOfDepots];
+        ArrayList<Customer>[] clusters = new ArrayList[map.numOfDepots];
         for (int i = 0; i < map.numOfDepots; i++) {
-            clusteredCustomers[i] = new ArrayList<>();
+            clusters[i] = new ArrayList<>();
         }
+
         for (Customer customer : map.customers) {
-            double[] depotProb = new double[map.numOfDepots];
-            // Find distance and calc probability
-            double allDepotDistances = 0;
+            double[] depotProbArray = new double[map.numOfDepots];
+
+            // Find distances and calculate probabilities to choose depot
+            double totalDistanceToAllDepots = 0;
             for (int i = 0; i < map.numOfDepots; i++) {
-                allDepotDistances += Math.pow(map.getDistance(customer, map.depots[i]), probExponent);
+                totalDistanceToAllDepots += Math.pow(map.getDistance(customer, map.depots[i]), clusterProbExponent);
             }
             for (int i = 0; i < map.numOfDepots; i++) {
                 double distance = map.getDistance(customer, map.depots[i]);
-                double prob = Math.pow(distance, probExponent)/allDepotDistances;
-                depotProb[i] = prob;
+                double prob = Math.pow(distance, clusterProbExponent)/totalDistanceToAllDepots;
+                depotProbArray[i] = prob;
             }
             // Choose depot
-            double randValue = random.nextDouble();
+            double randDouble = random.nextDouble();
             for (int i = 0; i < map.numOfDepots; i++) {
-                if (depotProb[i] > randValue) {
-                    clusteredCustomers[i].add(customer);
+                if (depotProbArray[i] > randDouble) {
+                    clusters[i].add(customer);
                     break;
                 }
-                randValue -= depotProb[i];
+                randDouble -= depotProbArray[i];
             }
         }
-        return clusteredCustomers;
+        return clusters;
     }
 
-    private ArrayList<Unit>[] routingAndScheduling() {
-        ArrayList<Unit>[] depotRoutesArray = new ArrayList[map.numOfDepots];
+    private ArrayList<ArrayList<Customer>>[] calculateAllRoutes() {
+        ArrayList<ArrayList<Customer>>[] allRoutes = new ArrayList[map.numOfDepots];
         for (int i = 0; i < map.numOfDepots; i++) {
-            Depot depot = map.depots[i];
-            ArrayList<Customer> depotCustomersPool = new ArrayList<>(depotCustomersArray[i]);
-            ArrayList<Unit> depotRoutes = new ArrayList<>();
-            depotRoutes.add(depot);
+            allRoutes[i] = calculateDepotRoutes(i);
+        }
+        return allRoutes;
+    }
 
-            double maxDuration = depot.maxRouteDuration;
-            double maxLoad = depot.maxLoadPerVehicle;
-            double duration = 0;
-            double load = 0;
+    private ArrayList<ArrayList<Customer>> calculateDepotRoutes(int depotNumber) {
+        Depot depot = map.depots[depotNumber];
+        ArrayList<ArrayList<Customer>> depotRoutes = new ArrayList<>();
+        ArrayList<Customer> depotCustomersPool = new ArrayList<>(clustering[depotNumber]);
+        double maxDuration = depot.maxRouteDuration;
+        double maxLoad = depot.maxLoadPerVehicle;
+        double duration = 0;
+        double load = 0;
 
-            for (int j = 0; j < depotCustomersArray[i].size(); j++) {
-                // Find closest next customer
-                Customer closestCustomer = depotCustomersPool.get(0);
-                Unit lastUnit = depotRoutes.get(depotRoutes.size()-1);
-                double shortestDistance = map.getDistance(closestCustomer, lastUnit);
-                for (int k = 1; k < depotCustomersPool.size(); k++) {
-                    Customer customer = depotCustomersPool.get(k);
-                    double customerDistance = map.getDistance(customer, lastUnit);
-                    if (customerDistance < shortestDistance) {
-                        closestCustomer = customer;
-                        shortestDistance = customerDistance;
-                    }
+        ArrayList<Customer> route = new ArrayList<>();
+        route.add(findClosestCustomer(depot, depotCustomersPool));
+
+        while (depotCustomersPool.size() > 0) {
+            Customer lastCustomer = route.get(route.size()-1);
+            Customer closestCustomer = findClosestCustomer(lastCustomer, depotCustomersPool);
+            double stepDistance = map.getDistance(lastCustomer, closestCustomer);
+            double depotDistance = map.getDistance(closestCustomer, depot);
+            double stepService = closestCustomer.serviceDuration;
+            double stepDemand = closestCustomer.demand;
+            if ((maxDuration > 0 && duration + stepDistance + depotDistance + stepService > maxDuration)
+                    || load + stepDemand > maxLoad) {
+                depotRoutes.add(route);
+                route = new ArrayList<>();
+                route.add(findClosestCustomer(depot, depotCustomersPool));
+                duration = 0;
+                load = 0;
+            }
+            route.add(closestCustomer);
+            duration += stepDistance + stepService;
+            load += stepDemand;
+            depotCustomersPool.remove(closestCustomer);
+        }
+        depotRoutes.add(route);
+        System.out.println(depotRoutes.size());
+        return depotRoutes;
+
+    }
+
+    private Customer findClosestCustomer(Unit unit, ArrayList<Customer> customers) {
+        Customer closestCustomer = customers.get(0);
+        double shortestDistance = map.getDistance(closestCustomer, unit);
+
+        for (int i = 1; i < customers.size(); i++) {
+            Customer customer = customers.get(i);
+            double customerDistance = map.getDistance(customer, unit);
+            if (customerDistance < shortestDistance) {
+                closestCustomer = customer;
+                shortestDistance = customerDistance;
+            }
+        }
+        return closestCustomer;
+    }
+
+    public ArrayList<ArrayList<Unit>>[] getRoutes() {
+        ArrayList<ArrayList<Unit>>[] routesWithDepot = new ArrayList[map.numOfDepots];
+        for (int i = 0; i < routes.length; i++) {
+            ArrayList<ArrayList<Unit>> depotRoutes = new ArrayList<>();
+            for (int j = 0; j < routes[i].size(); j++) {
+                ArrayList<Unit> route = new ArrayList<>();
+                for (int k = 0; k < routes[i].get(j).size(); k++) {
+                    route.add(map.depots[i]);
+                    route.addAll(routes[i].get(j));
                 }
-                depotCustomersPool.remove(closestCustomer);
-
-                if ( load + closestCustomer.demand > maxLoad || (maxDuration > 0 && duration + map.getDistance(depot,
-                        closestCustomer) > maxDuration)) {
-                    depotRoutes.add(depot);
-                    duration += map.getDistance(lastUnit, depot);
-                    duration = map.getDistance(depot, closestCustomer);
-                    load = 0;
-                }
-                depotRoutes.add(closestCustomer);
-                load += closestCustomer.demand;
-                duration += closestCustomer.serviceDuration + shortestDistance;
+                depotRoutes.add(route);
             }
-            duration += map.getDistance(depotRoutes.get(depotRoutes.size()-1), depot);
-            depotRoutes.add(depot);
-            depotRoutesArray[i] = depotRoutes;
+            routesWithDepot[i] = depotRoutes;
         }
-        return depotRoutesArray;
+        return routesWithDepot;
     }
-
-    void mutate() {
-        Random random = new Random();
-
-        if (random.nextBoolean()) {
-            for (int i = 0; i < map.numOfDepots; i++) {
-                int swapDepot1 = random.nextInt(map.numOfDepots);
-                int swapId1 = random.nextInt(depotCustomersArray[swapDepot1].size());
-
-                Customer swapUnit1 = depotCustomersArray[swapDepot1].get(swapId1);
-
-                int swapDepot2 = random.nextInt(map.numOfDepots);
-                int swapId2 = random.nextInt(depotCustomersArray[swapDepot2].size());
-                Customer swapUnit2 = depotCustomersArray[swapDepot2].get(swapId2);
-
-                depotCustomersArray[swapDepot1].set(swapId1, swapUnit2);
-                depotCustomersArray[swapDepot2].set(swapId2, swapUnit1);
-            }
-        }
-        depotRoutesArray = routingAndScheduling();
-        int randomDepot = random.nextInt(map.numOfDepots);
-        int randomRouteUnit1 = random.nextInt(depotRoutesArray[randomDepot].size());
-        int randomRouteUnit2 = random.nextInt(depotRoutesArray[randomDepot].size());
-        Unit swapUnit1 = depotRoutesArray[randomDepot].get(randomRouteUnit1);
-        Unit swapUnit2 = depotRoutesArray[randomDepot].get(randomRouteUnit2);
-        depotRoutesArray[randomDepot].set(randomRouteUnit1, swapUnit2);
-        depotRoutesArray[randomDepot].set(randomRouteUnit2, swapUnit1);
-    }
-
-    public double getTotalDistance() {
-        double distance = 0;
-        for (ArrayList<Unit> route : depotRoutesArray) {
-            for (int i = 0; i < route.size()-1; i++) {
-                distance += map.getDistance(route.get(i), route.get(i+1));
-            }
-        }
-        return distance;
-    }
-
-
-
-    public ArrayList<Unit>[] getRoutes() {
-        return depotRoutesArray;
-    }
-
 }
+

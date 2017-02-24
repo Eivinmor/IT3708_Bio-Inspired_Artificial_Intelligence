@@ -107,23 +107,12 @@ public class Plotter {
     }
 
     public void plotSolution(Solution solution) {
-        ArrayList<Unit>[] routes = solution.getRoutes();
+        ArrayList<ArrayList<Unit>>[] routes = solution.getRoutes();
         for (int i = 0; i < routes.length; i++) {
-            ArrayList<Unit> route = new ArrayList<>();
-            route.add(routes[i].get(0));
-            int j;
-            for (j = 1; j < routes[i].size(); j++) {
-                Unit unit = routes[i].get(j);
-                if (unit.getClass().getSimpleName().equals("Depot")) {
-                    route.add(unit);
-                    addLineSeries((i+1) + "," + (j+1), route);
-                    route = new ArrayList<>();
-                }
-                route.add(unit);
+            for (int j = 0; j < routes[i].size(); j++) {
+                addLineSeries(i + ", " + j, routes[i].get(j));
             }
-            addLineSeries((i+1) + "," + (j+1), route);
         }
-
     }
 
     public void clearLineSeries() {
