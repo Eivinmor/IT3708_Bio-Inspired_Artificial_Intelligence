@@ -29,18 +29,18 @@ public class Solution implements Comparable<Solution> {
     }
 
     void generateInitialSolution() {
-        clustering();
+        depotCustomersArray = clustering();
         routingAndScheduling();
 //        mutate();
     }
 
-    void clustering() {
+    ArrayList<Customer>[] clustering() {
 //        for (Customer customer : map.customers) {
 //            depotCustomersArray[map.getClosestDepot(customer).number-1].add(customer);
 //        }
         // Set exponential probability to be assigned to depot based on distance
         Random random = new Random();
-        int exponent = 2;
+        int exponent = -3;
         ArrayList<Customer>[] clusteredCustomers = new ArrayList[map.numOfDepots];
         for (int i = 0; i < map.numOfDepots; i++) {
             clusteredCustomers[i] = new ArrayList<>();
@@ -69,6 +69,7 @@ public class Solution implements Comparable<Solution> {
                 randValue -= depotProb[i];
             }
         }
+        return clusteredCustomers;
     }
 
     void routingAndScheduling() {

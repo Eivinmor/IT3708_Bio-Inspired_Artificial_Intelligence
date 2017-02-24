@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        Map map = DataReader.readMapData("p10");
+        Map map = DataReader.readMapData("p01");
 
         for (int i = 0; i < 1; i++) {
             Plotter plotter = new Plotter(map.name);
