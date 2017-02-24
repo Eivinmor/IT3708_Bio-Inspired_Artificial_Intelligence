@@ -63,7 +63,7 @@ public class Map {
             return depotCustomerDistances[unit1.number-1][unit2.number-1];
         else if (unit1.getClass().getSimpleName().equals("Customer") && unit2.getClass().getSimpleName().equals("Depot"))
             return depotCustomerDistances[unit2.number-1][unit1.number-1];
-        else return Double.MAX_VALUE;
+        else return 0;
     }
 
 

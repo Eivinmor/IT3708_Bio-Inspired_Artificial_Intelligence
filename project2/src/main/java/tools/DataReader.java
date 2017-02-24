@@ -13,17 +13,17 @@ public class DataReader {
 
         // Read meta data
         String[] firstLineArray = StringUtils.split(reader.readLine());
-        int maxVehiclesPerDepot = Integer.valueOf(firstLineArray[0]);       // m - maximum number of vehicles per depot
-        int numOfCustomers = Integer.valueOf(firstLineArray[1]);            // n - number of customers
-        int numOfDepots = Integer.valueOf(firstLineArray[2]);               // t - number of depots
+        int maxVehiclesPerDepot = Integer.valueOf(firstLineArray[0]);           // m - maximum number of vehicles per depot
+        int numOfCustomers = Integer.valueOf(firstLineArray[1]);                // n - number of customers
+        int numOfDepots = Integer.valueOf(firstLineArray[2]);                   // t - number of depots
 
         // Read depot data
         double[] depotMaxDuration = new double[numOfDepots];
         double[] depotMaxLoad = new double[numOfDepots];
         for (int i = 0; i < numOfDepots; i++) {
             String[] lineArray = StringUtils.split(reader.readLine());
-            depotMaxDuration[i] = Double.valueOf(lineArray[0]);                // D - maximum route duration
-            depotMaxLoad[i] = Double.valueOf(lineArray[1]);          // Q - maximum allowed vehicle load
+            depotMaxDuration[i] = Double.valueOf(lineArray[0]);                 // D - maximum route duration
+            depotMaxLoad[i] = Double.valueOf(lineArray[1]);                     // Q - maximum allowed vehicle load
         }
         // Read customer data and create Customers
         Customer[] customers = new Customer[numOfCustomers];
@@ -41,8 +41,8 @@ public class DataReader {
         for (int i = 0; i < numOfDepots; i++) {
             String[] lineArray = StringUtils.split(reader.readLine());
             int number = Integer.valueOf(i+1);
-            double x = Double.valueOf(lineArray[1]);           // x - x coordinate
-            double y = Double.valueOf(lineArray[2]);           // y - y coordinate
+            double x = Double.valueOf(lineArray[1]);                            // x - x coordinate
+            double y = Double.valueOf(lineArray[2]);                            // y - y coordinate
             double maxRouteDuration = depotMaxDuration[i];
             double maxLoadPerVehicle = depotMaxLoad[i];
             depots[i] = new Depot(number, x, y, maxRouteDuration, maxLoadPerVehicle);
