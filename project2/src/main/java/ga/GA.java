@@ -4,6 +4,7 @@ import representation.*;
 import tools.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 
 public class GA {
@@ -13,13 +14,13 @@ public class GA {
 
     public GA() {
         // SETTINGS
-        mapName = "p09";
-        popSize = 500;     // 1000
+        mapName = "p03";
+        popSize = 200;     // 1000
         maxIterations = 100;  // 1000
         eliteAmount = popSize/100;
     }
 
-    private void runAlgorithm() throws IOException {
+    private void runAlgorithm() throws IOException, InterruptedException {
         Map map = DataReader.readMapData(mapName);
 
         ArrayList<Solution> population = new ArrayList<>();
@@ -34,21 +35,23 @@ public class GA {
         // Evolution
         for (int i = 0; i < maxIterations; i++) {
             bestSolution = findBestSolution(population);
-            System.out.println(bestSolution.getTotalDuration());
+            System.out.print("Duration: " + (int)bestSolution.getTotalDuration() + "\t");
+            System.out.println("Cost: " + (int)bestSolution.getCost());
             population = clonePopulation(bestSolution);
             plotter.plotSolution(bestSolution);
         }
+        TimeUnit.SECONDS.sleep(1);
         plotter.plotSolution(bestSolution);
         System.out.println(bestSolution.getTotalDuration());
     }
 
     private Solution findBestSolution(ArrayList<Solution> population) {
         Solution bestSolution = population.get(0);
-        double bestSolutionDist = bestSolution.getTotalDuration();
+        double bestSolutionDist = bestSolution.getCost();
         for (int i = 1; i < population.size(); i++) {
-            if (population.get(i).getTotalDuration() < bestSolutionDist) {
+            if (population.get(i).getCost() < bestSolutionDist) {
                 bestSolution = population.get(i);
-                bestSolutionDist = population.get(i).getTotalDuration();
+                bestSolutionDist = population.get(i).getCost();
             }
         }
         return bestSolution;
@@ -63,7 +66,7 @@ public class GA {
         return clonedPopulation;
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         GA ga = new GA();
         ga.runAlgorithm();
     }

@@ -12,6 +12,10 @@ public class Solution{
     private int clusterProbExponent = -10;
     private int mutatePerLogOfCustomers = 5;
 
+    private double durationCostWeight = 1;
+    private double numOfVehiclesCostWeight = 100;
+    private double overVehicleLimitCostWeight = 100;
+
     private Map map;
     private ArrayList<Customer>[] clustering;
     private ArrayList<ArrayList<Unit>>[] routes;
@@ -39,7 +43,7 @@ public class Solution{
         totalDuration = calculateTotalDuration();
     }
 
-    
+
     private ArrayList<Customer>[] clusterCustomersToDepots() {
 
         // Set exponential probability to be assigned to depot based on distance
@@ -319,6 +323,18 @@ public class Solution{
 
     double getTotalDuration() {
         return totalDuration;
+    }
+
+    double getCost() {
+        double cost = 0;
+        cost += getTotalDuration() * durationCostWeight;
+        for (int i = 0; i < routes.length; i++) {
+            int numOfVehicles = routes[i].size();
+            cost += numOfVehicles * numOfVehiclesCostWeight;
+            if (numOfVehicles > map.maxVehiclesPerDepot)
+                cost += (numOfVehicles - map.maxVehiclesPerDepot) * map.numOfCustomers * overVehicleLimitCostWeight;
+        }
+        return cost;
     }
 
     private double calculateRouteDuration(Depot depot, ArrayList<Unit> route) {
