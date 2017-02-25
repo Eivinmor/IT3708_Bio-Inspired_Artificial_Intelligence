@@ -9,14 +9,14 @@ import java.util.ArrayList;
 public class GA {
 
     private String mapName;
-    private int popSize, maxIterations;
+    private int popSize, maxIterations, eliteAmount;
 
     public GA() {
         // SETTINGS
-        mapName = "p04";
+        mapName = "p09";
         popSize = 500;     // 1000
         maxIterations = 100;  // 1000
-
+        eliteAmount = popSize/100;
     }
 
     private void runAlgorithm() throws IOException {
@@ -36,6 +36,7 @@ public class GA {
             bestSolution = findBestSolution(population);
             System.out.println(bestSolution.getTotalDuration());
             population = clonePopulation(bestSolution);
+            plotter.plotSolution(bestSolution);
         }
         plotter.plotSolution(bestSolution);
         System.out.println(bestSolution.getTotalDuration());

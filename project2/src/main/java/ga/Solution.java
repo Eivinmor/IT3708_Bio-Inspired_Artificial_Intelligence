@@ -39,6 +39,7 @@ public class Solution{
         totalDuration = calculateTotalDuration();
     }
 
+    
     private ArrayList<Customer>[] clusterCustomersToDepots() {
 
         // Set exponential probability to be assigned to depot based on distance
@@ -115,6 +116,7 @@ public class Solution{
         return sortedCustomers;
     }
 
+    
     private ArrayList<ArrayList<Unit>>[] calculateAllRoutes() {
         ArrayList<ArrayList<Unit>>[] allRoutes = new ArrayList[map.numOfDepots];
         for (int i = 0; i < map.numOfDepots; i++) {
@@ -177,7 +179,9 @@ public class Solution{
         return closestCustomer;
     }
 
+    
     void mutate() {
+//        betweenDepotSwap();
         for (int i = 0; i < Math.log(map.numOfCustomers)/Math.log(mutatePerLogOfCustomers); i++) {
             singleCustomerOptimalBetweenDepotReposition();
         }
@@ -190,66 +194,74 @@ public class Solution{
         ArrayList<ArrayList<Unit>>[] tempRoutes = calculateAllRoutes();
         int depotIndex = random.nextInt(map.numOfDepots);
         int routeIndex = random.nextInt(tempRoutes[depotIndex].size());
-        int customerIndex = random.nextInt(tempRoutes[depotIndex].get(routeIndex).size()-2)+1; // Avoid depots
-        Customer customer = (Customer)tempRoutes[depotIndex].get(routeIndex).get(customerIndex);
-        tempRoutes[depotIndex].get(routeIndex).remove(customer);
 
-        int bestInsertionRouteIndex = 0;
-        int bestInsertionCustomerIndex = 1;
-        double bestInsertionCost = Double.MAX_VALUE;
-        for (int j = 0; j < tempRoutes[depotIndex].size(); j++) {  // Route
-            for (int k = 1; k < tempRoutes[depotIndex].get(j).size(); k++) {  // Customer
-                double insertionCost = getInsertionCost(customer, tempRoutes[depotIndex].get(j).get(k-1), tempRoutes[depotIndex].get(j).get(k));
-                if (insertionCost < bestInsertionCost) {
-                    // TODO Check if it ends up in this route or the next
-                    bestInsertionCost = insertionCost;
-                    bestInsertionRouteIndex = j;
-                    bestInsertionCustomerIndex = k;
+        // TODO Denne sjekken kan kanskje gjøres smartere
+        if (tempRoutes[depotIndex].get(routeIndex).size() > 2) {
+            int customerIndex = random.nextInt(tempRoutes[depotIndex].get(routeIndex).size()-2)+1; // Avoid depots
+            Customer customer = (Customer)tempRoutes[depotIndex].get(routeIndex).get(customerIndex);
+            tempRoutes[depotIndex].get(routeIndex).remove(customer);
+
+            int bestInsertionRouteIndex = 0;
+            int bestInsertionCustomerIndex = 1;
+            double bestInsertionCost = Double.MAX_VALUE;
+            for (int j = 0; j < tempRoutes[depotIndex].size(); j++) {  // Route
+                for (int k = 1; k < tempRoutes[depotIndex].get(j).size(); k++) {  // Customer
+                    double insertionCost = getInsertionCost(customer, tempRoutes[depotIndex].get(j).get(k-1), tempRoutes[depotIndex].get(j).get(k));
+                    if (insertionCost < bestInsertionCost) {
+                        // TODO Check if it ends up in this route or the next
+                        bestInsertionCost = insertionCost;
+                        bestInsertionRouteIndex = j;
+                        bestInsertionCustomerIndex = k;
+                    }
                 }
             }
+            ArrayList<Unit> chosenRoute = tempRoutes[depotIndex].get(bestInsertionRouteIndex);
+            ArrayList<Unit> newRoute = new ArrayList<>();
+            newRoute.addAll(chosenRoute.subList(0, bestInsertionCustomerIndex));
+            newRoute.add(customer);
+            newRoute.addAll(chosenRoute.subList(bestInsertionCustomerIndex, chosenRoute.size()));
+            tempRoutes[depotIndex].set(bestInsertionRouteIndex, newRoute);
+            clustering = convertRoutesToClustering(tempRoutes);
         }
-        ArrayList<Unit> chosenRoute = tempRoutes[depotIndex].get(bestInsertionRouteIndex);
-        ArrayList<Unit> newRoute = new ArrayList<>();
-        newRoute.addAll(chosenRoute.subList(0, bestInsertionCustomerIndex));
-        newRoute.add(customer);
-        newRoute.addAll(chosenRoute.subList(bestInsertionCustomerIndex, chosenRoute.size()));
-        tempRoutes[depotIndex].set(bestInsertionRouteIndex, newRoute);
-        clustering = routesToClustering(tempRoutes);
     }
 
     private void singleCustomerOptimalBetweenDepotReposition() {
         ArrayList<ArrayList<Unit>>[] tempRoutes = calculateAllRoutes();
         int depotIndex = random.nextInt(map.numOfDepots);
         int routeIndex = random.nextInt(tempRoutes[depotIndex].size());
-        int customerIndex = random.nextInt(tempRoutes[depotIndex].get(routeIndex).size()-2)+1; // Avoid depots
-        Customer customer = (Customer)tempRoutes[depotIndex].get(routeIndex).get(customerIndex);
-        tempRoutes[depotIndex].get(routeIndex).remove(customer);
 
-        int bestInsertionDepotIndex = 0;
-        int bestInsertionRouteIndex = 0;
-        int bestInsertionCustomerIndex = 1;
-        double bestInsertionCost = Double.MAX_VALUE;
-        for (int i = 0; i < tempRoutes.length; i++) {  // Depot
-            for (int j = 0; j < tempRoutes[i].size(); j++) {  // Route
-                for (int k = 1; k < tempRoutes[i].get(j).size(); k++) {  // Customer
-                    double insertionCost = getInsertionCost(customer, tempRoutes[i].get(j).get(k-1), tempRoutes[i].get(j).get(k));
-                    if (insertionCost < bestInsertionCost) {
-                        // TODO Check if it ends up in this route or the next
-                        bestInsertionCost = insertionCost;
-                        bestInsertionDepotIndex = i;
-                        bestInsertionRouteIndex = j;
-                        bestInsertionCustomerIndex = k;
+        // TODO Denne sjekken kan kanskje gjøres smartere
+        if (tempRoutes[depotIndex].get(routeIndex).size() > 2) {
+            int customerIndex = random.nextInt(tempRoutes[depotIndex].get(routeIndex).size() - 2) + 1; // Avoid depots
+            Customer customer = (Customer) tempRoutes[depotIndex].get(routeIndex).get(customerIndex);
+            tempRoutes[depotIndex].get(routeIndex).remove(customer);
+
+            int bestInsertionDepotIndex = 0;
+            int bestInsertionRouteIndex = 0;
+            int bestInsertionCustomerIndex = 1;
+            double bestInsertionCost = Double.MAX_VALUE;
+            for (int i = 0; i < tempRoutes.length; i++) {  // Depot
+                for (int j = 0; j < tempRoutes[i].size(); j++) {  // Route
+                    for (int k = 1; k < tempRoutes[i].get(j).size(); k++) {  // Customer
+                        double insertionCost = getInsertionCost(customer, tempRoutes[i].get(j).get(k - 1), tempRoutes[i].get(j).get(k));
+                        if (insertionCost < bestInsertionCost) {
+                            // TODO Check if it ends up in this route or the next
+                            bestInsertionCost = insertionCost;
+                            bestInsertionDepotIndex = i;
+                            bestInsertionRouteIndex = j;
+                            bestInsertionCustomerIndex = k;
+                        }
                     }
                 }
             }
+            ArrayList<Unit> chosenRoute = tempRoutes[bestInsertionDepotIndex].get(bestInsertionRouteIndex);
+            ArrayList<Unit> newRoute = new ArrayList<>();
+            newRoute.addAll(chosenRoute.subList(0, bestInsertionCustomerIndex));
+            newRoute.add(customer);
+            newRoute.addAll(chosenRoute.subList(bestInsertionCustomerIndex, chosenRoute.size()));
+            tempRoutes[bestInsertionDepotIndex].set(bestInsertionRouteIndex, newRoute);
+            clustering = convertRoutesToClustering(tempRoutes);
         }
-        ArrayList<Unit> chosenRoute = tempRoutes[bestInsertionDepotIndex].get(bestInsertionRouteIndex);
-        ArrayList<Unit> newRoute = new ArrayList<>();
-        newRoute.addAll(chosenRoute.subList(0, bestInsertionCustomerIndex));
-        newRoute.add(customer);
-        newRoute.addAll(chosenRoute.subList(bestInsertionCustomerIndex, chosenRoute.size()));
-        tempRoutes[bestInsertionDepotIndex].set(bestInsertionRouteIndex, newRoute);
-        clustering = routesToClustering(tempRoutes);
     }
 
     private double getInsertionCost (Customer insertCustomer, Unit preUnit, Unit postUnit) {
@@ -272,7 +284,6 @@ public class Solution{
     }
 
     private void betweenDepotSwap() {
-        printClustering();
         int depot1Index = random.nextInt(map.numOfDepots);
         int depot2Index = random.nextInt(map.numOfDepots);
         while (depot1Index == depot2Index) depot2Index = random.nextInt(map.numOfDepots);
@@ -285,13 +296,14 @@ public class Solution{
 
         clustering[depot1Index].set(customer1Index, customer2);
         clustering[depot2Index].set(customer2Index, customer1);
-        printClustering();
     }
 
+    
     public ArrayList<ArrayList<Unit>>[] getRoutes() {
         return routes;
     }
 
+    
     private double calculateTotalDuration() {
         if (routes == null)
             routes = calculateAllRoutes();
@@ -299,7 +311,7 @@ public class Solution{
         for (int i = 0; i < routes.length; i++) {
             Depot depot = map.depots[i];
             for (int j = 0; j < routes[i].size(); j++) {
-                totalDuration += getRouteDuration(depot, routes[i].get(j));
+                totalDuration += calculateRouteDuration(depot, routes[i].get(j));
             }
         }
         return totalDuration;
@@ -309,7 +321,7 @@ public class Solution{
         return totalDuration;
     }
 
-    private double getRouteDuration(Depot depot, ArrayList<Unit> route) {
+    private double calculateRouteDuration(Depot depot, ArrayList<Unit> route) {
         double routeDuration = 0;
         for (int k = 0; k < route.size()-1; k++) {
             routeDuration += map.getDistance(route.get(k), route.get(k+1));
@@ -317,7 +329,7 @@ public class Solution{
         return routeDuration;
     }
 
-    private ArrayList<Customer>[] routesToClustering(ArrayList<ArrayList<Unit>>[] routes) {
+    private ArrayList<Customer>[] convertRoutesToClustering(ArrayList<ArrayList<Unit>>[] routes) {
         ArrayList<Customer>[] newClustering = new ArrayList[map.numOfDepots];
         for (int i = 0; i < map.numOfDepots; i++) {
             newClustering[i] = new ArrayList<>();
