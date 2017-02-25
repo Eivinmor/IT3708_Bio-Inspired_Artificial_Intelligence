@@ -87,7 +87,7 @@ public class Plotter {
         applicationFrame.setContentPane(chartPanel);
         applicationFrame.pack();
         applicationFrame.setVisible(true);
-        RefineryUtilities.positionFrameOnScreen(applicationFrame, 0.0, 0.92);
+        RefineryUtilities.positionFrameOnScreen(applicationFrame, 2.2, 0.1);
     }
 
     public void addScatterSeries(String key, Unit[] units) {

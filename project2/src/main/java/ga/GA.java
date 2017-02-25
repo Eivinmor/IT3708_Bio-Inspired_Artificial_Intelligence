@@ -12,8 +12,8 @@ public class GA {
 
     public GA() {
         // SETTINGS
-        mapName = "p01";
-        popSize = 1000;
+        mapName = "p02";
+        popSize = 1;
 
     }
 

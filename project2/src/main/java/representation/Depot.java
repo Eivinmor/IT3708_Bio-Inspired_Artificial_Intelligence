@@ -11,4 +11,8 @@ public class Depot extends Unit{
         this.maxLoadPerVehicle = maxLoadPerVehicle;
     }
 
+    @Override
+    public String toString() {
+        return "D" + number;
+    }
 }
