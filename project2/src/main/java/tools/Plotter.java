@@ -24,14 +24,14 @@ public class Plotter {
 
     private String chartTitle;
     private XYSeriesCollection depotsAndCustomersCollection, routeSequenceCollection;
+    private Map map;
 
     public Plotter(Map map){
         this.chartTitle = map.name;
+        this.map = map;
         depotsAndCustomersCollection = new XYSeriesCollection();
         routeSequenceCollection = new XYSeriesCollection();
         init();
-        addScatterSeries("Depots", map.depots);
-        addScatterSeries("Customers", map.customers);
     }
 
     public void init(){
@@ -65,6 +65,7 @@ public class Plotter {
         XYLineAndShapeRenderer  lineRenderer = new XYLineAndShapeRenderer(true, false);
         lineRenderer.setAutoPopulateSeriesStroke(false);
         lineRenderer.setBaseStroke(new BasicStroke(2));
+        lineRenderer.setAutoPopulateSeriesPaint(true);
 
         plot.setDataset(1, routeSequenceCollection);
         plot.setRenderer(1, lineRenderer);
@@ -77,7 +78,7 @@ public class Plotter {
         plot.setDomainGridlinesVisible(false);
         plot.setRangeGridlinesVisible(false);
 
-        JFreeChart chart = new JFreeChart(chartTitle, JFreeChart.DEFAULT_TITLE_FONT, plot, false);
+        JFreeChart chart = new JFreeChart(chartTitle, JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         TextTitle newTitle = new TextTitle(chartTitle, new Font("SansSerif", Font.BOLD, 16));
         newTitle.setPaint(Color.DARK_GRAY);
         chart.setTitle(newTitle);
@@ -90,6 +91,9 @@ public class Plotter {
         applicationFrame.pack();
         applicationFrame.setVisible(true);
         RefineryUtilities.positionFrameOnScreen(applicationFrame, 2.2, 0.1);
+
+        addScatterSeries("Depots", map.depots);
+        addScatterSeries("Customers", map.customers);
     }
 
     private void addScatterSeries(String key, Unit[] units) {

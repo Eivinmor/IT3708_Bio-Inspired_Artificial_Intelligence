@@ -13,7 +13,7 @@ public class GA {
 
     public GA() {
         // SETTINGS
-        mapName = "p01";
+        mapName = "p02";
         popSize = 1000;
         iterations = 1000;
 
@@ -34,8 +34,10 @@ public class GA {
         // Evolution
         for (int i = 0; i < iterations; i++) {
             bestSolution = findBestSolution(population);
+            System.out.println(bestSolution.getTotalDuration());
             population = clonePopulation(bestSolution);
         }
+        bestSolution.printRoutes();
         plotter.plotSolution(bestSolution);
         System.out.println(bestSolution.getTotalDuration());
     }
@@ -54,11 +56,9 @@ public class GA {
 
     private ArrayList<Solution> clonePopulation(Solution solution) {
         ArrayList<Solution> clonedPopulation = new ArrayList<>();
-        clonedPopulation.add(new Solution(solution));
+        clonedPopulation.add(new Solution(solution, false));
         for (int i = 1; i < popSize; i++) {
-            Solution clone = new Solution(solution);
-            clone.mutate();
-            clonedPopulation.add(clone);
+            clonedPopulation.add(new Solution(solution, true));
         }
         return clonedPopulation;
     }
