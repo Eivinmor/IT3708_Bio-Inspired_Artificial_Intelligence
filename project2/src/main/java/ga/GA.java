@@ -9,13 +9,13 @@ import java.util.ArrayList;
 public class GA {
 
     private String mapName;
-    private int popSize, iterations;
+    private int popSize, maxIterations;
 
     public GA() {
         // SETTINGS
-        mapName = "p02";
-        popSize = 1000;     // 1000
-        iterations = 1000;  // 1000
+        mapName = "p04";
+        popSize = 500;     // 1000
+        maxIterations = 100;  // 1000
 
     }
 
@@ -32,12 +32,11 @@ public class GA {
 
         Solution bestSolution = population.get(0);
         // Evolution
-        for (int i = 0; i < iterations; i++) {
+        for (int i = 0; i < maxIterations; i++) {
             bestSolution = findBestSolution(population);
             System.out.println(bestSolution.getTotalDuration());
             population = clonePopulation(bestSolution);
         }
-//        bestSolution.printRoutes();
         plotter.plotSolution(bestSolution);
         System.out.println(bestSolution.getTotalDuration());
     }

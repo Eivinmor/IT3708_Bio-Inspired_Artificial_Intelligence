@@ -10,6 +10,7 @@ public class Solution{
 
     // SETTINGS
     private int clusterProbExponent = -10;
+    private int mutatePerLogOfCustomers = 5;
 
     private Map map;
     private ArrayList<Customer>[] clustering;
@@ -177,29 +178,60 @@ public class Solution{
     }
 
     void mutate() {
-        singleCustomerOptimalReposition();
+        for (int i = 0; i < Math.log(map.numOfCustomers)/Math.log(mutatePerLogOfCustomers); i++) {
+            singleCustomerOptimalBetweenDepotReposition();
+        }
+        for (int i = 0; i < Math.log(map.numOfCustomers)/Math.log(mutatePerLogOfCustomers/2); i++) {
+            singleCustomerOptimalIntraDepotReposition();
+        }
     }
 
-    private void singleCustomerOptimalReposition() {
-//        printRoutes(calculateAllRoutes());
-
+    private void singleCustomerOptimalIntraDepotReposition() {
         ArrayList<ArrayList<Unit>>[] tempRoutes = calculateAllRoutes();
         int depotIndex = random.nextInt(map.numOfDepots);
         int routeIndex = random.nextInt(tempRoutes[depotIndex].size());
         int customerIndex = random.nextInt(tempRoutes[depotIndex].get(routeIndex).size()-2)+1; // Avoid depots
         Customer customer = (Customer)tempRoutes[depotIndex].get(routeIndex).get(customerIndex);
         tempRoutes[depotIndex].get(routeIndex).remove(customer);
-//        printRoutes(tempRoutes);
-//        System.out.println(customer);
+
+        int bestInsertionRouteIndex = 0;
+        int bestInsertionCustomerIndex = 1;
+        double bestInsertionCost = Double.MAX_VALUE;
+        for (int j = 0; j < tempRoutes[depotIndex].size(); j++) {  // Route
+            for (int k = 1; k < tempRoutes[depotIndex].get(j).size(); k++) {  // Customer
+                double insertionCost = getInsertionCost(customer, tempRoutes[depotIndex].get(j).get(k-1), tempRoutes[depotIndex].get(j).get(k));
+                if (insertionCost < bestInsertionCost) {
+                    // TODO Check if it ends up in this route or the next
+                    bestInsertionCost = insertionCost;
+                    bestInsertionRouteIndex = j;
+                    bestInsertionCustomerIndex = k;
+                }
+            }
+        }
+        ArrayList<Unit> chosenRoute = tempRoutes[depotIndex].get(bestInsertionRouteIndex);
+        ArrayList<Unit> newRoute = new ArrayList<>();
+        newRoute.addAll(chosenRoute.subList(0, bestInsertionCustomerIndex));
+        newRoute.add(customer);
+        newRoute.addAll(chosenRoute.subList(bestInsertionCustomerIndex, chosenRoute.size()));
+        tempRoutes[depotIndex].set(bestInsertionRouteIndex, newRoute);
+        clustering = routesToClustering(tempRoutes);
+    }
+
+    private void singleCustomerOptimalBetweenDepotReposition() {
+        ArrayList<ArrayList<Unit>>[] tempRoutes = calculateAllRoutes();
+        int depotIndex = random.nextInt(map.numOfDepots);
+        int routeIndex = random.nextInt(tempRoutes[depotIndex].size());
+        int customerIndex = random.nextInt(tempRoutes[depotIndex].get(routeIndex).size()-2)+1; // Avoid depots
+        Customer customer = (Customer)tempRoutes[depotIndex].get(routeIndex).get(customerIndex);
+        tempRoutes[depotIndex].get(routeIndex).remove(customer);
 
         int bestInsertionDepotIndex = 0;
         int bestInsertionRouteIndex = 0;
         int bestInsertionCustomerIndex = 1;
-        double bestInsertionCost = getInsertionCost(customer, tempRoutes[0].get(0).get(1), tempRoutes[0].get(0).get(2));
-//        System.out.println("0,0,1: " + bestInsertionCost);
+        double bestInsertionCost = Double.MAX_VALUE;
         for (int i = 0; i < tempRoutes.length; i++) {  // Depot
             for (int j = 0; j < tempRoutes[i].size(); j++) {  // Route
-                for (int k = 2; k < tempRoutes[i].get(j).size(); k++) {  // Customer
+                for (int k = 1; k < tempRoutes[i].get(j).size(); k++) {  // Customer
                     double insertionCost = getInsertionCost(customer, tempRoutes[i].get(j).get(k-1), tempRoutes[i].get(j).get(k));
                     if (insertionCost < bestInsertionCost) {
                         // TODO Check if it ends up in this route or the next
@@ -207,8 +239,6 @@ public class Solution{
                         bestInsertionDepotIndex = i;
                         bestInsertionRouteIndex = j;
                         bestInsertionCustomerIndex = k;
-//                        System.out.println(i + "," + j + "," + k + ": " + bestInsertionCost);
-//                        System.out.println(tempRoutes[i].get(j).get(k));
                     }
                 }
             }
@@ -220,7 +250,6 @@ public class Solution{
         newRoute.addAll(chosenRoute.subList(bestInsertionCustomerIndex, chosenRoute.size()));
         tempRoutes[bestInsertionDepotIndex].set(bestInsertionRouteIndex, newRoute);
         clustering = routesToClustering(tempRoutes);
-//        System.out.println("F: " + clustering[bestInsertionDepotIndex].get(bestInsertionClusterIndex));
     }
 
     private double getInsertionCost (Customer insertCustomer, Unit preUnit, Unit postUnit) {
@@ -243,6 +272,7 @@ public class Solution{
     }
 
     private void betweenDepotSwap() {
+        printClustering();
         int depot1Index = random.nextInt(map.numOfDepots);
         int depot2Index = random.nextInt(map.numOfDepots);
         while (depot1Index == depot2Index) depot2Index = random.nextInt(map.numOfDepots);
@@ -255,6 +285,7 @@ public class Solution{
 
         clustering[depot1Index].set(customer1Index, customer2);
         clustering[depot2Index].set(customer2Index, customer1);
+        printClustering();
     }
 
     public ArrayList<ArrayList<Unit>>[] getRoutes() {
