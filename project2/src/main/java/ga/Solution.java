@@ -8,25 +8,30 @@ import java.util.Random;
 
 public class Solution {
 
+    // SETTINGS
+    private int clusterProbExponent = -10;
+
     private Map map;
     private ArrayList<Customer>[] clustering;
     private ArrayList<ArrayList<Unit>>[] routes;
     private Random random;
-    private int clusterProbExponent;
 
     public Solution(Map map) {
-
-        // SETTINGS
-        clusterProbExponent = -10;
-
         this.map = map;
         random = new Random();
         clustering = clusterCustomersToDepots();
-        printClustering();
         clustering = sortClusterByCustomerDistance(clustering);
-        printClustering();
         routes = calculateAllRoutes();
-        printRoutes();
+    }
+
+    public Solution(Solution otherSolution) {
+        this.map = otherSolution.map;
+        random = new Random();
+        clustering = new ArrayList[map.numOfDepots];
+        for (int i = 0; i < map.numOfDepots; i++) {
+            this.clustering[i] = new ArrayList<>(otherSolution.clustering[i]);
+        }
+        routes = calculateAllRoutes();
     }
 
     private ArrayList<Customer>[] clusterCustomersToDepots() {

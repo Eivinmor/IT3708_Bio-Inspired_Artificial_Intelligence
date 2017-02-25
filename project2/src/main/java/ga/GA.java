@@ -3,6 +3,7 @@ package ga;
 import representation.*;
 import tools.*;
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 public class GA {
@@ -19,41 +20,35 @@ public class GA {
 
     private void runAlgorithm() throws IOException {
         Map map = DataReader.readMapData(mapName);
-        Plotter plotter = new Plotter(map.name);
-        plotter.addScatterSeries("Depots", map.depots);
-        plotter.addScatterSeries("Customers", map.customers);
-        plotter.init();
 
-        Solution[] population = new Solution[popSize];
+        ArrayList<Solution> population = new ArrayList<>();
 
         for (int i = 0; i < popSize; i++) {
-            population[i] = new Solution(map);
+            population.add(new Solution(map));
         }
-        Solution bestSolution = population[0];
-        double bestSolutionDuration = bestSolution.getTotalDuration();
-        for (int i = 1; i < popSize; i++) {
-            double solutionDuration = population[i].getTotalDuration();
-            if (solutionDuration < bestSolutionDuration) {
-                bestSolution = population[i];
-                bestSolutionDuration = solutionDuration;
-            }
-        }
+        Plotter plotter = new Plotter(map);
+        Solution bestSolution = findBestSolution(population);
         plotter.plotSolution(bestSolution);
-        System.out.println(bestSolutionDuration);
+        System.out.println(bestSolution.getTotalDuration());
+
+        Solution clone = new Solution(bestSolution);
+        Plotter plotter2 = new Plotter(map);
+        plotter2.plotSolution(clone);
+        System.out.println(clone.getTotalDuration());
     }
 
-//    private Solution findBestSolution(Solution[] population) {
-//        Solution bestSolution = population[0];
-//        double bestSolutionDist = bestSolution.getTotalDistance();
-//        for (int i = 1; i < population.length; i++) {
-//            if (population[i].getTotalDistance() < bestSolutionDist) {
-//                bestSolution = population[i];
-//                bestSolutionDist = population[i].getTotalDistance();
-//            }
-//        }
-//        return bestSolution;
-//    }
-//
+    private Solution findBestSolution(ArrayList<Solution> population) {
+        Solution bestSolution = population.get(0);
+        double bestSolutionDist = bestSolution.getTotalDuration();
+        for (int i = 1; i < population.size(); i++) {
+            if (population.get(i).getTotalDuration() < bestSolutionDist) {
+                bestSolution = population.get(i);
+                bestSolutionDist = population.get(i).getTotalDuration();
+            }
+        }
+        return bestSolution;
+    }
+
 //    private Solution[] clonePopulation(Solution solution) {
 //        Solution[] clonedPopulation = new Solution[popSize];
 //        clonedPopulation[0] = new Solution(solution);

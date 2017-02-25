@@ -18,7 +18,6 @@ import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 
 public class Plotter {
@@ -26,10 +25,13 @@ public class Plotter {
     private String chartTitle;
     private XYSeriesCollection depotsAndCustomersCollection, routeSequenceCollection;
 
-    public Plotter(String chartTitle){
-        this.chartTitle = chartTitle;
+    public Plotter(Map map){
+        this.chartTitle = map.name;
         depotsAndCustomersCollection = new XYSeriesCollection();
         routeSequenceCollection = new XYSeriesCollection();
+        init();
+        addScatterSeries("Depots", map.depots);
+        addScatterSeries("Customers", map.customers);
     }
 
     public void init(){
@@ -90,7 +92,7 @@ public class Plotter {
         RefineryUtilities.positionFrameOnScreen(applicationFrame, 2.2, 0.1);
     }
 
-    public void addScatterSeries(String key, Unit[] units) {
+    private void addScatterSeries(String key, Unit[] units) {
         XYSeries newSeries = new XYSeries(key, false, true);
         for (Unit unit : units) {
             newSeries.add(unit.x, unit.y);
@@ -98,7 +100,7 @@ public class Plotter {
         depotsAndCustomersCollection.addSeries(newSeries);
     }
 
-    public void addLineSeries(String key, ArrayList<Unit> units){
+    private void addLineSeries(String key, ArrayList<Unit> units){
         XYSeries newSeries = new XYSeries(key, false, true);
         for (Unit unit : units) {
             newSeries.add(unit.x, unit.y);
