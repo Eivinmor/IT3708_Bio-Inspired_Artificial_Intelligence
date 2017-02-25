@@ -99,17 +99,9 @@ public class Solution {
                 load = 0;
             }
             route.add(closestCustomer);
-//            for (int i = 0; i < route.size(); i++) {
-//                System.out.print(route.get(i) + " ");
-//            }
-//            System.out.println();
             duration += stepDistance + stepService;
             load += stepDemand;
             depotCustomersPool.remove(closestCustomer);
-//            for (int i = 0; i < depotCustomersPool.size(); i++) {
-//                System.out.print(depotCustomersPool.get(i) + " ");
-//            }
-//            System.out.println();
         }
         depotRoutes.add(route);
         return depotRoutes;
@@ -156,14 +148,21 @@ public class Solution {
         for (int i = 0; i < routes.length; i++) {
             Depot depot = map.depots[i];
             for (int j = 0; j < routes[i].size(); j++) {
-                totalDuration += map.getDistance(depot, routes[i].get(j).get(0));
-                for (int k = 0; k < routes[i].get(j).size()-1; k++) {
-                    totalDuration += map.getDistance(routes[i].get(j).get(k), routes[i].get(j).get(k+1));
-                }
-                totalDuration += map.getDistance(routes[i].get(j).get(routes[i].get(j).size()-1), depot);
+                totalDuration += getRouteDuration(depot, routes[i].get(j));
             }
         }
         return totalDuration;
     }
+
+    double getRouteDuration(Depot depot, ArrayList<Customer> route) {
+        double routeDuration = map.getDistance(depot, route.get(0));
+        for (int k = 0; k < route.size()-1; k++) {
+            routeDuration += map.getDistance(route.get(k), route.get(k+1));
+        }
+        routeDuration += map.getDistance(route.get(route.size()-1), depot);
+        return routeDuration;
+    }
+
+
 }
 

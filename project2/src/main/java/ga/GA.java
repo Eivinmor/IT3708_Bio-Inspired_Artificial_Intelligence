@@ -8,20 +8,18 @@ import java.io.IOException;
 public class GA {
 
     private String mapName;
-    private Plotter plotter;
     private int popSize;
 
     public GA() {
         // SETTINGS
-        mapName = "p10";
+        mapName = "p01";
         popSize = 1000;
-
 
     }
 
     private void runAlgorithm() throws IOException {
         Map map = DataReader.readMapData(mapName);
-        plotter = new Plotter(map.name);
+        Plotter plotter = new Plotter(map.name);
         plotter.addScatterSeries("Depots", map.depots);
         plotter.addScatterSeries("Customers", map.customers);
         plotter.init();
