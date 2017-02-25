@@ -9,12 +9,13 @@ import java.util.ArrayList;
 public class GA {
 
     private String mapName;
-    private int popSize;
+    private int popSize, iterations;
 
     public GA() {
         // SETTINGS
-        mapName = "p02";
-        popSize = 1;
+        mapName = "p01";
+        popSize = 1000;
+        iterations = 1000;
 
     }
 
@@ -22,19 +23,21 @@ public class GA {
         Map map = DataReader.readMapData(mapName);
 
         ArrayList<Solution> population = new ArrayList<>();
-
+        // Initial population
         for (int i = 0; i < popSize; i++) {
             population.add(new Solution(map));
         }
         Plotter plotter = new Plotter(map);
-        Solution bestSolution = findBestSolution(population);
+
+
+        Solution bestSolution = population.get(0);
+        // Evolution
+        for (int i = 0; i < iterations; i++) {
+            bestSolution = findBestSolution(population);
+            population = clonePopulation(bestSolution);
+        }
         plotter.plotSolution(bestSolution);
         System.out.println(bestSolution.getTotalDuration());
-
-        Solution clone = new Solution(bestSolution);
-        Plotter plotter2 = new Plotter(map);
-        plotter2.plotSolution(clone);
-        System.out.println(clone.getTotalDuration());
     }
 
     private Solution findBestSolution(ArrayList<Solution> population) {
@@ -49,15 +52,16 @@ public class GA {
         return bestSolution;
     }
 
-//    private Solution[] clonePopulation(Solution solution) {
-//        Solution[] clonedPopulation = new Solution[popSize];
-//        clonedPopulation[0] = new Solution(solution);
-//        for (int i = 1; i < popSize; i++) {
-//            clonedPopulation[i] = new Solution(solution);
-//            clonedPopulation[i].mutate();
-//        }
-//        return clonedPopulation;
-//    }
+    private ArrayList<Solution> clonePopulation(Solution solution) {
+        ArrayList<Solution> clonedPopulation = new ArrayList<>();
+        clonedPopulation.add(new Solution(solution));
+        for (int i = 1; i < popSize; i++) {
+            Solution clone = new Solution(solution);
+            clone.mutate();
+            clonedPopulation.add(clone);
+        }
+        return clonedPopulation;
+    }
 
     public static void main(String[] args) throws IOException {
         GA ga = new GA();

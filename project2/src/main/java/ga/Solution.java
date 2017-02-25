@@ -16,7 +16,7 @@ public class Solution {
     private ArrayList<ArrayList<Unit>>[] routes;
     private Random random;
 
-    public Solution(Map map) {
+    Solution(Map map) {
         this.map = map;
         random = new Random();
         clustering = clusterCustomersToDepots();
@@ -24,14 +24,13 @@ public class Solution {
         routes = calculateAllRoutes();
     }
 
-    public Solution(Solution otherSolution) {
+    Solution(Solution otherSolution) {
         this.map = otherSolution.map;
         random = new Random();
         clustering = new ArrayList[map.numOfDepots];
         for (int i = 0; i < map.numOfDepots; i++) {
             this.clustering[i] = new ArrayList<>(otherSolution.clustering[i]);
         }
-        routes = calculateAllRoutes();
     }
 
     private ArrayList<Customer>[] clusterCustomersToDepots() {
@@ -172,31 +171,28 @@ public class Solution {
         return closestCustomer;
     }
 
-//    public ArrayList<ArrayList<Unit>>[] getRoutes() {
-//        ArrayList<ArrayList<Unit>>[] routesWithDepot = new ArrayList[map.numOfDepots];
-//        for (int i = 0; i < routes.length; i++) {
-//            ArrayList<ArrayList<Unit>> depot = new ArrayList<>();
-//            for (int j = 0; j < routes[i].size(); j++) {
-//                ArrayList<Unit> route = new ArrayList<>();
-//                route.add(map.depots[i]);
-//                route.addAll(routes[i].get(j));
-//                route.add(map.depots[i]);
-//                for (int k = 0; k < route.size(); k++) {
-//                    System.out.print(route.get(k) + " ");
-//                }
-//                System.out.println();
-//                depot.add(route);
-//            }
-//            routesWithDepot[i] = depot;
-//        }
-//        return routesWithDepot;
-//    }
+    void mutate() {
+        int swapDepot = random.nextInt(map.numOfDepots);
+
+        int customer1Index = random.nextInt(clustering[swapDepot].size());
+        Customer customer1 = clustering[swapDepot].get(customer1Index);
+
+        int customer2Index = random.nextInt(clustering[swapDepot].size());
+        Customer customer2 = clustering[swapDepot].get(customer2Index);
+
+        clustering[swapDepot].set(customer1Index, customer2);
+        clustering[swapDepot].set(customer2Index, customer1);
+
+        routes = calculateAllRoutes();
+    }
 
     public ArrayList<ArrayList<Unit>>[] getRoutes() {
         return routes;
     }
 
     double getTotalDuration() {
+        if (routes == null)
+            routes = calculateAllRoutes();
         double totalDuration = map.totalServiceDuration;
         for (int i = 0; i < routes.length; i++) {
             Depot depot = map.depots[i];
@@ -207,12 +203,11 @@ public class Solution {
         return totalDuration;
     }
 
-    double getRouteDuration(Depot depot, ArrayList<Unit> route) {
-        double routeDuration = map.getDistance(depot, route.get(0));
+    private double getRouteDuration(Depot depot, ArrayList<Unit> route) {
+        double routeDuration = 0;
         for (int k = 0; k < route.size()-1; k++) {
             routeDuration += map.getDistance(route.get(k), route.get(k+1));
         }
-        routeDuration += map.getDistance(route.get(route.size()-1), depot);
         return routeDuration;
     }
 
