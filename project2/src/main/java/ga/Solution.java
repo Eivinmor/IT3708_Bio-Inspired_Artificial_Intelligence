@@ -177,38 +177,84 @@ public class Solution{
     }
 
     void mutate() {
-        for (int i = 0; i < map.numOfCustomers; i+=50) {
-            if (random.nextBoolean()) betweenDepotSwap();
-            while (random.nextBoolean()) intraDepotSwap();
+        singleCustomerOptimalReposition();
+    }
+
+    private void singleCustomerOptimalReposition() {
+//        printRoutes(calculateAllRoutes());
+
+        ArrayList<ArrayList<Unit>>[] tempRoutes = calculateAllRoutes();
+        int depotIndex = random.nextInt(map.numOfDepots);
+        int routeIndex = random.nextInt(tempRoutes[depotIndex].size());
+        int customerIndex = random.nextInt(tempRoutes[depotIndex].get(routeIndex).size()-2)+1; // Avoid depots
+        Customer customer = (Customer)tempRoutes[depotIndex].get(routeIndex).get(customerIndex);
+        tempRoutes[depotIndex].get(routeIndex).remove(customer);
+//        printRoutes(tempRoutes);
+//        System.out.println(customer);
+
+        int bestInsertionDepotIndex = 0;
+        int bestInsertionRouteIndex = 0;
+        int bestInsertionCustomerIndex = 1;
+        double bestInsertionCost = getInsertionCost(customer, tempRoutes[0].get(0).get(1), tempRoutes[0].get(0).get(2));
+//        System.out.println("0,0,1: " + bestInsertionCost);
+        for (int i = 0; i < tempRoutes.length; i++) {  // Depot
+            for (int j = 0; j < tempRoutes[i].size(); j++) {  // Route
+                for (int k = 2; k < tempRoutes[i].get(j).size(); k++) {  // Customer
+                    double insertionCost = getInsertionCost(customer, tempRoutes[i].get(j).get(k-1), tempRoutes[i].get(j).get(k));
+                    if (insertionCost < bestInsertionCost) {
+                        // TODO Check if it ends up in this route or the next
+                        bestInsertionCost = insertionCost;
+                        bestInsertionDepotIndex = i;
+                        bestInsertionRouteIndex = j;
+                        bestInsertionCustomerIndex = k;
+//                        System.out.println(i + "," + j + "," + k + ": " + bestInsertionCost);
+//                        System.out.println(tempRoutes[i].get(j).get(k));
+                    }
+                }
+            }
         }
+        ArrayList<Unit> chosenRoute = tempRoutes[bestInsertionDepotIndex].get(bestInsertionRouteIndex);
+        ArrayList<Unit> newRoute = new ArrayList<>();
+        newRoute.addAll(chosenRoute.subList(0, bestInsertionCustomerIndex));
+        newRoute.add(customer);
+        newRoute.addAll(chosenRoute.subList(bestInsertionCustomerIndex, chosenRoute.size()));
+        tempRoutes[bestInsertionDepotIndex].set(bestInsertionRouteIndex, newRoute);
+        clustering = routesToClustering(tempRoutes);
+//        System.out.println("F: " + clustering[bestInsertionDepotIndex].get(bestInsertionClusterIndex));
+    }
+
+    private double getInsertionCost (Customer insertCustomer, Unit preUnit, Unit postUnit) {
+        return map.getDistance(preUnit, insertCustomer)
+                + map.getDistance(insertCustomer, postUnit)
+                - map.getDistance(postUnit, preUnit);
     }
 
     private void intraDepotSwap() {
-        int swapDepot = random.nextInt(map.numOfDepots);
+        int depotIndex = random.nextInt(map.numOfDepots);
 
-        int customer1Index = random.nextInt(clustering[swapDepot].size());
-        Customer customer1 = clustering[swapDepot].get(customer1Index);
+        int customer1Index = random.nextInt(clustering[depotIndex].size());
+        Customer customer1 = clustering[depotIndex].get(customer1Index);
 
-        int customer2Index = random.nextInt(clustering[swapDepot].size());
-        Customer customer2 = clustering[swapDepot].get(customer2Index);
+        int customer2Index = random.nextInt(clustering[depotIndex].size());
+        Customer customer2 = clustering[depotIndex].get(customer2Index);
 
-        clustering[swapDepot].set(customer1Index, customer2);
-        clustering[swapDepot].set(customer2Index, customer1);
+        clustering[depotIndex].set(customer1Index, customer2);
+        clustering[depotIndex].set(customer2Index, customer1);
     }
 
     private void betweenDepotSwap() {
-        int swapDepot1 = random.nextInt(map.numOfDepots);
-        int swapDepot2 = random.nextInt(map.numOfDepots);
-        while (swapDepot1 == swapDepot2) swapDepot2 = random.nextInt(map.numOfDepots);
+        int depot1Index = random.nextInt(map.numOfDepots);
+        int depot2Index = random.nextInt(map.numOfDepots);
+        while (depot1Index == depot2Index) depot2Index = random.nextInt(map.numOfDepots);
 
-        int customer1Index = random.nextInt(clustering[swapDepot1].size());
-        Customer customer1 = clustering[swapDepot1].get(customer1Index);
+        int customer1Index = random.nextInt(clustering[depot1Index].size());
+        Customer customer1 = clustering[depot1Index].get(customer1Index);
 
-        int customer2Index = random.nextInt(clustering[swapDepot2].size());
-        Customer customer2 = clustering[swapDepot2].get(customer2Index);
+        int customer2Index = random.nextInt(clustering[depot2Index].size());
+        Customer customer2 = clustering[depot2Index].get(customer2Index);
 
-        clustering[swapDepot1].set(customer1Index, customer2);
-        clustering[swapDepot2].set(customer2Index, customer1);
+        clustering[depot1Index].set(customer1Index, customer2);
+        clustering[depot2Index].set(customer2Index, customer1);
     }
 
     public ArrayList<ArrayList<Unit>>[] getRoutes() {
@@ -240,6 +286,21 @@ public class Solution{
         return routeDuration;
     }
 
+    private ArrayList<Customer>[] routesToClustering(ArrayList<ArrayList<Unit>>[] routes) {
+        ArrayList<Customer>[] newClustering = new ArrayList[map.numOfDepots];
+        for (int i = 0; i < map.numOfDepots; i++) {
+            newClustering[i] = new ArrayList<>();
+            for (int j = 0; j < routes[i].size(); j++) {
+                for (int k = 1; k < routes[i].get(j).size()-1; k++) {
+                    if (routes[i].get(j).get(k).getClass().getSimpleName().equals("Depot"))
+                        printRoutes(routes);
+                    newClustering[i].add((Customer)routes[i].get(j).get(k));
+                }
+            }
+        }
+        return newClustering;
+    }
+
     void printClustering() {
         for (int i = 0; i < clustering.length; i++) {
             for (int j = 0; j < clustering[i].size(); j++) {
@@ -250,7 +311,7 @@ public class Solution{
         System.out.println();
     }
 
-    void printRoutes() {
+    void printRoutes(ArrayList<ArrayList<Unit>>[] routes) {
         for (int i = 0; i < routes.length; i++) {
             for (int j = 0; j < routes[i].size(); j++) {
                 System.out.print(routes[i].get(j) + " ");

@@ -14,8 +14,8 @@ public class GA {
     public GA() {
         // SETTINGS
         mapName = "p02";
-        popSize = 1000;
-        iterations = 1000;
+        popSize = 1000;     // 1000
+        iterations = 1000;  // 1000
 
     }
 
@@ -37,7 +37,7 @@ public class GA {
             System.out.println(bestSolution.getTotalDuration());
             population = clonePopulation(bestSolution);
         }
-        bestSolution.printRoutes();
+//        bestSolution.printRoutes();
         plotter.plotSolution(bestSolution);
         System.out.println(bestSolution.getTotalDuration());
     }
