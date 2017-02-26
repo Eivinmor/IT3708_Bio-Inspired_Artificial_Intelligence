@@ -10,7 +10,7 @@ import representation.*;
 
 public class DataReader {
 
-    private static String filePathRoot = System.getProperty("user.dir") + "\\src\\main\\resources";
+    private static String filePathRoot = System.getProperty("user.dir") + "\\src\\main\\resources\\";
 
     public static Map readMapData(String fileName) throws IOException {
         File dataFile = new File(filePathRoot + "\\maps\\" + fileName);
@@ -60,7 +60,6 @@ public class DataReader {
     public static void writeSolutionToFile(Solution solution) throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter((filePathRoot + "solution.txt")));
         writer.write(String.format(Locale.US, "%.2f", solution.getTotalDuration()));
-        writer.newLine();
 
         ArrayList<ArrayList<Unit>>[] solutionRoutes = solution.getRoutes();
         for (int i = 0; i < solutionRoutes.length; i++) {
@@ -77,15 +76,13 @@ public class DataReader {
                         routePath.append(customer.number + " ");
                     }
                 }
-                routePath.append(" 0");
+                routePath.append("0");
                 System.out.println(String.format(Locale.US, "%d%6d%10.2f%8.0f     %s", i+1, j+1, routeDuration, routeLoad, routePath));
-                writer.write(String.format(Locale.US, "%d%6d%10.2f%8.0f     %s", i+1, j+1, routeDuration, routeLoad, routePath));
                 writer.newLine();
+                writer.write(String.format(Locale.US, "%d%6d%10.2f%8.0f     %s", i+1, j+1, routeDuration, routeLoad, routePath));
             }
         }
         writer.close();
     }
-
-
 
 }

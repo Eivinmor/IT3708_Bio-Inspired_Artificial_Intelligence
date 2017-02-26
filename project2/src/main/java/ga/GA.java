@@ -19,7 +19,7 @@ public class GA {
         // SETTINGS
         mapName = "p02";
         popSize = 100;     // 1000
-        maxIterations = 100;  // 1000
+        maxIterations = 1000;  // 1000
         eliteAmount = popSize/10 + 1;
         tournamentSize = 2;
     }
