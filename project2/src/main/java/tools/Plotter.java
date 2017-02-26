@@ -64,7 +64,7 @@ public class Plotter {
         // LINES PLOT
         XYLineAndShapeRenderer  lineRenderer = new XYLineAndShapeRenderer(true, false);
         lineRenderer.setAutoPopulateSeriesStroke(false);
-        lineRenderer.setBaseStroke(new BasicStroke(2));
+        lineRenderer.setBaseStroke(new BasicStroke(3));
         lineRenderer.setAutoPopulateSeriesPaint(true);
 
         plot.setDataset(1, routeSequenceCollection);

@@ -189,10 +189,8 @@ public class Solution implements Comparable<Solution>{
             double randDouble = random.nextDouble();
             if (randDouble > 0.8) betweenDepotSwap();
             else if (randDouble > 0.6) reverseMutation();
-            else if (randDouble > 0.4)
-                singleCustomerOptimalBetweenDepotReposition();
-            else
-                singleCustomerOptimalIntraDepotReposition();
+            else if (randDouble > 0.2) singleCustomerOptimalBetweenDepotReposition();
+            else singleCustomerOptimalIntraDepotReposition();
         }
     }
 
