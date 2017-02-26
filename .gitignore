@@ -63,5 +63,6 @@ buildNumber.properties
 
 
 project1/src/main/java/common/gridStorageFile.txt
+project2/src/main/java/resources/solution.txt
 
 
