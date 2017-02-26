@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 
-public class Solution{
+public class Solution implements Comparable<Solution>{
 
     // SETTINGS
     private int clusterProbExponent = -10;
@@ -184,15 +184,13 @@ public class Solution{
 
 
     void mutate() {
-        for (int i = 0; i < 1; i++) {
-            double randDouble = random.nextDouble();
-            if (randDouble > 0.8) betweenDepotSwap();
-            else if (randDouble > 0.6) reverseMutation();
-//            else if (randDouble > 0.4)
-//                singleCustomerOptimalBetweenDepotReposition();
-            else
-                singleCustomerOptimalIntraDepotReposition();
-        }
+        double randDouble = random.nextDouble();
+        if (randDouble > 0.8) betweenDepotSwap();
+        else if (randDouble > 0.6) reverseMutation();
+        else if (randDouble > 0.4)
+            singleCustomerOptimalBetweenDepotReposition();
+        else
+            singleCustomerOptimalIntraDepotReposition();
     }
 
     private void singleCustomerOptimalIntraDepotReposition() {
@@ -221,8 +219,7 @@ public class Solution{
                 }
             }
             ArrayList<Unit> chosenRoute = tempRoutes[depotIndex].get(bestInsertionRouteIndex);
-            ArrayList<Unit> newRoute = new ArrayList<>();
-            newRoute.addAll(chosenRoute.subList(0, bestInsertionCustomerIndex));
+            ArrayList<Unit> newRoute = new ArrayList<>(chosenRoute.subList(0, bestInsertionCustomerIndex));
             newRoute.add(customer);
             newRoute.addAll(chosenRoute.subList(bestInsertionCustomerIndex, chosenRoute.size()));
             tempRoutes[depotIndex].set(bestInsertionRouteIndex, newRoute);
@@ -395,5 +392,11 @@ public class Solution{
     }
 
 
+    @Override
+    public int compareTo(Solution o) {
+        if (this.getCost() < o.getCost()) return -1;
+        else if (this.getCost() > o.getCost()) return 1;
+        return 0;
+    }
 }
 
