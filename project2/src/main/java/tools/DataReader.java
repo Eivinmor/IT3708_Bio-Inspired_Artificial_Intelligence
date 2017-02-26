@@ -1,13 +1,18 @@
 package tools;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Locale;
+
+import ga.Solution;
 import org.apache.commons.lang3.StringUtils;
 import representation.*;
 
 public class DataReader {
 
+    private static String filePathRoot = System.getProperty("user.dir") + "\\src\\main\\resources";
+
     public static Map readMapData(String fileName) throws IOException {
-        String filePathRoot = System.getProperty("user.dir") + "\\src\\main\\resources";
         File dataFile = new File(filePathRoot + "\\maps\\" + fileName);
         BufferedReader reader = new BufferedReader(new FileReader(dataFile));
 
@@ -51,6 +56,36 @@ public class DataReader {
         Map map = new Map(fileName, maxVehiclesPerDepot, numOfCustomers, numOfDepots, depots, customers);
         return map;
     }
+
+    public static void writeSolutionToFile(Solution solution) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter((filePathRoot + "solution.txt")));
+        writer.write(String.format(Locale.US, "%.2f", solution.getTotalDuration()));
+        writer.newLine();
+
+        ArrayList<ArrayList<Unit>>[] solutionRoutes = solution.getRoutes();
+        for (int i = 0; i < solutionRoutes.length; i++) {
+            for (int j = 0; j < solutionRoutes[i].size(); j++) {
+                ArrayList<Unit> route = solutionRoutes[i].get(j);
+                double routeDuration = solution.calculateRouteDuration(route);
+                double routeLoad = 0;
+                StringBuilder routePath = new StringBuilder("0 ");
+                for (int k = 0; k < route.size(); k++) {
+                    Unit unit = route.get(k);
+                    if (unit.getClass().getSimpleName().equals("Customer")) {
+                        Customer customer = (Customer)unit;
+                        routeLoad += customer.demand;
+                        routePath.append(customer.number + " ");
+                    }
+                }
+                routePath.append(" 0");
+                System.out.println(String.format(Locale.US, "%d%6d%10.2f%8.0f     %s", i+1, j+1, routeDuration, routeLoad, routePath));
+                writer.write(String.format(Locale.US, "%d%6d%10.2f%8.0f     %s", i+1, j+1, routeDuration, routeLoad, routePath));
+                writer.newLine();
+            }
+        }
+        writer.close();
+    }
+
 
 
 }

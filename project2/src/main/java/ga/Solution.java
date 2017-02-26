@@ -334,7 +334,7 @@ public class Solution implements Comparable<Solution>{
         return totalDuration;
     }
 
-    double getTotalDuration() {
+    public double getTotalDuration() {
         return totalDuration;
     }
 
@@ -350,7 +350,7 @@ public class Solution implements Comparable<Solution>{
         return cost;
     }
 
-    private double calculateRouteDuration(ArrayList<Unit> route) {
+    public double calculateRouteDuration(ArrayList<Unit> route) {
         double routeDuration = 0;
         for (int k = 0; k < route.size()-1; k++) {
             routeDuration += map.getDistance(route.get(k), route.get(k+1));
@@ -392,7 +392,6 @@ public class Solution implements Comparable<Solution>{
         }
         System.out.println();
     }
-
 
     @Override
     public int compareTo(Solution o) {

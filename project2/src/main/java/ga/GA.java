@@ -19,7 +19,7 @@ public class GA {
         // SETTINGS
         mapName = "p02";
         popSize = 100;     // 1000
-        maxIterations = 10000;  // 1000
+        maxIterations = 100;  // 1000
         eliteAmount = popSize/10 + 1;
         tournamentSize = 2;
     }
@@ -66,6 +66,7 @@ public class GA {
         TimeUnit.MILLISECONDS.sleep(200);
         plotter.plotSolution(bestSolution);
         System.out.println("-------------------------------\n" + bestSolution.getTotalDuration());
+        DataReader.writeSolutionToFile(bestSolution);
     }
 
     private Solution findBestSolution(ArrayList<Solution> population) {
