@@ -53,7 +53,11 @@ public class DataReader {
             depots[i] = new Depot(number, x, y, maxRouteDuration, maxLoadPerVehicle);
         }
 
-        Map map = new Map(fileName, maxVehiclesPerDepot, numOfCustomers, numOfDepots, depots, customers);
+        File solutionFile = new File(filePathRoot + "\\solutions\\" + fileName + ".res");
+        reader = new BufferedReader(new FileReader(solutionFile));
+        double optimalDuration = Double.valueOf(reader.readLine());
+
+        Map map = new Map(fileName, maxVehiclesPerDepot, numOfCustomers, numOfDepots, depots, customers, optimalDuration);
         return map;
     }
 

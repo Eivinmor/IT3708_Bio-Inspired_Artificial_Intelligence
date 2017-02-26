@@ -5,6 +5,7 @@ import tools.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -14,14 +15,16 @@ public class GA {
     private String mapName;
     private int popSize, maxIterations, eliteAmount, tournamentSize;
     private Random random;
+    private boolean stopWithin10percent;
 
     public GA() {
         // SETTINGS
-        mapName = "p02";
+        mapName = "p05";
         popSize = 100;     // 1000
         maxIterations = 1000;  // 1000
         eliteAmount = popSize/10 + 1;
         tournamentSize = 2;
+        stopWithin10percent = true;
     }
 
     private void runAlgorithm() throws IOException, InterruptedException {
@@ -59,13 +62,22 @@ public class GA {
             Collections.sort(population);
             bestSolution = population.get(0);
 
+            System.out.print("Iteration: " + (i+1) + "\t\t");
             System.out.print("Duration: " + (int)bestSolution.getTotalDuration() + "\t");
-            System.out.println("Cost: " + (int)bestSolution.getCost());
+            System.out.print("Cost: " + (int)bestSolution.getCost() + "\t\t");
+            System.out.println(String.format("%.0f", (bestSolution.getTotalDuration()/map.optimalDuration)*100-100) + "% over optimal");
             plotter.plotSolution(bestSolution);
+
+            if (stopWithin10percent && bestSolution.getTotalDuration() < 1.10*map.optimalDuration) {
+                System.out.println("\nWithin 10% of optimal. Stopping.");
+                break;
+            }
         }
         TimeUnit.MILLISECONDS.sleep(200);
         plotter.plotSolution(bestSolution);
-        System.out.println("-------------------------------\n" + bestSolution.getTotalDuration());
+        System.out.println("-------------------------------");
+        System.out.println("Optimal: " + map.optimalDuration);
+        System.out.println("Achieved: " + String.format(Locale.US, "%.2f", bestSolution.getTotalDuration()));
         DataReader.writeSolutionToFile(bestSolution);
     }
 
