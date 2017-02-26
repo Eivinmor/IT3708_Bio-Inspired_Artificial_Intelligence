@@ -10,11 +10,10 @@ public class Solution{
 
     // SETTINGS
     private int clusterProbExponent = -10;
-    private int mutatePerLogOfCustomers = 5;
 
     private double durationCostWeight = 1;
     private double numOfVehiclesCostWeight = 100;
-    private double overVehicleLimitCostWeight = 100;
+    private double overVehicleLimitCostWeight = 10000;
 
     private Map map;
     private ArrayList<Customer>[] clustering;
@@ -183,14 +182,16 @@ public class Solution{
         return closestCustomer;
     }
 
-    
+
     void mutate() {
-//        betweenDepotSwap();
-        for (int i = 0; i < Math.log(map.numOfCustomers)/Math.log(mutatePerLogOfCustomers); i++) {
-            singleCustomerOptimalBetweenDepotReposition();
-        }
-        for (int i = 0; i < Math.log(map.numOfCustomers)/Math.log(mutatePerLogOfCustomers/2); i++) {
-            singleCustomerOptimalIntraDepotReposition();
+        for (int i = 0; i < 1; i++) {
+            double randDouble = random.nextDouble();
+            if (randDouble > 0.8) betweenDepotSwap();
+            else if (randDouble > 0.6) reverseMutation();
+//            else if (randDouble > 0.4)
+//                singleCustomerOptimalBetweenDepotReposition();
+            else
+                singleCustomerOptimalIntraDepotReposition();
         }
     }
 
@@ -272,6 +273,19 @@ public class Solution{
         return map.getDistance(preUnit, insertCustomer)
                 + map.getDistance(insertCustomer, postUnit)
                 - map.getDistance(postUnit, preUnit);
+    }
+
+    private void reverseMutation() {
+//        printClustering();
+        int depotIndex = random.nextInt(map.numOfDepots);
+        int cutPoint1 = random.nextInt(clustering[depotIndex].size()-1);
+        int cutPoint2 = random.nextInt(clustering[depotIndex].size() - cutPoint1) + cutPoint1;
+        ArrayList<Customer> reverse = new ArrayList<>(clustering[depotIndex].subList(cutPoint1, cutPoint2));
+        for (int i = 0; i < reverse.size(); i++) {
+            clustering[depotIndex].set(cutPoint1 + i, reverse.get(reverse.size()-1-i));
+        }
+//        System.out.println(depotIndex + ", " + cutPoint1 + ", " + cutPoint2);
+//        printClustering();
     }
 
     private void intraDepotSwap() {

@@ -15,8 +15,8 @@ public class GA {
     public GA() {
         // SETTINGS
         mapName = "p03";
-        popSize = 200;     // 1000
-        maxIterations = 100;  // 1000
+        popSize = 100;     // 1000
+        maxIterations = 1000;  // 1000
         eliteAmount = popSize/100;
     }
 
@@ -40,7 +40,7 @@ public class GA {
             population = clonePopulation(bestSolution);
             plotter.plotSolution(bestSolution);
         }
-        TimeUnit.SECONDS.sleep(1);
+        TimeUnit.MILLISECONDS.sleep(200);
         plotter.plotSolution(bestSolution);
         System.out.println(bestSolution.getTotalDuration());
     }
