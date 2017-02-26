@@ -17,11 +17,11 @@ public class GA {
 
     public GA() {
         // SETTINGS
-        mapName = "p10";
-        popSize = 1000;     // 1000
+        mapName = "p02";
+        popSize = 100;     // 1000
         maxIterations = 10000;  // 1000
-        eliteAmount = popSize/10;
-        tournamentSize = 5;
+        eliteAmount = popSize/10 + 1;
+        tournamentSize = 2;
     }
 
     private void runAlgorithm() throws IOException, InterruptedException {
@@ -58,13 +58,14 @@ public class GA {
             population = newPopulation;
             Collections.sort(population);
             bestSolution = population.get(0);
+
             System.out.print("Duration: " + (int)bestSolution.getTotalDuration() + "\t");
             System.out.println("Cost: " + (int)bestSolution.getCost());
             plotter.plotSolution(bestSolution);
         }
         TimeUnit.MILLISECONDS.sleep(200);
         plotter.plotSolution(bestSolution);
-        System.out.println("\n-------------------------------\n" + bestSolution.getTotalDuration());
+        System.out.println("-------------------------------\n" + bestSolution.getTotalDuration());
     }
 
     private Solution findBestSolution(ArrayList<Solution> population) {

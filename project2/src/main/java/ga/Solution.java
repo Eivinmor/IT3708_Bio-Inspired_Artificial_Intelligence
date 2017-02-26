@@ -12,8 +12,9 @@ public class Solution implements Comparable<Solution>{
     private int clusterProbExponent = -10;
 
     private double durationCostWeight = 1;
-    private double numOfVehiclesCostWeight = 100;
+    private double numOfVehiclesCostWeight = 10;
     private double overVehicleLimitCostWeight = 10000;
+    private double mutationRate = 0.8;
 
     private Map map;
     private ArrayList<Customer>[] clustering;
@@ -184,13 +185,15 @@ public class Solution implements Comparable<Solution>{
 
 
     void mutate() {
-        double randDouble = random.nextDouble();
-        if (randDouble > 0.8) betweenDepotSwap();
-        else if (randDouble > 0.6) reverseMutation();
-        else if (randDouble > 0.4)
-            singleCustomerOptimalBetweenDepotReposition();
-        else
-            singleCustomerOptimalIntraDepotReposition();
+        if (random.nextDouble() < mutationRate) {
+            double randDouble = random.nextDouble();
+            if (randDouble > 0.8) betweenDepotSwap();
+            else if (randDouble > 0.6) reverseMutation();
+            else if (randDouble > 0.4)
+                singleCustomerOptimalBetweenDepotReposition();
+            else
+                singleCustomerOptimalIntraDepotReposition();
+        }
     }
 
     private void singleCustomerOptimalIntraDepotReposition() {
@@ -273,16 +276,15 @@ public class Solution implements Comparable<Solution>{
     }
 
     private void reverseMutation() {
-//        printClustering();
         int depotIndex = random.nextInt(map.numOfDepots);
+        while (clustering[depotIndex].size() < 2) depotIndex = random.nextInt(map.numOfDepots);
+
         int cutPoint1 = random.nextInt(clustering[depotIndex].size()-1);
         int cutPoint2 = random.nextInt(clustering[depotIndex].size() - cutPoint1) + cutPoint1;
         ArrayList<Customer> reverse = new ArrayList<>(clustering[depotIndex].subList(cutPoint1, cutPoint2));
         for (int i = 0; i < reverse.size(); i++) {
             clustering[depotIndex].set(cutPoint1 + i, reverse.get(reverse.size()-1-i));
         }
-//        System.out.println(depotIndex + ", " + cutPoint1 + ", " + cutPoint2);
-//        printClustering();
     }
 
     private void intraDepotSwap() {
@@ -326,7 +328,7 @@ public class Solution implements Comparable<Solution>{
         for (int i = 0; i < routes.length; i++) {
             Depot depot = map.depots[i];
             for (int j = 0; j < routes[i].size(); j++) {
-                totalDuration += calculateRouteDuration(depot, routes[i].get(j));
+                totalDuration += calculateRouteDuration(routes[i].get(j));
             }
         }
         return totalDuration;
@@ -348,7 +350,7 @@ public class Solution implements Comparable<Solution>{
         return cost;
     }
 
-    private double calculateRouteDuration(Depot depot, ArrayList<Unit> route) {
+    private double calculateRouteDuration(ArrayList<Unit> route) {
         double routeDuration = 0;
         for (int k = 0; k < route.size()-1; k++) {
             routeDuration += map.getDistance(route.get(k), route.get(k+1));
