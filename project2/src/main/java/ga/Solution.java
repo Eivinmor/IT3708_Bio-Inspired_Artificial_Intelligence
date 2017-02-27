@@ -18,6 +18,7 @@ public class Solution implements Comparable<Solution>{
     private double overVehicleLimitCostWeight = Settings.overVehicleLimitCostWeight;
     private double overDurationLimitCostWeight = Settings.overDurationLimitCostWeight;
     private double overLoadLimitCostWeight = Settings.overLoadLimitCostWeight;
+    private boolean checkLoadOnClustering = Settings.checkLoadOnClustering;
 
     private Map map;
     private ArrayList<Customer>[] clustering;
@@ -48,7 +49,14 @@ public class Solution implements Comparable<Solution>{
 
 
     private ArrayList<Customer>[] clusterCustomersToDepots() {
-        
+        double[] depotFreeLoad = new double[map.numOfDepots];
+        if (checkLoadOnClustering) {
+            depotFreeLoad = new double[map.numOfDepots];
+            for (int i = 0; i < map.numOfDepots; i++) {
+                depotFreeLoad[i] = map.maxVehiclesPerDepot * map.depots[i].maxLoadPerVehicle;
+            }
+        }
+
         // Set exponential probability to be assigned to depot based on distance
         ArrayList<Customer>[] clusters = new ArrayList[map.numOfDepots];
         for (int i = 0; i < map.numOfDepots; i++) {
@@ -71,8 +79,9 @@ public class Solution implements Comparable<Solution>{
             // Choose depot
             double randDouble = random.nextDouble();
             for (int i = 0; i < map.numOfDepots; i++) {
-                if (depotProbArray[i] > randDouble) {
+                if (depotProbArray[i] > randDouble && (!checkLoadOnClustering || depotFreeLoad[i] > customer.demand)) {
                     clusters[i].add(customer);
+                    depotFreeLoad[i] -= customer.demand;
                     break;
                 }
                 randDouble -= depotProbArray[i];
@@ -80,6 +89,7 @@ public class Solution implements Comparable<Solution>{
         }
         return clusters;
     }
+
 
     private ArrayList<Customer>[] sortClusterByCustomerDistance(ArrayList<Customer>[] clustering) {
         ArrayList<Customer>[] sortedClustering = new ArrayList[map.numOfDepots];
