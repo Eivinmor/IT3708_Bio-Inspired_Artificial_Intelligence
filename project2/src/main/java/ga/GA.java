@@ -18,10 +18,9 @@ public class GA {
 
     public GA() {
         // SETTINGS
-        mapName = "p10";
-        popSize = 200;     // 1000
-        maxIterations = 1000;  // 1000
-//        eliteAmount = popSize/30 + 1;
+        mapName = "p01";
+        popSize = 200;
+        maxIterations = 1000;
         eliteAmount = (int)(popSize * 3/100.0) + 1;
         tournamentSize = 2;
         targetPercent = 10;
