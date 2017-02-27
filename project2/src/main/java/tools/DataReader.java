@@ -55,15 +55,15 @@ public class DataReader {
 
         File solutionFile = new File(filePathRoot + "\\solutions\\" + fileName + ".res");
         reader = new BufferedReader(new FileReader(solutionFile));
-        double optimalDuration = Double.valueOf(reader.readLine());
+        double optimalDistance = Double.valueOf(reader.readLine());
 
-        Map map = new Map(fileName, maxVehiclesPerDepot, numOfCustomers, numOfDepots, depots, customers, optimalDuration);
+        Map map = new Map(fileName, maxVehiclesPerDepot, numOfCustomers, numOfDepots, depots, customers, optimalDistance);
         return map;
     }
 
     public static void writeSolutionToFile(Solution solution) throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter((filePathRoot + "solution.txt")));
-        writer.write(String.format(Locale.US, "%.2f", solution.getTotalDuration()));
+        writer.write(String.format(Locale.US, "%.2f", solution.getTotalDistance()));
 
         ArrayList<ArrayList<Unit>>[] solutionRoutes = solution.getRoutes();
         for (int i = 0; i < solutionRoutes.length; i++) {

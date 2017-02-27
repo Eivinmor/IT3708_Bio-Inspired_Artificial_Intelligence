@@ -11,10 +11,10 @@ public class Map {
     public final Depot[] depots;
     public final Customer[] customers;
     public final double[][] customerDistances, depotCustomerDistances;
-    public final double totalServiceDuration, optimalDuration;
+    public final double totalServiceDuration, optimalDistance;
 
     public Map(String name, int maxVehiclesPerDepot, int numOfCustomers, int numOfDepots,
-               Depot[] depots, Customer[] customers, double optimalDuration) {
+               Depot[] depots, Customer[] customers, double optimalDistance) {
         this.name = name;
         this.maxVehiclesPerDepot = maxVehiclesPerDepot;
         this.numOfCustomers = numOfCustomers;
@@ -24,7 +24,7 @@ public class Map {
         this.customerDistances = calculateC2CDistances();
         this.depotCustomerDistances = calculateD2CDistances();
         this.totalServiceDuration = calculateTotalServiceDuration();
-        this.optimalDuration = optimalDuration;
+        this.optimalDistance = optimalDistance;
     }
 
     public Depot getClosestDepot(Customer customer) {

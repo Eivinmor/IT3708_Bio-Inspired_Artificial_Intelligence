@@ -18,12 +18,12 @@ public class GA {
 
     public GA() {
         // SETTINGS
-        mapName = "p01";
-        popSize = 200;
-        maxIterations = 1000;
+        mapName = "pr06";
+        popSize = 100;
+        maxIterations = 2000;
         elitePercent = 3;
         tournamentSize = 2;
-        targetPercent = 10;
+        targetPercent = 0;
 
         eliteAmount = (int)(popSize * elitePercent / 100.0) + 1;
     }
@@ -33,7 +33,7 @@ public class GA {
         random = new Random();
         ArrayList<Solution> population = new ArrayList<>();
 
-        // INITIAL POPULATION
+    // INITIAL POPULATION
         for (int i = 0; i < popSize; i++) {
             population.add(new Solution(map));
         }
@@ -41,15 +41,18 @@ public class GA {
         Collections.sort(population);
         Solution bestSolution = population.get(0);
 
-        // EVOLUTION
+    // EVOLUTION
         for (int i = 0; i < maxIterations; i++) {
 
-            ArrayList<Solution> elite = new ArrayList<>(population.subList(0, eliteAmount));
+            // Add best solution from last population
             ArrayList<Solution> newPopulation = new ArrayList<>(population.subList(0, 1));
+
+            // Add mutated clones of elite set
+            ArrayList<Solution> elite = new ArrayList<>(population.subList(0, eliteAmount));
             for (int j = 0; j < elite.size(); j++) {
                 newPopulation.add(new Solution(elite.get(j), true));
             }
-
+            // Add offspring from tournament selection cloning
             while (newPopulation.size() < popSize) {
                 newPopulation.add(new Solution(tournamentSelection(tournamentSize, population), true));
             }
@@ -57,10 +60,10 @@ public class GA {
             Collections.sort(population);
             bestSolution = population.get(0);
 
-            // PRINT AND WRITE FILE
-            double percentOverOptimal = (bestSolution.getTotalDuration()/map.optimalDuration)*100-100;
-            System.out.print("Iteration: " + (i+1) + "\t\t");
-            System.out.print("Duration: " + (int)bestSolution.getTotalDuration() + "\t");
+        // PRINT AND WRITE FILE
+            double percentOverOptimal = (bestSolution.getTotalDistance()/map.optimalDistance)*100-100;
+            System.out.print((i+1) + "\t\t");
+            System.out.print("Distance: " + (int)(bestSolution.getTotalDistance()) + "\t\t");
             System.out.print("Cost: " + (int)bestSolution.getCost() + "\t\t");
             System.out.println(String.format(Locale.US, "%.1f", percentOverOptimal) + "% over optimal");
             plotter.plotSolution(bestSolution);
@@ -71,10 +74,10 @@ public class GA {
             }
         }
         TimeUnit.MILLISECONDS.sleep(200);
-//        plotter.plotSolution(bestSolution);
+        plotter.plotSolution(bestSolution);
         System.out.println("-------------------------------");
-        System.out.println("Optimal: " + map.optimalDuration);
-        System.out.println("Achieved: " + String.format(Locale.US, "%.2f", bestSolution.getTotalDuration()));
+        System.out.println("Optimal: " + map.optimalDistance);
+        System.out.println("Achieved: " + String.format(Locale.US, "%.2f", bestSolution.getTotalDistance()));
         DataReader.writeSolutionToFile(bestSolution);
     }
 

@@ -11,16 +11,17 @@ public class Solution implements Comparable<Solution>{
     // SETTINGS
     private int clusterProbExponent = -10;
 
-    private double durationCostWeight = 1;
+    private double distanceCostWeight = 1;
     private double numOfVehiclesCostWeight = 10;
     private double overVehicleLimitCostWeight = 10000;
     private double mutationRate = 0.8;
+    private boolean forceNumOfVehicles = true;
 
     private Map map;
     private ArrayList<Customer>[] clustering;
     private ArrayList<ArrayList<Unit>>[] routes;
     private Random random;
-    private double totalDuration;
+    private double totalDistance;
 
     Solution(Map map) {
         this.map = map;
@@ -28,7 +29,7 @@ public class Solution implements Comparable<Solution>{
         clustering = clusterCustomersToDepots();
         clustering = sortClusterByCustomerDistance(clustering);
         routes = calculateAllRoutes();
-        totalDuration = calculateTotalDuration();
+        totalDistance = calculateTotalDistance();
     }
 
     Solution(Solution otherSolution, boolean mutate) {
@@ -40,7 +41,7 @@ public class Solution implements Comparable<Solution>{
         }
         if (mutate) mutate();
         routes = calculateAllRoutes();
-        totalDuration = calculateTotalDuration();
+        totalDistance = calculateTotalDistance();
     }
 
 
@@ -138,6 +139,7 @@ public class Solution implements Comparable<Solution>{
         double load = 0;
 
         ArrayList<Customer> depotCustomers = clustering[depotNumber];
+        ArrayList<Customer> remainingCustomers = new ArrayList<>();
         ArrayList<Unit> route = new ArrayList<>();
         route.add(depot);
 
@@ -152,19 +154,52 @@ public class Solution implements Comparable<Solution>{
 
             if ((maxDuration > 0 && duration + stepDistance + depotDistance + stepService > maxDuration)
                     || load + stepDemand > maxLoad) {
+
                 route.add(depot);
                 depotRoutes.add(route);
                 route = new ArrayList<>();
                 route.add(depot);
                 duration = 0;
                 load = 0;
+
+                if (forceNumOfVehicles && depotRoutes.size() == map.maxVehiclesPerDepot) {
+                    remainingCustomers.addAll(depotCustomers.subList(i, depotCustomers.size()));
+                    break;
+                }
             }
+
             route.add(nextCustomer);
             duration += stepDistance + stepService;
             load += stepDemand;
         }
         route.add(depot);
-        depotRoutes.add(route);
+        if (route.size() > 2) depotRoutes.add(route);
+
+        if (forceNumOfVehicles) {
+            for (int i = 0; i < remainingCustomers.size(); i++) {
+                Customer customer = remainingCustomers.get(i);
+
+                int bestInsertionRouteIndex = 0;
+                int bestInsertionCustomerIndex = 1;
+                double bestInsertionCost = Double.MAX_VALUE;
+                for (int j = 0; j < depotRoutes.size(); j++) {  // Route
+                    for (int k = 1; k < depotRoutes.get(j).size(); k++) {  // Customer
+                        double insertionCost = getInsertionCost(customer, depotRoutes.get(j).get(k-1), depotRoutes.get(j).get(k));
+                        if (insertionCost < bestInsertionCost) {
+                            bestInsertionCost = insertionCost;
+                            bestInsertionRouteIndex = j;
+                            bestInsertionCustomerIndex = k;
+                        }
+                    }
+                }
+                ArrayList<Unit> oldDepotRoute = depotRoutes.get(bestInsertionRouteIndex);
+                ArrayList<Unit> newDepotRoute = new ArrayList<>(oldDepotRoute.subList(0, bestInsertionCustomerIndex));
+                newDepotRoute.add(customer);
+                newDepotRoute.addAll(new ArrayList<>(oldDepotRoute.subList(bestInsertionCustomerIndex, oldDepotRoute.size())));
+                depotRoutes.set(bestInsertionRouteIndex, newDepotRoute);
+
+            }
+        }
         return depotRoutes;
     }
 
@@ -267,6 +302,7 @@ public class Solution implements Comparable<Solution>{
         }
     }
 
+
     private double getInsertionCost (Customer insertCustomer, Unit preUnit, Unit postUnit) {
         return map.getDistance(preUnit, insertCustomer)
                 + map.getDistance(insertCustomer, postUnit)
@@ -300,11 +336,22 @@ public class Solution implements Comparable<Solution>{
 
     private void betweenDepotSwap() {
         int depot1Index = random.nextInt(map.numOfDepots);
-        int depot2Index = random.nextInt(map.numOfDepots);
-        while (depot1Index == depot2Index) depot2Index = random.nextInt(map.numOfDepots);
 
         int customer1Index = random.nextInt(clustering[depot1Index].size());
         Customer customer1 = clustering[depot1Index].get(customer1Index);
+
+        int depot2Index = random.nextInt(map.numOfDepots);
+        while (depot2Index == depot1Index) depot2Index = random.nextInt(map.numOfDepots);
+//        double depot2ClusterDemand = 0;
+//        for (int i = 0; i < clustering[depot2Index].size(); i++) {
+//            depot2ClusterDemand += clustering[depot2Index].get(i).demand;
+//        }
+//        while (depot1Index == depot2Index && customer1.demand <= map.depots[depot2Index].maxLoadPerVehicle * map.maxVehiclesPerDepot - depot2ClusterDemand) {
+//            depot2Index = random.nextInt(map.numOfDepots);
+//            for (int i = 0; i < clustering[depot2Index].size(); i++) {
+//                depot2ClusterDemand += clustering[depot2Index].get(i).demand;
+//            }
+//        }
 
         int customer2Index = random.nextInt(clustering[depot2Index].size());
         Customer customer2 = clustering[depot2Index].get(customer2Index);
@@ -319,31 +366,44 @@ public class Solution implements Comparable<Solution>{
     }
 
     
-    private double calculateTotalDuration() {
+    private double calculateTotalDistance() {
         if (routes == null)
             routes = calculateAllRoutes();
-        double totalDuration = map.totalServiceDuration;
+        double totalDistance = 0;
         for (int i = 0; i < routes.length; i++) {
             Depot depot = map.depots[i];
             for (int j = 0; j < routes[i].size(); j++) {
-                totalDuration += calculateRouteDuration(routes[i].get(j));
+                totalDistance += calculateRouteDistance(routes[i].get(j));
             }
         }
-        return totalDuration;
+        return totalDistance;
     }
 
-    public double getTotalDuration() {
-        return totalDuration;
+    public double getTotalDistance() {
+        return totalDistance;
     }
 
     double getCost() {
-        double cost = 0;
-        cost += getTotalDuration() * durationCostWeight;
+        double cost = getTotalDistance() * distanceCostWeight;
         for (int i = 0; i < routes.length; i++) {
             int numOfVehicles = routes[i].size();
             cost += numOfVehicles * numOfVehiclesCostWeight;
             if (numOfVehicles > map.maxVehiclesPerDepot)
                 cost += (numOfVehicles - map.maxVehiclesPerDepot) * map.numOfCustomers * overVehicleLimitCostWeight;
+
+            if (forceNumOfVehicles) {
+                for (int j = 0; j < routes[i].size(); j++) {
+                    double routeDemand = 0;
+                    if (map.depots[i].maxRouteDuration > 0 && calculateRouteDuration(routes[i].get(j)) > map.depots[i].maxRouteDuration)
+                        cost += (calculateRouteDuration(routes[i].get(j)) - map.depots[i].maxRouteDuration) * 5000;
+                    for (int k = 1; k < routes[i].get(j).size()-1; k++) {
+                        Customer customer = (Customer)routes[i].get(j).get(k);
+                        routeDemand += customer.demand;
+                    }
+                    if (routeDemand > map.depots[i].maxLoadPerVehicle)
+                        cost += (routeDemand - map.depots[i].maxLoadPerVehicle)*1000000;
+                }
+            }
         }
         return cost;
     }
@@ -352,8 +412,20 @@ public class Solution implements Comparable<Solution>{
         double routeDuration = 0;
         for (int k = 0; k < route.size()-1; k++) {
             routeDuration += map.getDistance(route.get(k), route.get(k+1));
+            if (k > 0) {
+                Customer customer = (Customer)route.get(k);
+                routeDuration += customer.demand;
+            }
         }
         return routeDuration;
+    }
+
+    public double calculateRouteDistance(ArrayList<Unit> route) {
+        double routeDistance = 0;
+        for (int k = 0; k < route.size()-1; k++) {
+            routeDistance += map.getDistance(route.get(k), route.get(k+1));
+        }
+        return routeDistance;
     }
 
     private ArrayList<Customer>[] convertRoutesToClustering(ArrayList<ArrayList<Unit>>[] routes) {
