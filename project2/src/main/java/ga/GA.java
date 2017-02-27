@@ -13,18 +13,18 @@ import java.util.concurrent.TimeUnit;
 public class GA {
 
     private String mapName;
-    private int popSize, maxIterations, eliteAmount, elitePercent, tournamentSize, targetPercent;
+    private int popSize, maxIterations, eliteAmount, tournamentSize, targetPercent;
+    private double elitePercent;
     private Random random;
 
     public GA() {
         // SETTINGS
-        mapName = "pr06";
-        popSize = 100;
-        maxIterations = 2000;
-        elitePercent = 3;
-        tournamentSize = 2;
+        mapName = Settings.mapName;
+        popSize = Settings.popSize;
+        maxIterations = Settings.maxIterations;
+        elitePercent = Settings.elitePercent;
+        tournamentSize = Settings.tournamentSize;
         targetPercent = 0;
-
         eliteAmount = (int)(popSize * elitePercent / 100.0) + 1;
     }
 
@@ -66,6 +66,7 @@ public class GA {
             System.out.print("Distance: " + (int)(bestSolution.getTotalDistance()) + "\t\t");
             System.out.print("Cost: " + (int)bestSolution.getCost() + "\t\t");
             System.out.println(String.format(Locale.US, "%.1f", percentOverOptimal) + "% over optimal");
+            DataReader.writeSolutionToFile(bestSolution);
             plotter.plotSolution(bestSolution);
 
             if (percentOverOptimal <= targetPercent) {
@@ -73,6 +74,7 @@ public class GA {
                 break;
             }
         }
+    // FINAL PRINT AND WRITE FILE
         TimeUnit.MILLISECONDS.sleep(200);
         plotter.plotSolution(bestSolution);
         System.out.println("-------------------------------");

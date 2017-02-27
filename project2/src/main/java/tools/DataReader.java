@@ -81,7 +81,7 @@ public class DataReader {
                     }
                 }
                 routePath.append("0");
-                System.out.println(String.format(Locale.US, "%d%6d%10.2f%8.0f     %s", i+1, j+1, routeDuration, routeLoad, routePath));
+//                System.out.println(String.format(Locale.US, "%d%6d%10.2f%8.0f     %s", i+1, j+1, routeDuration, routeLoad, routePath));
                 writer.newLine();
                 writer.write(String.format(Locale.US, "%d%6d%10.2f%8.0f     %s", i+1, j+1, routeDuration, routeLoad, routePath));
             }

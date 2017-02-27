@@ -9,13 +9,15 @@ import java.util.Random;
 public class Solution implements Comparable<Solution>{
 
     // SETTINGS
-    private int clusterProbExponent = -10;
+    private int clusterProbExponent = -100;
 
-    private double distanceCostWeight = 1;
-    private double numOfVehiclesCostWeight = 10;
-    private double overVehicleLimitCostWeight = 10000;
-    private double mutationRate = 0.8;
-    private boolean forceNumOfVehicles = true;
+    private double mutationRate = Settings.mutationRate;
+    private boolean forceNumOfVehicles = Settings.forceNumOfVehicles;
+    private double distanceCostWeight = Settings.distanceCostWeight;
+    private double numOfVehiclesCostWeight = Settings.numOfVehiclesCostWeight;
+    private double overVehicleLimitCostWeight = Settings.overVehicleLimitCostWeight;
+    private double overDurationLimitCostWeight = Settings.overDurationLimitCostWeight;
+    private double overLoadLimitCostWeight = Settings.overLoadLimitCostWeight;
 
     private Map map;
     private ArrayList<Customer>[] clustering;
@@ -46,6 +48,8 @@ public class Solution implements Comparable<Solution>{
 
 
     private ArrayList<Customer>[] clusterCustomersToDepots() {
+
+        double[] depotFreeLoad = new double[map.numOfDepots];
 
         // Set exponential probability to be assigned to depot based on distance
         ArrayList<Customer>[] clusters = new ArrayList[map.numOfDepots];
@@ -371,7 +375,6 @@ public class Solution implements Comparable<Solution>{
             routes = calculateAllRoutes();
         double totalDistance = 0;
         for (int i = 0; i < routes.length; i++) {
-            Depot depot = map.depots[i];
             for (int j = 0; j < routes[i].size(); j++) {
                 totalDistance += calculateRouteDistance(routes[i].get(j));
             }
@@ -395,13 +398,13 @@ public class Solution implements Comparable<Solution>{
                 for (int j = 0; j < routes[i].size(); j++) {
                     double routeDemand = 0;
                     if (map.depots[i].maxRouteDuration > 0 && calculateRouteDuration(routes[i].get(j)) > map.depots[i].maxRouteDuration)
-                        cost += (calculateRouteDuration(routes[i].get(j)) - map.depots[i].maxRouteDuration) * 5000;
+                        cost += (calculateRouteDuration(routes[i].get(j)) - map.depots[i].maxRouteDuration) * overDurationLimitCostWeight;
                     for (int k = 1; k < routes[i].get(j).size()-1; k++) {
                         Customer customer = (Customer)routes[i].get(j).get(k);
                         routeDemand += customer.demand;
                     }
                     if (routeDemand > map.depots[i].maxLoadPerVehicle)
-                        cost += (routeDemand - map.depots[i].maxLoadPerVehicle)*1000000;
+                        cost += (routeDemand - map.depots[i].maxLoadPerVehicle) * overLoadLimitCostWeight;
                 }
             }
         }
