@@ -48,9 +48,7 @@ public class Solution implements Comparable<Solution>{
 
 
     private ArrayList<Customer>[] clusterCustomersToDepots() {
-
-        double[] depotFreeLoad = new double[map.numOfDepots];
-
+        
         // Set exponential probability to be assigned to depot based on distance
         ArrayList<Customer>[] clusters = new ArrayList[map.numOfDepots];
         for (int i = 0; i < map.numOfDepots; i++) {
