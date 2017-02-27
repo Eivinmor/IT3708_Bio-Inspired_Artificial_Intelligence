@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class GA {
 
     private String mapName;
-    private int popSize, maxIterations, eliteAmount, tournamentSize, targetPercent;
+    private int popSize, maxIterations, eliteAmount, elitePercent, tournamentSize, targetPercent;
     private Random random;
 
     public GA() {
@@ -21,9 +21,11 @@ public class GA {
         mapName = "p01";
         popSize = 200;
         maxIterations = 1000;
-        eliteAmount = (int)(popSize * 3/100.0) + 1;
+        elitePercent = 3;
         tournamentSize = 2;
         targetPercent = 10;
+
+        eliteAmount = (int)(popSize * elitePercent / 100.0) + 1;
     }
 
     private void runAlgorithm() throws IOException, InterruptedException {
