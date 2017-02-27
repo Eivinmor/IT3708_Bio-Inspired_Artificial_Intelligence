@@ -13,17 +13,18 @@ import java.util.concurrent.TimeUnit;
 public class GA {
 
     private String mapName;
-    private int popSize, maxIterations, eliteAmount, tournamentSize, stopWithinPercent;
+    private int popSize, maxIterations, eliteAmount, tournamentSize, targetPercent;
     private Random random;
 
     public GA() {
         // SETTINGS
-        mapName = "p01";
+        mapName = "p10";
         popSize = 200;     // 1000
-        maxIterations = 10000;  // 1000
-        eliteAmount = popSize/10 + 1;
+        maxIterations = 1000;  // 1000
+//        eliteAmount = popSize/30 + 1;
+        eliteAmount = (int)(popSize * 3/100.0) + 1;
         tournamentSize = 2;
-        stopWithinPercent = 1;
+        targetPercent = 10;
     }
 
     private void runAlgorithm() throws IOException, InterruptedException {
@@ -63,13 +64,13 @@ public class GA {
             System.out.println(String.format(Locale.US, "%.1f", percentOverOptimal) + "% over optimal");
             plotter.plotSolution(bestSolution);
 
-            if (percentOverOptimal < stopWithinPercent) {
-                System.out.println("\nWithin " + stopWithinPercent + "% of optimal. Stopping.");
+            if (percentOverOptimal <= targetPercent) {
+                System.out.println("\nWithin " + targetPercent + "% of optimal. Stopping.");
                 break;
             }
         }
         TimeUnit.MILLISECONDS.sleep(200);
-        plotter.plotSolution(bestSolution);
+//        plotter.plotSolution(bestSolution);
         System.out.println("-------------------------------");
         System.out.println("Optimal: " + map.optimalDuration);
         System.out.println("Achieved: " + String.format(Locale.US, "%.2f", bestSolution.getTotalDuration()));
