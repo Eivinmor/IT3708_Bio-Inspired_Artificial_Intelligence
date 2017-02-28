@@ -4,7 +4,7 @@ package ga;
 public class Settings {
 
     // GA
-    static String mapName = "pr02";
+    static String mapName = "pr04";
     static int popSize = 100;
     static int maxIterations = 2000;
     static double elitePercent = 3;
@@ -12,6 +12,7 @@ public class Settings {
 
 
     // Solution
+    static int clusterProbExponent = -10;
     static double mutationRate = 0.8;
     static boolean forceNumOfVehicles = true;
     static boolean checkLoadOnClustering = true;

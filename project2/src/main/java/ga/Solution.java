@@ -3,13 +3,14 @@ package ga;
 import representation.*;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.Random;
 
 
 public class Solution implements Comparable<Solution>{
 
     // SETTINGS
-    private int clusterProbExponent = -100;
+    private int clusterProbExponent = Settings.clusterProbExponent;
 
     private double mutationRate = Settings.mutationRate;
     private boolean forceNumOfVehicles = Settings.forceNumOfVehicles;
@@ -23,12 +24,11 @@ public class Solution implements Comparable<Solution>{
     private Map map;
     private ArrayList<Customer>[] clustering;
     private ArrayList<ArrayList<Unit>>[] routes;
-    private Random random;
+    private Random random = new Random();
     private double totalDistance;
 
     Solution(Map map) {
         this.map = map;
-        random = new Random();
         clustering = clusterCustomersToDepots();
         clustering = sortClusterByCustomerDistance(clustering);
         routes = calculateAllRoutes();
@@ -37,10 +37,31 @@ public class Solution implements Comparable<Solution>{
 
     Solution(Solution otherSolution, boolean mutate) {
         this.map = otherSolution.map;
-        random = new Random();
         clustering = new ArrayList[map.numOfDepots];
         for (int i = 0; i < map.numOfDepots; i++) {
             this.clustering[i] = new ArrayList<>(otherSolution.clustering[i]);
+        }
+        if (mutate) mutate();
+        routes = calculateAllRoutes();
+        totalDistance = calculateTotalDistance();
+    }
+
+    Solution(Solution parent1, Solution parent2, boolean mutate) {
+        this.map = parent1.map;
+        clustering = new ArrayList[map.numOfDepots];
+        boolean order = true;
+        for (int i = 0; i < map.numOfDepots; i++) {
+            if (order) {
+                this.clustering[i] = new ArrayList<>(parent1.clustering[i]);
+                this.clustering[i].addAll(parent2.clustering[i]);
+                order = false;
+            }
+            else {
+                this.clustering[i] = new ArrayList<>(parent2.clustering[i]);
+                this.clustering[i].addAll(parent1.clustering[i]);
+                order = true;
+            }
+            clustering[i] = new ArrayList<>(new LinkedHashSet<>(clustering[i]));
         }
         if (mutate) mutate();
         routes = calculateAllRoutes();
@@ -77,14 +98,42 @@ public class Solution implements Comparable<Solution>{
                 depotProbArray[i] = prob;
             }
             // Choose depot
-            double randDouble = random.nextDouble();
-            for (int i = 0; i < map.numOfDepots; i++) {
-                if (depotProbArray[i] > randDouble && (!checkLoadOnClustering || depotFreeLoad[i] > customer.demand)) {
-                    clusters[i].add(customer);
-                    depotFreeLoad[i] -= customer.demand;
+            // TODO Check if correct for forceNumVehicle !!!
+            if (checkLoadOnClustering) {
+                double maxProb = 0;
+                int maxIndex = 0;
+                int[] orderedDepotByProbArray = new int[map.numOfDepots];
+                for (int i = 0; i < map.numOfDepots; i++) {
+                    for (int j = 0; j < map.numOfDepots; j++) {
+                        if (depotProbArray[j] > maxProb) {
+                            maxProb = depotProbArray[j];
+                            maxIndex = j;
+                        }
+                    }
+                    orderedDepotByProbArray[i] = maxIndex;
+                    depotProbArray[maxIndex] = 0;
+                }
+                for (int i = 0; i < map.numOfDepots; i++) {
+                    if (depotFreeLoad[orderedDepotByProbArray[i]] > customer.demand) {
+                        clusters[orderedDepotByProbArray[i]].add(customer);
+                        depotFreeLoad[orderedDepotByProbArray[i]] -= customer.demand;
+                        break;
+                    }
+                    clusters[orderedDepotByProbArray[0]].add(customer);
+                    depotFreeLoad[orderedDepotByProbArray[0]] -= customer.demand;
                     break;
                 }
-                randDouble -= depotProbArray[i];
+            }
+            else {
+                double randDouble = random.nextDouble();
+                for (int i = 0; i < map.numOfDepots; i++) {
+                    if (depotProbArray[i] > randDouble) {
+                        clusters[i].add(customer);
+                        depotFreeLoad[i] -= customer.demand;
+                        break;
+                    }
+                    randDouble -= depotProbArray[i];
+                }
             }
         }
         return clusters;

@@ -54,7 +54,14 @@ public class GA {
             }
             // Add offspring from tournament selection cloning
             while (newPopulation.size() < popSize) {
+
+                // Clone
                 newPopulation.add(new Solution(tournamentSelection(tournamentSize, population), true));
+
+                // Crossover
+//                Solution parent1 = tournamentSelection(tournamentSize, population);
+//                Solution parent2 = tournamentSelection(tournamentSize, population);
+//                newPopulation.add(new Solution(parent1, parent2, true));
             }
             population = newPopulation;
             Collections.sort(population);
