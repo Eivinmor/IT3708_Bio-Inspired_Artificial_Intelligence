@@ -58,7 +58,7 @@ public class GA {
             }
             // Add offspring from tournament selection to current population
             ArrayList<Solution> offspring = new ArrayList<>();
-            while (offspring.size() < popSize/2) {
+            while (offspring.size() < popSize) {
                 double randDouble = random.nextDouble();
                 if (randDouble < crossoverRate) {
                     // Crossover
@@ -75,6 +75,24 @@ public class GA {
             Collections.sort(population);
 
             // Choose next population from current
+//            double totalCost = 0;
+//            for (int j = 0; j < population.size(); j++) {
+//                totalCost += population.get(i).getCost();
+//            }
+//            while (newPopulation.size() < popSize) {
+//                double randomDouble = random.nextDouble() * totalCost;
+//                for (int j = 0; j < population.size(); j++) {
+////                    System.out.println(randomDouble + "\t" + population.get(j).getCost());
+//                    if (randomDouble > totalCost - population.get(j).getCost()) {
+//                        newPopulation.add(population.get(j));
+//                        population.remove(j);
+//                        totalCost -= population.get(j).getCost();
+//                        break;
+//                    }
+//                    randomDouble += population.get(j).getCost();
+//                }
+//            }
+
             while (newPopulation.size() < popSize) {
                 double chooseProb = 2/(double)population.size();
                 double randomDouble;
@@ -85,10 +103,8 @@ public class GA {
                         population.remove(j);
                         break;
                     }
-//                    System.out.print(j + " ");
                 }
             }
-//            System.out.println();
 
             population = newPopulation;
             Collections.sort(population);

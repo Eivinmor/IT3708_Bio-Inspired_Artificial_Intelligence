@@ -46,8 +46,105 @@ public class Solution implements Comparable<Solution>{
         totalDistance = calculateTotalDistance();
     }
 
+//    Solution(Solution parent1, Solution parent2, boolean mutate) {
+//        this.map = parent1.map;
+//        clustering = new ArrayList[map.numOfDepots];
+//
+//        if (random.nextBoolean()) {
+//            ArrayList<Customer> parent1OneArray = new ArrayList<>();
+//            ArrayList<Integer> splitList = new ArrayList<>();
+//            splitList.add(0);
+//            for (int i = 0; i < parent1.clustering.length; i++) {
+//                parent1OneArray.addAll(parent1.clustering[i]);
+//                splitList.add(parent1.clustering[i].size() + splitList.get(i));
+//            }
+//            ArrayList<Customer> parent2OneArray= new ArrayList<>();
+//            for (int i = 0; i < parent2.clustering.length; i++) {
+//                parent2OneArray.addAll(parent2.clustering[i]);
+//            }
+//
+//            int randIndex1 = random.nextInt(parent1OneArray.size()-1);
+//            int randIndex2 = random.nextInt(parent1OneArray.size() - randIndex1) + randIndex1;
+//            parent2OneArray.removeAll(parent1OneArray.subList(randIndex1, randIndex2));
+//
+//            for (int i = 0; i < randIndex1; i++) {
+//                parent1OneArray.set(i, parent2OneArray.get(i));
+//            }
+//            for (int i = randIndex2; i < map.numOfCustomers; i++) {
+//                parent1OneArray.set(i, parent2OneArray.get(i - (randIndex2-randIndex1)));
+//            }
+//
+//            for (int i = 1; i < splitList.size(); i++) {
+//                clustering[i-1] = new ArrayList<>(parent1OneArray.subList(splitList.get(i-1), splitList.get(i)));
+//            }
+//        }
+//        else {
+//            for (int i = 0; i < map.numOfDepots; i++) {
+//                this.clustering[i] = new ArrayList<>(parent1.clustering[i]);
+//            }
+//
+//            int randDepot = random.nextInt(map.numOfDepots);
+//            for (int i = 0; i < map.numOfDepots; i++) {
+//                clustering[i].removeAll(parent2.clustering[randDepot]);
+//            }
+//            clustering[randDepot].addAll(parent2.clustering[randDepot]);
+//
+//            int randDepot2 = random.nextInt(map.numOfDepots);
+//            while(randDepot2 != randDepot) randDepot2 = random.nextInt(map.numOfDepots);
+//            for (int i = 0; i < map.numOfDepots; i++) {
+//                clustering[i].removeAll(parent2.clustering[randDepot2]);
+//            }
+//            clustering[randDepot2].addAll(parent2.clustering[randDepot2]);
+//        }
+//
+//        if (mutate) mutate();
+//        routes = calculateAllRoutes();
+//        totalDistance = calculateTotalDistance();
+//    }
+
+//    Solution(Solution parent1, Solution parent2, boolean mutate) {
+//
+//        this.map = parent1.map;
+//
+//        ArrayList<Customer> parent1OneArray = new ArrayList<>();
+//        ArrayList<Integer> splitList = new ArrayList<>();
+//        splitList.add(0);
+//        for (int i = 0; i < parent1.clustering.length; i++) {
+//            parent1OneArray.addAll(parent1.clustering[i]);
+//            splitList.add(parent1.clustering[i].size() + splitList.get(i));
+//        }
+//        ArrayList<Customer> parent2OneArray= new ArrayList<>();
+//        for (int i = 0; i < parent2.clustering.length; i++) {
+//            parent2OneArray.addAll(parent2.clustering[i]);
+//        }
+//
+//        int randIndex1 = random.nextInt(parent1OneArray.size()-1);
+//        int randIndex2 = random.nextInt(parent1OneArray.size() - randIndex1) + randIndex1;
+//        parent2OneArray.removeAll(parent1OneArray.subList(randIndex1, randIndex2));
+//
+//        for (int i = 0; i < randIndex1; i++) {
+//            parent1OneArray.set(i, parent2OneArray.get(i));
+//        }
+//        for (int i = randIndex2; i < map.numOfCustomers; i++) {
+//            parent1OneArray.set(i, parent2OneArray.get(i - (randIndex2-randIndex1)));
+//        }
+//
+//        clustering = new ArrayList[map.numOfDepots];
+//        for (int i = 1; i < splitList.size(); i++) {
+//            clustering[i-1] = new ArrayList<>(parent1OneArray.subList(splitList.get(i-1), splitList.get(i)));
+//        }
+//
+//        if (mutate) mutate();
+//        routes = calculateAllRoutes();
+//        totalDistance = calculateTotalDistance();
+//    }
+
     Solution(Solution parent1, Solution parent2, boolean mutate) {
-        this(parent1, false);
+        this.map = parent1.map;
+        clustering = new ArrayList[map.numOfDepots];
+        for (int i = 0; i < map.numOfDepots; i++) {
+            this.clustering[i] = new ArrayList<>(parent1.clustering[i]);
+        }
 
         int randDepot = random.nextInt(map.numOfDepots);
         for (int i = 0; i < map.numOfDepots; i++) {
@@ -287,13 +384,23 @@ public class Solution implements Comparable<Solution>{
         }
     }
 
+    private void moveLastRoute() {
+        ArrayList<ArrayList<Unit>>[] tempRoutes = calculateAllRoutes();
+        int depotIndex = random.nextInt(map.numOfDepots);
+
+        int cutPoint1 = random.nextInt(clustering[depotIndex].size()-1);
+        int cutPoint2 = random.nextInt(clustering[depotIndex].size() - cutPoint1) + cutPoint1;
+        ArrayList<Customer> reverse = new ArrayList<>(clustering[depotIndex].subList(cutPoint1, cutPoint2));
+        for (int i = 0; i < reverse.size(); i++) {
+            clustering[depotIndex].set(cutPoint1 + i, reverse.get(reverse.size()-1-i));
+        }
+    }
 
     private void singleCustomerOptimalIntraDepotReposition() {
         ArrayList<ArrayList<Unit>>[] tempRoutes = calculateAllRoutes();
         int depotIndex = random.nextInt(map.numOfDepots);
         int routeIndex = random.nextInt(tempRoutes[depotIndex].size());
 
-        // TODO Denne sjekken kan kanskje gjøres smartere
         if (tempRoutes[depotIndex].get(routeIndex).size() > 2) {
             int customerIndex = random.nextInt(tempRoutes[depotIndex].get(routeIndex).size()-2)+1; // Avoid depots
             Customer customer = (Customer)tempRoutes[depotIndex].get(routeIndex).get(customerIndex);
@@ -306,7 +413,6 @@ public class Solution implements Comparable<Solution>{
                 for (int k = 1; k < tempRoutes[depotIndex].get(j).size(); k++) {  // Customer
                     double insertionCost = getInsertionCost(customer, tempRoutes[depotIndex].get(j).get(k-1), tempRoutes[depotIndex].get(j).get(k));
                     if (insertionCost < bestInsertionCost) {
-                        // TODO Check if it ends up in this route or the next
                         bestInsertionCost = insertionCost;
                         bestInsertionRouteIndex = j;
                         bestInsertionCustomerIndex = k;
@@ -327,7 +433,6 @@ public class Solution implements Comparable<Solution>{
         int depotIndex = random.nextInt(map.numOfDepots);
         int routeIndex = random.nextInt(tempRoutes[depotIndex].size());
 
-        // TODO Denne sjekken kan kanskje gjøres smartere
         if (tempRoutes[depotIndex].get(routeIndex).size() > 2) {
             int customerIndex = random.nextInt(tempRoutes[depotIndex].get(routeIndex).size() - 2) + 1; // Avoid depots
             Customer customer = (Customer) tempRoutes[depotIndex].get(routeIndex).get(customerIndex);
@@ -342,7 +447,6 @@ public class Solution implements Comparable<Solution>{
                     for (int k = 1; k < tempRoutes[i].get(j).size(); k++) {  // Customer
                         double insertionCost = getInsertionCost(customer, tempRoutes[i].get(j).get(k - 1), tempRoutes[i].get(j).get(k));
                         if (insertionCost < bestInsertionCost) {
-                            // TODO Check if it ends up in this route or the next
                             bestInsertionCost = insertionCost;
                             bestInsertionDepotIndex = i;
                             bestInsertionRouteIndex = j;
