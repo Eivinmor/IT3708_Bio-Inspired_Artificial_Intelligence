@@ -4,7 +4,7 @@ package ga;
 public class Settings {
 
     // GA
-    static String mapName = "pr05";
+    static String mapName = "pr06";
     static int popSize = 100;
     static int maxIterations = 100000;
     static double elitePercent = 3;
@@ -13,7 +13,7 @@ public class Settings {
 
 
     // Solution
-    static int clusterProbExponent = -100;
+    static int clusterProbExponent = -10;
     static double mutationRate = 0.8;
     static boolean forceNumOfVehicles = true;
 //    static boolean checkLoadOnClustering = true;
@@ -25,7 +25,8 @@ public class Settings {
     static double overLoadLimitCostWeight = 1000000;
 
 
-    // 1. CHANGE CROSSOVER IN Solution
-    // 2. CHANGE POPULATION SELECTION IN GA
+    // 1. CHANGE MUTATION WEIGHTS IN Solution (inter/intra depot)
+    // 2. CHANGE CROSSOVER IN Solution
+    // 3. CHANGE POPULATION SELECTION IN GA
 
 }
