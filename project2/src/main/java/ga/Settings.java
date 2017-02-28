@@ -4,12 +4,12 @@ package ga;
 public class Settings {
 
     // GA
-    static String mapName = "pr08";
+    static String mapName = "p13";
     static int popSize = 100;
-    static int maxIterations = 2000;
+    static int maxIterations = 100000;
     static double elitePercent = 3;
     static int tournamentSize = 2;
-    static double crossoverRate = 0.2;
+    static double crossoverRate = 0.8;
 
 
     // Solution
@@ -23,6 +23,5 @@ public class Settings {
     static double overVehicleLimitCostWeight = 10000;
     static double overDurationLimitCostWeight = 5000;
     static double overLoadLimitCostWeight = 1000000;
-
 
 }

@@ -287,6 +287,7 @@ public class Solution implements Comparable<Solution>{
         }
     }
 
+
     private void singleCustomerOptimalIntraDepotReposition() {
         ArrayList<ArrayList<Unit>>[] tempRoutes = calculateAllRoutes();
         int depotIndex = random.nextInt(map.numOfDepots);
