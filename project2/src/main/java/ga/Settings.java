@@ -4,7 +4,7 @@ package ga;
 public class Settings {
 
     // GA
-    static String mapName = "pr10";
+    static String mapName = "pr05";
     static int popSize = 100;
     static int maxIterations = 100000;
     static double elitePercent = 3;
@@ -23,5 +23,9 @@ public class Settings {
     static double overVehicleLimitCostWeight = 10000;
     static double overDurationLimitCostWeight = 5000;
     static double overLoadLimitCostWeight = 1000000;
+
+
+    // 1. CHANGE CROSSOVER IN Solution
+    // 2. CHANGE POPULATION SELECTION IN GA
 
 }

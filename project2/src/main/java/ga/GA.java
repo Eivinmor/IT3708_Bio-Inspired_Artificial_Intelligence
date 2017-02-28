@@ -74,25 +74,7 @@ public class GA {
             population.addAll(offspring);
             Collections.sort(population);
 
-            // Choose next population from current
-//            double totalCost = 0;
-//            for (int j = 0; j < population.size(); j++) {
-//                totalCost += population.get(i).getCost();
-//            }
-//            while (newPopulation.size() < popSize) {
-//                double randomDouble = random.nextDouble() * totalCost;
-//                for (int j = 0; j < population.size(); j++) {
-////                    System.out.println(randomDouble + "\t" + population.get(j).getCost());
-//                    if (randomDouble > totalCost - population.get(j).getCost()) {
-//                        newPopulation.add(population.get(j));
-//                        population.remove(j);
-//                        totalCost -= population.get(j).getCost();
-//                        break;
-//                    }
-//                    randomDouble += population.get(j).getCost();
-//                }
-//            }
-
+            // Select next population from current
             while (newPopulation.size() < popSize) {
                 double chooseProb = 2/(double)population.size();
                 double randomDouble;
