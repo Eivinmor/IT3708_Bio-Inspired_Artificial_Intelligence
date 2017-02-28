@@ -11,15 +11,15 @@ public class Solution implements Comparable<Solution>{
 
     // SETTINGS
     private int clusterProbExponent = Settings.clusterProbExponent;
-
     private double mutationRate = Settings.mutationRate;
     private boolean forceNumOfVehicles = Settings.forceNumOfVehicles;
+//    private boolean checkLoadOnClustering = Settings.checkLoadOnClustering;
     private double distanceCostWeight = Settings.distanceCostWeight;
     private double numOfVehiclesCostWeight = Settings.numOfVehiclesCostWeight;
     private double overVehicleLimitCostWeight = Settings.overVehicleLimitCostWeight;
     private double overDurationLimitCostWeight = Settings.overDurationLimitCostWeight;
     private double overLoadLimitCostWeight = Settings.overLoadLimitCostWeight;
-    private boolean checkLoadOnClustering = Settings.checkLoadOnClustering;
+
 
     private Map map;
     private ArrayList<Customer>[] clustering;
@@ -47,22 +47,20 @@ public class Solution implements Comparable<Solution>{
     }
 
     Solution(Solution parent1, Solution parent2, boolean mutate) {
-        this.map = parent1.map;
-        clustering = new ArrayList[map.numOfDepots];
-        boolean order = true;
+        this(parent1, false);
+
+        int randDepot = random.nextInt(map.numOfDepots);
         for (int i = 0; i < map.numOfDepots; i++) {
-            if (order) {
-                this.clustering[i] = new ArrayList<>(parent1.clustering[i]);
-                this.clustering[i].addAll(parent2.clustering[i]);
-                order = false;
-            }
-            else {
-                this.clustering[i] = new ArrayList<>(parent2.clustering[i]);
-                this.clustering[i].addAll(parent1.clustering[i]);
-                order = true;
-            }
-            clustering[i] = new ArrayList<>(new LinkedHashSet<>(clustering[i]));
+            clustering[i].removeAll(parent2.clustering[randDepot]);
         }
+        clustering[randDepot].addAll(parent2.clustering[randDepot]);
+
+        int randDepot2 = random.nextInt(map.numOfDepots);
+        while(randDepot2 != randDepot) randDepot2 = random.nextInt(map.numOfDepots);
+        for (int i = 0; i < map.numOfDepots; i++) {
+            clustering[i].removeAll(parent2.clustering[randDepot2]);
+        }
+        clustering[randDepot2].addAll(parent2.clustering[randDepot2]);
         if (mutate) mutate();
         routes = calculateAllRoutes();
         totalDistance = calculateTotalDistance();
@@ -71,12 +69,12 @@ public class Solution implements Comparable<Solution>{
 
     private ArrayList<Customer>[] clusterCustomersToDepots() {
         double[] depotFreeLoad = new double[map.numOfDepots];
-        if (checkLoadOnClustering) {
-            depotFreeLoad = new double[map.numOfDepots];
-            for (int i = 0; i < map.numOfDepots; i++) {
-                depotFreeLoad[i] = map.maxVehiclesPerDepot * map.depots[i].maxLoadPerVehicle;
-            }
-        }
+//        if (checkLoadOnClustering) {
+//            depotFreeLoad = new double[map.numOfDepots];
+//            for (int i = 0; i < map.numOfDepots; i++) {
+//                depotFreeLoad[i] = map.maxVehiclesPerDepot * map.depots[i].maxLoadPerVehicle;
+//            }
+//        }
 
         // Set exponential probability to be assigned to depot based on distance
         ArrayList<Customer>[] clusters = new ArrayList[map.numOfDepots];
@@ -98,33 +96,32 @@ public class Solution implements Comparable<Solution>{
                 depotProbArray[i] = prob;
             }
             // Choose depot
-            // TODO Check if correct for forceNumVehicle !!!
-            if (checkLoadOnClustering) {
-                double maxProb = 0;
-                int maxIndex = 0;
-                int[] orderedDepotByProbArray = new int[map.numOfDepots];
-                for (int i = 0; i < map.numOfDepots; i++) {
-                    for (int j = 0; j < map.numOfDepots; j++) {
-                        if (depotProbArray[j] > maxProb) {
-                            maxProb = depotProbArray[j];
-                            maxIndex = j;
-                        }
-                    }
-                    orderedDepotByProbArray[i] = maxIndex;
-                    depotProbArray[maxIndex] = 0;
-                }
-                for (int i = 0; i < map.numOfDepots; i++) {
-                    if (depotFreeLoad[orderedDepotByProbArray[i]] > customer.demand) {
-                        clusters[orderedDepotByProbArray[i]].add(customer);
-                        depotFreeLoad[orderedDepotByProbArray[i]] -= customer.demand;
-                        break;
-                    }
-                    clusters[orderedDepotByProbArray[0]].add(customer);
-                    depotFreeLoad[orderedDepotByProbArray[0]] -= customer.demand;
-                    break;
-                }
-            }
-            else {
+            // TODO Check if correct for checkLoadOnClustering !!!
+//            if (checkLoadOnClustering) {
+//                double maxProb = 0;
+//                int maxIndex = 0;
+//                int[] orderedDepotByProbArray = new int[map.numOfDepots];
+//                for (int i = 0; i < map.numOfDepots; i++) {
+//                    for (int j = 0; j < map.numOfDepots; j++) {
+//                        if (depotProbArray[j] > maxProb) {
+//                            maxProb = depotProbArray[j];
+//                            maxIndex = j;
+//                        }
+//                    }
+//                    orderedDepotByProbArray[i] = maxIndex;
+//                    depotProbArray[maxIndex] = 0;
+//                }
+//                for (int i = 0; i < map.numOfDepots; i++) {
+//                    if (depotFreeLoad[orderedDepotByProbArray[i]] > customer.demand) {
+//                        clusters[orderedDepotByProbArray[i]].add(customer);
+//                        depotFreeLoad[orderedDepotByProbArray[i]] -= customer.demand;
+//                        break;
+//                    }
+//                }
+//                clusters[orderedDepotByProbArray[0]].add(customer);
+//                depotFreeLoad[orderedDepotByProbArray[0]] -= customer.demand;
+//            }
+//            else {
                 double randDouble = random.nextDouble();
                 for (int i = 0; i < map.numOfDepots; i++) {
                     if (depotProbArray[i] > randDouble) {
@@ -134,7 +131,7 @@ public class Solution implements Comparable<Solution>{
                     }
                     randDouble -= depotProbArray[i];
                 }
-            }
+//            }
         }
         return clusters;
     }
@@ -285,7 +282,7 @@ public class Solution implements Comparable<Solution>{
             double randDouble = random.nextDouble();
             if (randDouble > 0.8) betweenDepotSwap();
             else if (randDouble > 0.6) reverseMutation();
-            else if (randDouble > 0.2) singleCustomerOptimalBetweenDepotReposition();
+            else if (randDouble > 0.4) singleCustomerOptimalBetweenDepotReposition();
             else singleCustomerOptimalIntraDepotReposition();
         }
     }

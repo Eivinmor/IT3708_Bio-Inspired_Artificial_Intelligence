@@ -14,7 +14,7 @@ public class GA {
 
     private String mapName;
     private int popSize, maxIterations, eliteAmount, tournamentSize, targetPercent;
-    private double elitePercent;
+    private double elitePercent, crossoverRate;
     private Random random;
 
     public GA() {
@@ -25,6 +25,7 @@ public class GA {
         elitePercent = Settings.elitePercent;
         tournamentSize = Settings.tournamentSize;
         targetPercent = 0;
+        crossoverRate = Settings.crossoverRate;
         eliteAmount = (int)(popSize * elitePercent / 100.0) + 1;
     }
 
@@ -51,17 +52,21 @@ public class GA {
             ArrayList<Solution> elite = new ArrayList<>(population.subList(0, eliteAmount));
             for (int j = 0; j < elite.size(); j++) {
                 newPopulation.add(new Solution(elite.get(j), true));
+//                Solution parent1 = tournamentSelection(tournamentSize, elite);
+//                Solution parent2 = tournamentSelection(tournamentSize, elite);
+//                newPopulation.add(new Solution(parent1, parent2, true));
             }
             // Add offspring from tournament selection cloning
             while (newPopulation.size() < popSize) {
+                double randDouble = random.nextDouble();
+                if (randDouble < crossoverRate) {
+                    // Crossover
+                    Solution parent1 = tournamentSelection(tournamentSize, population);
+                    Solution parent2 = tournamentSelection(tournamentSize, population);
+                    newPopulation.add(new Solution(parent1, parent2, true));
+                }
+                else newPopulation.add(new Solution(tournamentSelection(tournamentSize, population), true));
 
-                // Clone
-                newPopulation.add(new Solution(tournamentSelection(tournamentSize, population), true));
-
-                // Crossover
-//                Solution parent1 = tournamentSelection(tournamentSize, population);
-//                Solution parent2 = tournamentSelection(tournamentSize, population);
-//                newPopulation.add(new Solution(parent1, parent2, true));
             }
             population = newPopulation;
             Collections.sort(population);
