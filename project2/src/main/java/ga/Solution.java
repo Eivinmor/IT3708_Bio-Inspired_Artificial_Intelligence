@@ -535,7 +535,7 @@ public class Solution implements Comparable<Solution>{
         }
         return cost;
     }
-    
+
     public double calculateRouteDuration(ArrayList<Unit> route) {
         double routeDuration = 0;
         for (int k = 0; k < route.size()-1; k++) {

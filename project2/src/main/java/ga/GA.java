@@ -78,11 +78,9 @@ public class GA {
             bestSolution = population.get(0);
 
         // PRINT AND WRITE FILE
-            double percentOverOptimal = (bestSolution.getTotalDistance()/map.optimalDistance)*100-100;
             System.out.print((i+1) + "\t\t");
             System.out.print("Distance: " + (int)(bestSolution.getTotalDistance()) + "\t\t");
-            System.out.print("Cost: " + (int)bestSolution.getCost() + "\t\t");
-            System.out.println(String.format(Locale.US, "%.1f", percentOverOptimal) + "% over optimal");
+            System.out.println("Cost: " + (int)bestSolution.getCost());
             DataReader.writeSolutionToFile(bestSolution);
             plotter.plotSolution(bestSolution);
         }
@@ -90,7 +88,6 @@ public class GA {
         TimeUnit.MILLISECONDS.sleep(200);
         plotter.plotSolution(bestSolution);
         System.out.println("-------------------------------");
-        System.out.println("Optimal: " + map.optimalDistance);
         System.out.println("Achieved: " + String.format(Locale.US, "%.2f", bestSolution.getTotalDistance()));
         DataReader.writeSolutionToFile(bestSolution);
     }
@@ -163,11 +160,9 @@ public class GA {
             bestSolution = population.get(0);
 
             // PRINT AND WRITE FILE
-            double percentOverOptimal = (bestSolution.getTotalDistance()/map.optimalDistance)*100-100;
             System.out.print((i+1) + "\t\t");
             System.out.print("Distance: " + (int)(bestSolution.getTotalDistance()) + "\t\t");
-            System.out.print("Cost: " + (int)bestSolution.getCost() + "\t\t");
-            System.out.println(String.format(Locale.US, "%.1f", percentOverOptimal) + "% over optimal");
+            System.out.println("Cost: " + (int)bestSolution.getCost());
             DataReader.writeSolutionToFile(bestSolution);
             plotter.plotSolution(bestSolution);
         }
@@ -175,7 +170,6 @@ public class GA {
         TimeUnit.MILLISECONDS.sleep(200);
         plotter.plotSolution(bestSolution);
         System.out.println("-------------------------------");
-        System.out.println("Optimal: " + map.optimalDistance);
         System.out.println("Achieved: " + String.format(Locale.US, "%.2f", bestSolution.getTotalDistance()));
         DataReader.writeSolutionToFile(bestSolution);
     }
