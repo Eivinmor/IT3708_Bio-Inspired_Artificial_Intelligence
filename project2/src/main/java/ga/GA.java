@@ -29,6 +29,73 @@ public class GA {
     }
 
     private void runAlgorithm() throws IOException, InterruptedException {
+        if (Settings.popAlgorithm == 1) light();
+        else if (Settings.popAlgorithm == 2) heavy();
+    }
+
+    private void light() throws IOException, InterruptedException {
+        Map map = DataReader.readMapData(mapName);
+        random = new Random();
+        ArrayList<Solution> population = new ArrayList<>();
+
+    // INITIAL POPULATION
+        for (int i = 0; i < popSize*10; i++) {
+            population.add(new Solution(map));
+        }
+        Plotter plotter = new Plotter(map);
+        Collections.sort(population);
+        population = new ArrayList<>(population.subList(0, population.size()/10));
+        Solution bestSolution = population.get(0);
+
+    // EVOLUTION
+        for (int i = 0; i < maxIterations; i++) {
+
+            // Add best solution from last population
+            ArrayList<Solution> newPopulation = new ArrayList<>(population.subList(0, 1));
+
+            // Add mutated clones of elite set
+            ArrayList<Solution> elite = new ArrayList<>(population.subList(0, eliteAmount));
+            for (int j = 0; j < elite.size(); j++) {
+                newPopulation.add(new Solution(elite.get(j), true));
+//                Solution parent1 = tournamentSelection(tournamentSize, elite);
+//                Solution parent2 = tournamentSelection(tournamentSize, elite);
+//                newPopulation.add(new Solution(parent1, parent2, true));
+            }
+            // Add offspring from tournament selection
+            while (newPopulation.size() < popSize) {
+                double randDouble = random.nextDouble();
+                if (randDouble < crossoverRate) {
+                    // Crossover
+                    Solution parent1 = tournamentSelection(tournamentSize, population);
+                    Solution parent2 = tournamentSelection(tournamentSize, population);
+                    newPopulation.add(new Solution(parent1, parent2, true));
+                }
+                else newPopulation.add(new Solution(tournamentSelection(tournamentSize, population), true));
+
+            }
+            population = newPopulation;
+            Collections.sort(population);
+            bestSolution = population.get(0);
+
+        // PRINT AND WRITE FILE
+            double percentOverOptimal = (bestSolution.getTotalDistance()/map.optimalDistance)*100-100;
+            System.out.print((i+1) + "\t\t");
+            System.out.print("Distance: " + (int)(bestSolution.getTotalDistance()) + "\t\t");
+            System.out.print("Cost: " + (int)bestSolution.getCost() + "\t\t");
+            System.out.println(String.format(Locale.US, "%.1f", percentOverOptimal) + "% over optimal");
+            DataReader.writeSolutionToFile(bestSolution);
+            plotter.plotSolution(bestSolution);
+        }
+    // FINAL PRINT AND WRITE FILE
+        TimeUnit.MILLISECONDS.sleep(200);
+        plotter.plotSolution(bestSolution);
+        System.out.println("-------------------------------");
+        System.out.println("Optimal: " + map.optimalDistance);
+        System.out.println("Achieved: " + String.format(Locale.US, "%.2f", bestSolution.getTotalDistance()));
+        DataReader.writeSolutionToFile(bestSolution);
+    }
+
+    private void heavy() throws IOException, InterruptedException {
         Map map = DataReader.readMapData(mapName);
         random = new Random();
         ArrayList<Solution> population = new ArrayList<>();
@@ -109,68 +176,6 @@ public class GA {
         System.out.println("Achieved: " + String.format(Locale.US, "%.2f", bestSolution.getTotalDistance()));
         DataReader.writeSolutionToFile(bestSolution);
     }
-
-//    private void runAlgorithm() throws IOException, InterruptedException {
-//        Map map = DataReader.readMapData(mapName);
-//        random = new Random();
-//        ArrayList<Solution> population = new ArrayList<>();
-//
-//    // INITIAL POPULATION
-//        for (int i = 0; i < popSize*10; i++) {
-//            population.add(new Solution(map));
-//        }
-//        Plotter plotter = new Plotter(map);
-//        Collections.sort(population);
-//        population = new ArrayList<>(population.subList(0, population.size()/10));
-//        Solution bestSolution = population.get(0);
-//
-//    // EVOLUTION
-//        for (int i = 0; i < maxIterations; i++) {
-//
-//            // Add best solution from last population
-//            ArrayList<Solution> newPopulation = new ArrayList<>(population.subList(0, 1));
-//
-//            // Add mutated clones of elite set
-//            ArrayList<Solution> elite = new ArrayList<>(population.subList(0, eliteAmount));
-//            for (int j = 0; j < elite.size(); j++) {
-//                newPopulation.add(new Solution(elite.get(j), true));
-////                Solution parent1 = tournamentSelection(tournamentSize, elite);
-////                Solution parent2 = tournamentSelection(tournamentSize, elite);
-////                newPopulation.add(new Solution(parent1, parent2, true));
-//            }
-//            // Add offspring from tournament selection cloning
-//            while (newPopulation.size() < popSize) {
-//                double randDouble = random.nextDouble();
-//                if (randDouble < crossoverRate) {
-//                    // Crossover
-//                    Solution parent1 = tournamentSelection(tournamentSize, population);
-//                    Solution parent2 = tournamentSelection(tournamentSize, population);
-//                    newPopulation.add(new Solution(parent1, parent2, true));
-//                }
-//                else newPopulation.add(new Solution(tournamentSelection(tournamentSize, population), true));
-//
-//            }
-//            population = newPopulation;
-//            Collections.sort(population);
-//            bestSolution = population.get(0);
-//
-//        // PRINT AND WRITE FILE
-//            double percentOverOptimal = (bestSolution.getTotalDistance()/map.optimalDistance)*100-100;
-//            System.out.print((i+1) + "\t\t");
-//            System.out.print("Distance: " + (int)(bestSolution.getTotalDistance()) + "\t\t");
-//            System.out.print("Cost: " + (int)bestSolution.getCost() + "\t\t");
-//            System.out.println(String.format(Locale.US, "%.1f", percentOverOptimal) + "% over optimal");
-//            DataReader.writeSolutionToFile(bestSolution);
-//            plotter.plotSolution(bestSolution);
-//        }
-//    // FINAL PRINT AND WRITE FILE
-//        TimeUnit.MILLISECONDS.sleep(200);
-//        plotter.plotSolution(bestSolution);
-//        System.out.println("-------------------------------");
-//        System.out.println("Optimal: " + map.optimalDistance);
-//        System.out.println("Achieved: " + String.format(Locale.US, "%.2f", bestSolution.getTotalDistance()));
-//        DataReader.writeSolutionToFile(bestSolution);
-//    }
 
     private Solution findBestSolution(ArrayList<Solution> population) {
         Solution bestSolution = population.get(0);
