@@ -576,7 +576,7 @@ public class Solution implements Comparable<Solution>{
             routeDuration += map.getDistance(route.get(k), route.get(k+1));
             if (k > 0) {
                 Customer customer = (Customer)route.get(k);
-                routeDuration += customer.demand;
+                routeDuration += customer.serviceDuration;
             }
         }
         return routeDuration;
