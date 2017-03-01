@@ -1,12 +1,10 @@
 package ga;
 
 import representation.*;
+import representation.Map;
 import tools.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Locale;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 
@@ -34,6 +32,7 @@ public class GA {
     }
 
     private void light() throws IOException, InterruptedException {
+        Scanner scanner = new Scanner(System.in);
         Map map = DataReader.readMapData(mapName);
         random = new Random();
         ArrayList<Solution> population = new ArrayList<>();
@@ -49,6 +48,11 @@ public class GA {
 
     // EVOLUTION
         for (int i = 0; i < maxIterations; i++) {
+
+            if (i % Settings.iterationsPerPause == 0 && i > 0) {
+                System.out.println("Press enter to continue...");
+                scanner.nextLine();
+            }
 
             // Add best solution from last population
             ArrayList<Solution> newPopulation = new ArrayList<>(population.subList(0, 1));
@@ -93,6 +97,7 @@ public class GA {
     }
 
     private void heavy() throws IOException, InterruptedException {
+        Scanner scanner = new Scanner(System.in);
         Map map = DataReader.readMapData(mapName);
         random = new Random();
         ArrayList<Solution> population = new ArrayList<>();
@@ -108,6 +113,11 @@ public class GA {
 
         // EVOLUTION
         for (int i = 0; i < maxIterations; i++) {
+
+            if (i % Settings.iterationsPerPause == 0 && i > 0) {
+                System.out.println("Press enter to continue...");
+                scanner.nextLine();
+            }
 
             // Add best solution from last population
             ArrayList<Solution> newPopulation = new ArrayList<>();

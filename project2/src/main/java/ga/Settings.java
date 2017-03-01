@@ -5,9 +5,10 @@ public class Settings {
 
 
     // GA
-    static String mapName = "p08";
-    static int popSize = 100;
+    static String mapName = "p04";
     static int maxIterations = 100000;
+    static int iterationsPerPause = 500;
+    static int popSize = 100;
     static double elitePercent = 3;
     static int tournamentSize = 2;
     static double crossoverRate = 0.8;
