@@ -113,7 +113,8 @@ public class GA {
         for (int i = 0; i < maxIterations; i++) {
 
             // Add best solution from last population
-            ArrayList<Solution> newPopulation = new ArrayList<>(population.subList(0, 1));
+            ArrayList<Solution> newPopulation = new ArrayList<>();
+            newPopulation.add(new Solution(population.get(0), false));
 
             // Add mutated clones of elite set
             ArrayList<Solution> elite = new ArrayList<>(population.subList(0, eliteAmount));
