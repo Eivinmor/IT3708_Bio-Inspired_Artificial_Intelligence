@@ -515,22 +515,27 @@ public class Solution implements Comparable<Solution>{
                 cost += (numOfVehicles - map.maxVehiclesPerDepot) * map.numOfCustomers * overVehicleLimitCostWeight;
 
             if (forceNumOfVehicles) {
+                double curDepotMaxRouteDuration = map.depots[i].maxRouteDuration;
+                double curDepotMaxLoadPerVehicle = map.depots[i].maxLoadPerVehicle;
+
                 for (int j = 0; j < routes[i].size(); j++) {
+                    double curRouteDuration = calculateRouteDuration(routes[i].get(j));
+                    if (curDepotMaxRouteDuration > 0 && curRouteDuration > curDepotMaxRouteDuration)
+                        cost += (curRouteDuration - curDepotMaxRouteDuration) * overDurationLimitCostWeight;
+
                     double routeDemand = 0;
-                    if (map.depots[i].maxRouteDuration > 0 && calculateRouteDuration(routes[i].get(j)) > map.depots[i].maxRouteDuration)
-                        cost += (calculateRouteDuration(routes[i].get(j)) - map.depots[i].maxRouteDuration) * overDurationLimitCostWeight;
                     for (int k = 1; k < routes[i].get(j).size()-1; k++) {
                         Customer customer = (Customer)routes[i].get(j).get(k);
                         routeDemand += customer.demand;
                     }
-                    if (routeDemand > map.depots[i].maxLoadPerVehicle)
-                        cost += (routeDemand - map.depots[i].maxLoadPerVehicle) * overLoadLimitCostWeight;
+                    if (routeDemand > curDepotMaxLoadPerVehicle)
+                        cost += (routeDemand - curDepotMaxLoadPerVehicle) * overLoadLimitCostWeight;
                 }
             }
         }
         return cost;
     }
-
+    
     public double calculateRouteDuration(ArrayList<Unit> route) {
         double routeDuration = 0;
         for (int k = 0; k < route.size()-1; k++) {

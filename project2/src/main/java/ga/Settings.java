@@ -5,7 +5,7 @@ public class Settings {
 
 
     // GA
-    static String mapName = "p14";
+    static String mapName = "pr08";
     static int popSize = 100;
     static int maxIterations = 100000;
     static double elitePercent = 3;
