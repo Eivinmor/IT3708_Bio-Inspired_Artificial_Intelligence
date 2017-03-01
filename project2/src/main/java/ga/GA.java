@@ -79,7 +79,7 @@ public class GA {
 
         // PRINT AND WRITE FILE
             System.out.print((i+1) + "\t\t");
-            System.out.print("Distance: " + (int)(bestSolution.getTotalDistance()) + "\t\t");
+            System.out.print("Distance: " + String.format(Locale.US, "%.2f", bestSolution.getTotalDistance()) + "\t\t");
             System.out.println("Cost: " + (int)bestSolution.getCost());
             DataReader.writeSolutionToFile(bestSolution);
             plotter.plotSolution(bestSolution);
@@ -161,7 +161,7 @@ public class GA {
 
             // PRINT AND WRITE FILE
             System.out.print((i+1) + "\t\t");
-            System.out.print("Distance: " + (int)(bestSolution.getTotalDistance()) + "\t\t");
+            System.out.print("Distance: " + String.format(Locale.US, "%.2f", bestSolution.getTotalDistance()) + "\t\t");
             System.out.println("Cost: " + (int)bestSolution.getCost());
             DataReader.writeSolutionToFile(bestSolution);
             plotter.plotSolution(bestSolution);
