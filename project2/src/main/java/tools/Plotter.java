@@ -42,8 +42,8 @@ public class Plotter {
         // DOMAIN AND RANGE
         ValueAxis domain = new NumberAxis();
         ValueAxis range = new NumberAxis();
-        domain.setVisible(false);
-        range.setVisible(false);
+        domain.setVisible(true);
+        range.setVisible(true);
         plot.setDomainAxis(0, domain);
         plot.setRangeAxis(0, range);
 

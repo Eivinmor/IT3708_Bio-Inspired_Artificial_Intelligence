@@ -1,6 +1,5 @@
 package ga;
 
-import representation.*;
 import representation.Map;
 import tools.*;
 import java.io.IOException;
