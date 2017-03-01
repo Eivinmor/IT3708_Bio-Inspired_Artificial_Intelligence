@@ -339,7 +339,13 @@ public class Solution implements Comparable<Solution>{
     }
 
 
-    void mutate() {
+    public void standaloneMutate() {
+        mutate();
+        routes = calculateAllRoutes();
+        totalDistance = calculateTotalDistance();
+    }
+
+    private void mutate() {
         if (random.nextDouble() < mutationRate) {
             double randDouble = random.nextDouble();
             if (randDouble > 0.8) betweenDepotSwap();

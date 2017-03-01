@@ -137,7 +137,7 @@ public class GA {
             }
 
             for (int j = 0; j < population.size(); j++) {
-                if (random.nextDouble() > Settings.mutationRate) population.get(j).mutate();
+                if (random.nextDouble() > Settings.mutationRate) population.get(j).standaloneMutate();
             }
 
             population.addAll(offspring);
