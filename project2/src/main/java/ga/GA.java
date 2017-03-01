@@ -119,15 +119,12 @@ public class GA {
             ArrayList<Solution> elite = new ArrayList<>(population.subList(0, eliteAmount));
             for (int j = 0; j < elite.size(); j++) {
                 newPopulation.add(new Solution(elite.get(j), true));
-//                Solution parent1 = tournamentSelection(tournamentSize, elite);
-//                Solution parent2 = tournamentSelection(tournamentSize, elite);
-//                newPopulation.add(new Solution(parent1, parent2, true));
             }
+
             // Add offspring from tournament selection to current population
             ArrayList<Solution> offspring = new ArrayList<>();
             while (offspring.size() < popSize) {
-                double randDouble = random.nextDouble();
-                if (randDouble < crossoverRate) {
+                if (random.nextDouble() < crossoverRate) {
                     // Crossover
                     Solution parent1 = tournamentSelection(tournamentSize, population);
                     Solution parent2 = tournamentSelection(tournamentSize, population);
@@ -138,6 +135,11 @@ public class GA {
                     offspring.add(new Solution(tournamentSelection(tournamentSize, population), true));
                 }
             }
+
+            for (int j = 0; j < population.size(); j++) {
+                if (random.nextDouble() > Settings.mutationRate) population.get(j).mutate();
+            }
+
             population.addAll(offspring);
             Collections.sort(population);
 
