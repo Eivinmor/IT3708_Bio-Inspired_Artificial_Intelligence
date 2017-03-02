@@ -521,7 +521,7 @@ public class Solution implements Comparable<Solution>{
                 for (int j = 0; j < routes[i].size(); j++) {
                     double curRouteDuration = calculateRouteDuration(routes[i].get(j));
                     if (curDepotMaxRouteDuration > 0 && curRouteDuration > curDepotMaxRouteDuration)
-                        cost += (curRouteDuration - curDepotMaxRouteDuration) * overDurationLimitCostWeight;
+                        cost += (curRouteDuration - curDepotMaxRouteDuration + 1) * overDurationLimitCostWeight;
 
                     double routeDemand = 0;
                     for (int k = 1; k < routes[i].get(j).size()-1; k++) {
