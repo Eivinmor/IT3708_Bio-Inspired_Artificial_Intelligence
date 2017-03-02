@@ -90,7 +90,7 @@ public class Plotter {
         applicationFrame.setContentPane(chartPanel);
         applicationFrame.pack();
         applicationFrame.setVisible(true);
-        RefineryUtilities.positionFrameOnScreen(applicationFrame, 2.2, 0.1);
+        RefineryUtilities.positionFrameOnScreen(applicationFrame, 0, 0.8);
 
         addScatterSeries("Depots", map.depots);
         addScatterSeries("Customers", map.customers);
