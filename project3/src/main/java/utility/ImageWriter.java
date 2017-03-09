@@ -16,7 +16,6 @@ public class ImageWriter {
         try{
             BufferedImage image = new BufferedImage(grid.width, grid.height, BufferedImage.TYPE_INT_RGB);
             for (int i = 0; i < grid.height; i++) {
-                int heightIndex = i*grid.width;
                 for (int j = 0; j < grid.width; j++) {
                     image.setRGB(j, i, grid.pixelArray[i][j].rgb.getRGB());
                 }

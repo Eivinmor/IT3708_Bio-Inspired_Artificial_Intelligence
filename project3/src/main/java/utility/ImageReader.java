@@ -20,8 +20,8 @@ public class ImageReader {
         Grid grid = null;
         try{
             BufferedImage image = ImageIO.read(new File(filePathRoot+imageId+"\\Test image.jpg"));
-            imageWidth = image.getWidth()-1;
-            imageHeight = image.getHeight()-1;
+            imageWidth = image.getWidth();
+            imageHeight = image.getHeight();
 
             pixels = new Pixel[imageHeight][imageWidth];
 
