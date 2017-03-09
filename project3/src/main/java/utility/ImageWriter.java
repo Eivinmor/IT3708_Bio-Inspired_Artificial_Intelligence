@@ -22,7 +22,8 @@ public class ImageWriter {
             }
             File outputFile = new File(filePathRoot+"solution.png");
             ImageIO.write(image, "png", outputFile);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
     }

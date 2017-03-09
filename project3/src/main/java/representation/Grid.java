@@ -11,9 +11,5 @@ public class Grid {
         this.pixelArray = pixelArray;
         this.height = pixelArray.length;
         this.width = pixelArray[0].length;
-
     }
-
-
-
 }
