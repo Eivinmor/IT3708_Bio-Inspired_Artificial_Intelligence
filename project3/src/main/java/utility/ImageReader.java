@@ -17,12 +17,11 @@ public class ImageReader {
         int imageWidth;
         int imageHeight;
         Pixel[][] pixels;
-        Grid grid;
+        Grid grid = null;
         try{
-
-            BufferedImage image = ImageIO.read(new File(filePathRoot+imageId));
-            imageWidth = image.getWidth();
-            imageHeight = image.getHeight();
+            BufferedImage image = ImageIO.read(new File(filePathRoot+imageId+"\\Test image.jpg"));
+            imageWidth = image.getWidth()-1;
+            imageHeight = image.getHeight()-1;
 
             pixels = new Pixel[imageHeight][imageWidth];
 
@@ -32,12 +31,9 @@ public class ImageReader {
                 }
             }
             grid = new Grid(pixels);
-            return grid;
-
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
-
+        return grid;
     }
 }
