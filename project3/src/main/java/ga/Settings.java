@@ -2,7 +2,7 @@ package ga;
 
 public class Settings {
 
-    static int mapId = 2;
+    public static int imageId = 2;
     static int populationSize = 100;
     static int generationsPerPause = 100;
     static double crossoverRate = 0.8;
