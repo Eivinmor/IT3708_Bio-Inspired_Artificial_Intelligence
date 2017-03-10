@@ -5,21 +5,17 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 
+// TODO Implementere overlapping edges - intersect pixels in region A and B to find edge.
 // TODO Sjekke om det er noen begrensninger med å bruke HashSet for Segment
+
 public class Segment {
 
-    HashSet<Pixel> pixels;
-    ArrayList<Pixel> border;
+    private Grid grid;
+    private HashSet<Pixel> pixels;
+    private ArrayList<Segment> adjacentTo;  //Region Adjacency Graph (RAG)
 
-    public Segment(HashSet<Pixel> pixels, Pixel initBorderPixel) {
+    public Segment(Grid grid, HashSet<Pixel> pixels) {
         this.pixels = pixels;
-        this.border = findBorder(initBorderPixel);
-    }
-
-    private ArrayList<Pixel> findBorder(Pixel initBorderPixel) {
-        ArrayList<Pixel> newBorder = new ArrayList<>();
-        
-        return newBorder;
     }
 
 }
