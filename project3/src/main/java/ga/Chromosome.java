@@ -21,12 +21,33 @@ public class Chromosome {
         for (Pixel[] pixelRow : grid.pixelArray) {
             pixelHashSet.addAll(Arrays.asList(pixelRow));
         }
+
         Random random = new Random();
-
-        int x = random.nextInt(grid.width);
-        int y = random.nextInt(grid.height);
-
         ArrayList<Pixel> queue = new ArrayList<>();
+
+        while (pixelHashSet.size() > 0) {
+            HashSet<Pixel> segmentPixels = new HashSet<>();
+
+            // Find random pixel
+            int randIndex = random.nextInt(pixelHashSet.size());
+            for (Pixel pixel : pixelHashSet) {
+                if (randIndex == 0) {
+                    pixelHashSet.remove(pixel);
+                    queue.add(pixel);
+                    break;
+                }
+                randIndex--;
+            }
+
+            while (queue.size() > 0) {
+
+
+
+
+            }
+            segments.add(new Segment(grid, segmentPixels));
+        }
+
 
 
     }
