@@ -1,6 +1,8 @@
 package ga;
 
 import representation.*;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -11,9 +13,11 @@ import java.util.HashSet;
 public class Segment {
 
     private Grid grid;
-    private HashSet<Pixel> pixels;
+
+
+    public HashSet<Pixel> pixels;
     private ArrayList<Segment> adjacentTo;  //Region Adjacency Graph (RAG)
-    private int[] totalRgb;
+    public int[] totalRgb;
 
     public Segment(Grid grid, HashSet<Pixel> pixels) {
         this.pixels = pixels;
@@ -21,18 +25,22 @@ public class Segment {
     }
 
     private double calculateColorDistance() {
-        double averageRed = (double) totalRgb[0] / pixels.size();
-        double averageGreen = (double) totalRgb[1] / pixels.size();
-        double averageBlue = (double) totalRgb[2] / pixels.size();
-
+        double[] averageRgb = calculateAverageRgb();
         double totalDistance = 0;
         for (Pixel pixel : pixels) {
-            double distRed = averageRed - pixel.rgb.getRed();
-            double distGreen = averageGreen - pixel.rgb.getGreen();
-            double distBlue = averageBlue - pixel.rgb.getBlue();
+            double distRed = averageRgb[0] - pixel.rgb.getRed();
+            double distGreen = averageRgb[1] - pixel.rgb.getGreen();
+            double distBlue = averageRgb[2] - pixel.rgb.getBlue();
             totalDistance += Math.sqrt(Math.pow(distRed, 2) + Math.pow(distGreen, 2) + Math.pow(distBlue, 2));
         }
         return totalDistance;
+    }
+
+    public double[] calculateAverageRgb() {
+        double averageRed = (double) totalRgb[0] / pixels.size();
+        double averageGreen = (double) totalRgb[1] / pixels.size();
+        double averageBlue = (double) totalRgb[2] / pixels.size();
+        return new double[] {averageRed, averageGreen, averageBlue};
     }
 
     private int[] calculateTotalRgb() {
@@ -58,5 +66,6 @@ public class Segment {
         totalRgb[1] -= pixel.rgb.getGreen();
         totalRgb[2] -= pixel.rgb.getBlue();
     }
+
 
 }
