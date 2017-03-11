@@ -13,11 +13,16 @@ import java.util.Random;
 public class Chromosome {
 
     public final Grid grid;
-    public ArrayList<Segment> segments;
+    public HashSet<Segment> segments;
 
     public Chromosome(Grid grid) {
         this.grid = grid;
-        segments = new ArrayList<>();
+        segments = initialiseSegments();
+        mergeSegments(segments);
+    }
+
+    private HashSet<Segment> initialiseSegments() {
+        HashSet<Segment> newSegments = new HashSet<>();
 
         HashSet<Pixel> unsegmentedPixels = new HashSet<>();
         for (Pixel[] pixelRow : grid.pixelArray) {
@@ -28,7 +33,7 @@ public class Chromosome {
         ArrayList<Pixel> queue = new ArrayList<>();
 
         while (unsegmentedPixels.size() > 0) {
-            Segment segment = new Segment(grid);
+            Segment segment = new Segment(grid, this);
             // Find random pixel
             int randIndex = random.nextInt(unsegmentedPixels.size());
             for (Pixel pixel : unsegmentedPixels) {
@@ -52,8 +57,52 @@ public class Chromosome {
                     }
                 }
             }
-            segments.add(segment);
+            newSegments.add(segment);
         }
+        return newSegments;
+    }
+
+    private void mergeSegments(HashSet<Segment> segments) {
+        ArrayList<Segment> tooSmallSegments = findTooSmallSegments(segments);
+        while (tooSmallSegments.size() > 0) {
+            Segment segment = tooSmallSegments.remove(0);
+            Segment closestSegment = findClosestColorSegment(segment);
+            closestSegment.addPixels(segment.pixels);
+
+            segments.remove(segment);
+            tooSmallSegments = findTooSmallSegments(segments);
+        }
+    }
+
+    private ArrayList<Segment> findTooSmallSegments(HashSet<Segment> segments) {
+        ArrayList<Segment> tooSmallSegments = new ArrayList<>();
+        for (Segment segment : segments) {
+            if (segment.pixels.size() < Settings.initSegmentMinimumSize) {
+                tooSmallSegments.add(segment);
+            }
+        }
+        return tooSmallSegments;
+    }
+
+    private Segment findClosestColorSegment(Segment segment) {
+        Segment closestSegment = null;
+        double closestDist = Double.MAX_VALUE;
+        for (Segment nbSegment : segment.findNeighbours()) {
+            double dist = Formulas.rgbDistance3D(segment.calculateAverageRgb(), nbSegment.calculateAverageRgb());
+            if (dist < closestDist) {
+                closestDist = dist;
+                closestSegment = nbSegment;
+            }
+        }
+        return closestSegment;
+    }
+
+
+    public Segment findPixelSegment(Pixel pixel) {
+        for (Segment segment : segments) {
+            if (segment.pixels.contains(pixel)) return segment;
+        }
+        return null;
     }
 
     @Override

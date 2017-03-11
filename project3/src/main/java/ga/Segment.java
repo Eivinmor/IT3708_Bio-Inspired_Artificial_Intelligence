@@ -3,7 +3,6 @@ package ga;
 import representation.*;
 import utility.Formulas;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 
 
@@ -13,13 +12,26 @@ import java.util.HashSet;
 public class Segment {
 
     private Grid grid;
+    private Chromosome chromosome;
     public HashSet<Pixel> pixels;
-    private ArrayList<Segment> adjacentTo;  //Region Adjacency Graph (RAG)
     public int[] totalRgb;
 
-    public Segment(Grid grid) {
+    public Segment(Grid grid, Chromosome chromosome) {
+        this.grid = grid;
+        this.chromosome = chromosome;
         pixels = new HashSet<>();
         totalRgb = calculateTotalRgb();
+
+    }
+
+    public HashSet<Segment> findNeighbours() {
+        HashSet<Segment> adjacentTo = new HashSet<>();
+        for (Pixel pixel : pixels) {
+            for (Pixel nbPixel : grid.getNeighbourPixels(pixel)) {
+                if (!pixels.contains(nbPixel)) adjacentTo.add(chromosome.findPixelSegment(nbPixel));
+            }
+        }
+        return adjacentTo;
     }
 
     private double calculateColorDistance() {
@@ -49,11 +61,15 @@ public class Segment {
     }
 
     public void addPixel(Pixel pixel) {
-        if (!pixels.contains(pixel)) {
-            pixels.add(pixel);
-            totalRgb[0] += pixel.rgb.getRed();
-            totalRgb[1] += pixel.rgb.getGreen();
-            totalRgb[2] += pixel.rgb.getBlue();
+        pixels.add(pixel);
+        totalRgb[0] += pixel.rgb.getRed();
+        totalRgb[1] += pixel.rgb.getGreen();
+        totalRgb[2] += pixel.rgb.getBlue();
+    }
+
+    public void addPixels(HashSet<Pixel> pixels) {
+        for (Pixel pixel : pixels) {
+           addPixel(pixel);
         }
     }
 
@@ -64,8 +80,8 @@ public class Segment {
         totalRgb[2] -= pixel.rgb.getBlue();
     }
 
-    @Override
-    public String toString() {
-        return Integer.toString(pixels.size());
-    }
+//    @Override
+//    public String toString() {
+//        return Integer.toString(pixels.size());
+//    }
 }

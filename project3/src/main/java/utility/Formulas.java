@@ -26,4 +26,11 @@ public class Formulas {
         return Math.sqrt(Math.pow(distRed, 2) + Math.pow(distGreen, 2) + Math.pow(distBlue, 2));
     }
 
+    public static double rgbDistance3D(double[] segment1AverageRgb, double[] segment2AverageRgb) {
+        double distRed = segment1AverageRgb[0] - segment2AverageRgb[0];
+        double distGreen = segment1AverageRgb[1] - segment2AverageRgb[1];
+        double distBlue = segment1AverageRgb[2] - segment2AverageRgb[2];
+        return Math.sqrt(Math.pow(distRed, 2) + Math.pow(distGreen, 2) + Math.pow(distBlue, 2));
+    }
+
 }

@@ -1,4 +1,5 @@
 import ga.Chromosome;
+import ga.Settings;
 import representation.Grid;
 import utility.ImageReader;
 import utility.ImageWriter;
@@ -6,10 +7,10 @@ import utility.ImageWriter;
 public class Main {
 
     public static void main(String[] args) {
-        int imageId = 1;
-        Grid grid = ImageReader.readImage(imageId);
+        Grid grid = ImageReader.readImage(Settings.imageId);
         Chromosome chromosome = new Chromosome(grid);
-        ImageWriter.writeChromosomeImage(chromosome, 1, true);
+        ImageWriter.writeChromosomeImageAvgRgb(chromosome, 1, true);
+        ImageWriter.writeChromosomeImageRandRgb(chromosome, 1, true);
     }
 
 }
