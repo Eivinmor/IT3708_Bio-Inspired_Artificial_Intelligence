@@ -1,6 +1,7 @@
 package ga;
 
 import representation.*;
+import utility.Formulas;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -19,8 +20,8 @@ public class Segment {
     private ArrayList<Segment> adjacentTo;  //Region Adjacency Graph (RAG)
     public int[] totalRgb;
 
-    public Segment(Grid grid, HashSet<Pixel> pixels) {
-        this.pixels = pixels;
+    public Segment(Grid grid) {
+        pixels = new HashSet<>();
         totalRgb = calculateTotalRgb();
     }
 
@@ -28,10 +29,7 @@ public class Segment {
         double[] averageRgb = calculateAverageRgb();
         double totalDistance = 0;
         for (Pixel pixel : pixels) {
-            double distRed = averageRgb[0] - pixel.rgb.getRed();
-            double distGreen = averageRgb[1] - pixel.rgb.getGreen();
-            double distBlue = averageRgb[2] - pixel.rgb.getBlue();
-            totalDistance += Math.sqrt(Math.pow(distRed, 2) + Math.pow(distGreen, 2) + Math.pow(distBlue, 2));
+           totalDistance += Formulas.rgbDistance3D(pixel, averageRgb);
         }
         return totalDistance;
     }
