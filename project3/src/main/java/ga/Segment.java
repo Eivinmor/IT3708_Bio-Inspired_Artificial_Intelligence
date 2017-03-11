@@ -3,7 +3,6 @@ package ga;
 import representation.*;
 import utility.Formulas;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -14,8 +13,6 @@ import java.util.HashSet;
 public class Segment {
 
     private Grid grid;
-
-
     public HashSet<Pixel> pixels;
     private ArrayList<Segment> adjacentTo;  //Region Adjacency Graph (RAG)
     public int[] totalRgb;
@@ -52,10 +49,12 @@ public class Segment {
     }
 
     public void addPixel(Pixel pixel) {
-        pixels.add(pixel);
-        totalRgb[0] += pixel.rgb.getRed();
-        totalRgb[1] += pixel.rgb.getGreen();
-        totalRgb[2] += pixel.rgb.getBlue();
+        if (!pixels.contains(pixel)) {
+            pixels.add(pixel);
+            totalRgb[0] += pixel.rgb.getRed();
+            totalRgb[1] += pixel.rgb.getGreen();
+            totalRgb[2] += pixel.rgb.getBlue();
+        }
     }
 
     public void removePixel(Pixel pixel) {
@@ -65,5 +64,8 @@ public class Segment {
         totalRgb[2] -= pixel.rgb.getBlue();
     }
 
-
+    @Override
+    public String toString() {
+        return Integer.toString(pixels.size());
+    }
 }

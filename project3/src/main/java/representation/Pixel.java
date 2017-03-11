@@ -13,4 +13,12 @@ public class Pixel {
         this.y = y;
         this.rgb = rgb;
     }
+
+    @Override
+    public String toString() {
+        return "Pixel{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
+    }
 }

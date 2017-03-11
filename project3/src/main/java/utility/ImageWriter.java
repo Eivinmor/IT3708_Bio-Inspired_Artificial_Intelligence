@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 
 
 public class ImageWriter {
@@ -31,20 +32,19 @@ public class ImageWriter {
         }
     }
 
-    public static void writeChromosomeImage(Grid grid, Chromosome chromosome, int chromosomeId){
+    public static void writeChromosomeImage(Chromosome chromosome, int chromosomeId, boolean drawBorder){
+        System.out.println("Writing image");
         try{
-            BufferedImage image = new BufferedImage(grid.width, grid.height, BufferedImage.TYPE_INT_RGB);
-            
-            for (Segment segment : chromosome.getSegments()) {
+            BufferedImage image = new BufferedImage(chromosome.grid.width, chromosome.grid.height, BufferedImage.TYPE_INT_RGB);
+            HashSet<Pixel> borderPixels = new HashSet<>();
+
+            for (Segment segment : chromosome.segments) {
                 double[] segmentAvgRgb = segment.calculateAverageRgb();
                 Color segmentColor = new Color((int) segmentAvgRgb[0], (int) segmentAvgRgb[1], (int) segmentAvgRgb[2]);
                 for (Pixel pixel  : segment.pixels) {
                     image.setRGB(pixel.x, pixel.y, segmentColor.getRGB());
                 }
             }
-
-
-
             File outputFile = new File(filePathRoot + "chromosome" + chromosomeId + ".png");
             ImageIO.write(image, "png", outputFile);
         }

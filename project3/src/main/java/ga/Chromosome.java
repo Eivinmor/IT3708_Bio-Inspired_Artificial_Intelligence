@@ -12,27 +12,28 @@ import java.util.Random;
 
 public class Chromosome {
 
-    private final Grid grid;
-    private ArrayList<Segment> segments;
+    public final Grid grid;
+    public ArrayList<Segment> segments;
 
     public Chromosome(Grid grid) {
         this.grid = grid;
+        segments = new ArrayList<>();
 
-        HashSet<Pixel> pixelHashSet = new HashSet<>();
+        HashSet<Pixel> unsegmentedPixels = new HashSet<>();
         for (Pixel[] pixelRow : grid.pixelArray) {
-            pixelHashSet.addAll(Arrays.asList(pixelRow));
+            unsegmentedPixels.addAll(Arrays.asList(pixelRow));
         }
 
         Random random = new Random();
         ArrayList<Pixel> queue = new ArrayList<>();
 
-        while (pixelHashSet.size() > 0) {
+        while (unsegmentedPixels.size() > 0) {
             Segment segment = new Segment(grid);
             // Find random pixel
-            int randIndex = random.nextInt(pixelHashSet.size());
-            for (Pixel pixel : pixelHashSet) {
+            int randIndex = random.nextInt(unsegmentedPixels.size());
+            for (Pixel pixel : unsegmentedPixels) {
                 if (randIndex == 0) {
-                    pixelHashSet.remove(pixel);
+                    unsegmentedPixels.remove(pixel);
                     segment.addPixel(pixel);
                     queue.add(pixel);
                     break;
@@ -44,10 +45,10 @@ public class Chromosome {
                 Pixel pixel = queue.remove(0);
                 for (Pixel nbPixel : grid.getNeighbourPixels(pixel)) {
                     double nbDistance = Formulas.rgbDistance3D(nbPixel, segment.calculateAverageRgb());
-                    if (nbDistance < Settings.initSegmentDistThreshold) {
-                        pixelHashSet.remove(nbPixel);
-                        segment.addPixel(nbPixel);
+                    if (nbDistance < Settings.initSegmentDistThreshold && unsegmentedPixels.contains(nbPixel)) {
                         queue.add(nbPixel);
+                        unsegmentedPixels.remove(nbPixel);
+                        segment.addPixel(nbPixel);
                     }
                 }
             }
@@ -55,8 +56,12 @@ public class Chromosome {
         }
     }
 
-    public ArrayList<Segment> getSegments() {
-        return segments;
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (Segment segment : segments) {
+            sb.append(segment.toString() + "\n");
+        }
+        return sb.toString();
     }
-    
 }
