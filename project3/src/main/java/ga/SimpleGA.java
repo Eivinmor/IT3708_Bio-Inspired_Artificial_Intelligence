@@ -1,7 +1,7 @@
 package ga;
 
 
-public class Algorithm {
+public class SimpleGA {
 
     // TODO Mutation - tumour (dumb)
     // TODO Mutation - loop outside border, add if closer to this (smart)
@@ -11,7 +11,7 @@ public class Algorithm {
     // TODO Crossover - ta noen segmenter fra p1 og legg inn i p2 (overlapper de som er)
 
 
-    public Algorithm(){
+    public SimpleGA(){
 
     }
 

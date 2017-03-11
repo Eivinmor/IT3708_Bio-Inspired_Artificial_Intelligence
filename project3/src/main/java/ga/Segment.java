@@ -6,9 +6,6 @@ import utility.Formulas;
 import java.util.HashSet;
 
 
-// TODO Implementere overlapping edges - intersect pixels in region A and B to find edge.
-// TODO Sjekke om det er noen begrensninger med å bruke HashSet for Segment
-
 public class Segment {
 
     private Grid grid;
@@ -24,6 +21,17 @@ public class Segment {
 
     }
 
+    // TODO Fitness functions
+
+    private double calculateColorDistance() {
+        double[] averageRgb = calculateAverageRgb();
+        double totalDistance = 0;
+        for (Pixel pixel : pixels) {
+            totalDistance += Formulas.rgbDistance3D(pixel, averageRgb);
+        }
+        return totalDistance;
+    }
+
     public HashSet<Segment> findNeighbours() {
         HashSet<Segment> adjacentTo = new HashSet<>();
         for (Pixel pixel : pixels) {
@@ -32,15 +40,6 @@ public class Segment {
             }
         }
         return adjacentTo;
-    }
-
-    private double calculateColorDistance() {
-        double[] averageRgb = calculateAverageRgb();
-        double totalDistance = 0;
-        for (Pixel pixel : pixels) {
-           totalDistance += Formulas.rgbDistance3D(pixel, averageRgb);
-        }
-        return totalDistance;
     }
 
     public double[] calculateAverageRgb() {

@@ -9,7 +9,7 @@ public class Settings {
     static double mutationRate = 0.7;
     static double elitePercent = 3;
 
-    static double initSegmentDistThreshold = 50;
+    static double initSegmentDistThreshold = 40;
     static double initSegmentMinimumSize = 20;
 
     static int eliteSize = (int)(elitePercent/100)*populationSize;

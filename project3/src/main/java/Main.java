@@ -9,8 +9,8 @@ public class Main {
     public static void main(String[] args) {
         Grid grid = ImageReader.readImage(Settings.imageId);
         Chromosome chromosome = new Chromosome(grid);
-        ImageWriter.writeChromosomeImageAvgRgb(chromosome, 1, true);
-        ImageWriter.writeChromosomeImageRandRgb(chromosome, 1, true);
+        ImageWriter.writeChromosomeImageAvgRgb(chromosome, 0, true);
+        ImageWriter.writeChromosomeImageRandRgb(chromosome, 0, true);
     }
 
 }
