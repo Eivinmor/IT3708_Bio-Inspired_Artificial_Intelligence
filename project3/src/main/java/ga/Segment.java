@@ -13,9 +13,50 @@ public class Segment {
     private Grid grid;
     private HashSet<Pixel> pixels;
     private ArrayList<Segment> adjacentTo;  //Region Adjacency Graph (RAG)
+    private int[] totalRgb;
 
     public Segment(Grid grid, HashSet<Pixel> pixels) {
         this.pixels = pixels;
+        totalRgb = calculateTotalRgb();
+    }
+
+    private double calculateColorDistance() {
+        double averageRed = (double) totalRgb[0] / pixels.size();
+        double averageGreen = (double) totalRgb[1] / pixels.size();
+        double averageBlue = (double) totalRgb[2] / pixels.size();
+
+        double totalDistance = 0;
+        for (Pixel pixel : pixels) {
+            double distRed = averageRed - pixel.rgb.getRed();
+            double distGreen = averageGreen - pixel.rgb.getGreen();
+            double distBlue = averageBlue - pixel.rgb.getBlue();
+            totalDistance += Math.sqrt(Math.pow(distRed, 2) + Math.pow(distGreen, 2) + Math.pow(distBlue, 2));
+        }
+        return totalDistance;
+    }
+
+    private int[] calculateTotalRgb() {
+        int[] newTotalRgb = new int[3];
+        for (Pixel pixel : pixels) {
+            totalRgb[0] += pixel.rgb.getRed();
+            totalRgb[1] += pixel.rgb.getGreen();
+            totalRgb[2] += pixel.rgb.getBlue();
+        }
+        return newTotalRgb;
+    }
+
+    public void addPixel(Pixel pixel) {
+        pixels.add(pixel);
+        totalRgb[0] += pixel.rgb.getRed();
+        totalRgb[1] += pixel.rgb.getGreen();
+        totalRgb[2] += pixel.rgb.getBlue();
+    }
+
+    public void removePixel(Pixel pixel) {
+        pixels.remove(pixel);
+        totalRgb[0] -= pixel.rgb.getRed();
+        totalRgb[1] -= pixel.rgb.getGreen();
+        totalRgb[2] -= pixel.rgb.getBlue();
     }
 
 }
