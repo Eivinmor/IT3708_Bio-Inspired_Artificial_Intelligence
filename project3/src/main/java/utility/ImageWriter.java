@@ -18,9 +18,9 @@ public class ImageWriter {
     public static void writeGridImage(Grid grid){
         try{
             BufferedImage image = new BufferedImage(grid.width, grid.height, BufferedImage.TYPE_INT_RGB);
-            for (int i = 0; i < grid.height; i++) {
-                for (int j = 0; j < grid.width; j++) {
-                    image.setRGB(j, i, grid.pixelArray[i][j].rgb.getRGB());
+            for (int i = 0; i < grid.width; i++) {
+                for (int j = 0; j < grid.height; j++) {
+                    image.setRGB(i, j, grid.pixelArray[i][j].rgb.getRGB());
                 }
             }
             File outputFile = new File(filePathRoot + "grid.png");

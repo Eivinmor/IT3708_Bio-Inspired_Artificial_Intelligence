@@ -23,11 +23,11 @@ public class ImageReader {
             imageWidth = image.getWidth();
             imageHeight = image.getHeight();
 
-            pixels = new Pixel[imageHeight][imageWidth];
+            pixels = new Pixel[imageWidth][imageHeight];
 
-            for (int i = 0; i < imageHeight; i++) {
-                for (int j = 0; j < imageWidth; j++) {
-                    pixels[i][j] = new Pixel(i, j, new Color(image.getRGB(j, i)));
+            for (int i = 0; i < imageWidth; i++) {
+                for (int j = 0; j < imageHeight; j++) {
+                    pixels[i][j] = new Pixel(i, j, new Color(image.getRGB(i, j)));
                 }
             }
             grid = new Grid(pixels);

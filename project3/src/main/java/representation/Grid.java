@@ -9,7 +9,7 @@ public class Grid {
 
     public Grid(Pixel[][] pixelArray) {
         this.pixelArray = pixelArray;
-        this.height = pixelArray.length;
-        this.width = pixelArray[0].length;
+        this.width = pixelArray.length;
+        this.height = pixelArray[0].length;
     }
 }
