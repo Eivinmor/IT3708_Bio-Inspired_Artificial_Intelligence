@@ -147,6 +147,7 @@ public class Chromosome implements Comparable<Chromosome>{
 
     @Override
     public int compareTo(Chromosome o) {
+        //TODO Burde bli kalkulert 1 gang per runde og så henter denne bare verdien
         if (this.calculateCost() > o.calculateCost()) return 1;
         else if (this.calculateCost() < o.calculateCost()) return -1;
         return 0;
