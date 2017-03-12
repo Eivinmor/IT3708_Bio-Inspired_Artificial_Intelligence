@@ -36,7 +36,7 @@ public class SimpleGA {
         ArrayList<Chromosome> initPopulation = new ArrayList<>(Settings.populationSize);
 
         for (int i = 0; i < Settings.populationSize; i++) {
-            initPopulation.add(new Chromosome(grid));
+            initPopulation.add(new Chromosome());
         }
 
         return initPopulation;

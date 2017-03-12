@@ -8,13 +8,11 @@ import java.util.HashSet;
 
 public class Segment {
 
-    private Grid grid;
     private Chromosome chromosome;
     public HashSet<Pixel> pixels;
     public int[] totalRgb;
 
-    public Segment(Grid grid, Chromosome chromosome) {
-        this.grid = grid;
+    public Segment(Chromosome chromosome) {
         this.chromosome = chromosome;
         pixels = new HashSet<>();
         totalRgb = calculateTotalRgb();
@@ -35,7 +33,7 @@ public class Segment {
     public HashSet<Segment> findNeighbours() {
         HashSet<Segment> adjacentTo = new HashSet<>();
         for (Pixel pixel : pixels) {
-            for (Pixel nbPixel : grid.getNeighbourPixels(pixel)) {
+            for (Pixel nbPixel : Grid.getNeighbourPixels(pixel)) {
                 if (!pixels.contains(nbPixel)) adjacentTo.add(chromosome.findPixelSegment(nbPixel));
             }
         }

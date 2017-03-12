@@ -13,11 +13,10 @@ public class ImageReader {
 
     private static String filePathRoot = System.getProperty("user.dir") + "\\src\\main\\resources\\input\\";
 
-    public static Grid readImage(int imageId) {
+    public static void readImage(int imageId) {
         int imageWidth;
         int imageHeight;
         Pixel[][] pixels;
-        Grid grid = null;
         try{
             BufferedImage image = ImageIO.read(new File(filePathRoot+imageId+"\\Test image.jpg"));
             imageWidth = image.getWidth();
@@ -30,10 +29,11 @@ public class ImageReader {
                     pixels[i][j] = new Pixel(i, j, new Color(image.getRGB(i, j)));
                 }
             }
-            grid = new Grid(pixels);
+            Grid.pixelArray = pixels;
+            Grid.width = imageWidth;
+            Grid.height = imageHeight;
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return grid;
     }
 }

@@ -12,11 +12,9 @@ import java.util.Random;
 
 public class Chromosome {
 
-    public final Grid grid;
     public HashSet<Segment> segments;
 
-    public Chromosome(Grid grid) {
-        this.grid = grid;
+    public Chromosome() {
         segments = initialiseSegments();
         mergeSegments(segments);
     }
@@ -25,7 +23,7 @@ public class Chromosome {
         HashSet<Segment> newSegments = new HashSet<>();
 
         HashSet<Pixel> unsegmentedPixels = new HashSet<>();
-        for (Pixel[] pixelRow : grid.pixelArray) {
+        for (Pixel[] pixelRow : Grid.pixelArray) {
             unsegmentedPixels.addAll(Arrays.asList(pixelRow));
         }
 
@@ -33,7 +31,7 @@ public class Chromosome {
         ArrayList<Pixel> queue = new ArrayList<>();
 
         while (unsegmentedPixels.size() > 0) {
-            Segment segment = new Segment(grid, this);
+            Segment segment = new Segment(this);
             // Find random pixel
             int randIndex = random.nextInt(unsegmentedPixels.size());
             for (Pixel pixel : unsegmentedPixels) {
@@ -51,7 +49,7 @@ public class Chromosome {
             System.out.println(distThresholdVariance);
             while (queue.size() > 0) {
                 Pixel pixel = queue.remove(0);
-                for (Pixel nbPixel : grid.getNeighbourPixels(pixel)) {
+                for (Pixel nbPixel : Grid.getNeighbourPixels(pixel)) {
                     double nbDistance = Formulas.rgbDistance3D(nbPixel, segment.calculateAverageRgb());
                     if (nbDistance < (Settings.initSegmentDistThreshold + distThresholdVariance) && unsegmentedPixels.contains(nbPixel)) {
                         queue.add(nbPixel);

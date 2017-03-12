@@ -34,7 +34,7 @@ public class ImageWriter {
     public static void writeChromosomeImageAvgRgb(Chromosome chromosome, int chromosomeId, boolean drawBorder){
         System.out.println("Writing image");
         try{
-            BufferedImage image = new BufferedImage(chromosome.grid.width, chromosome.grid.height, BufferedImage.TYPE_INT_RGB);
+            BufferedImage image = new BufferedImage(Grid.width, Grid.height, BufferedImage.TYPE_INT_RGB);
 
             for (Segment segment : chromosome.segments) {
                 double[] segmentAvgRgb = segment.calculateAverageRgb();
@@ -54,7 +54,7 @@ public class ImageWriter {
     public static void writeChromosomeImageRandRgb(Chromosome chromosome, int chromosomeId, boolean drawBorder){
         System.out.println("Writing image");
         try{
-            BufferedImage image = new BufferedImage(chromosome.grid.width, chromosome.grid.height, BufferedImage.TYPE_INT_RGB);
+            BufferedImage image = new BufferedImage(Grid.width, Grid.height, BufferedImage.TYPE_INT_RGB);
 
             for (Segment segment : chromosome.segments) {
                 Color segmentColor = new Color((int)(Math.random() * 0x1000000));
