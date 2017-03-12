@@ -2,7 +2,6 @@ package ga;
 
 import representation.*;
 import utility.Formulas;
-
 import java.util.HashSet;
 
 
@@ -16,12 +15,17 @@ public class Segment {
         this.chromosome = chromosome;
         pixels = new HashSet<>();
         totalRgb = calculateTotalRgb();
+    }
 
+    public Segment(Chromosome chromosome, Segment clonedFromSegment) {
+        this.chromosome = chromosome;
+        this.pixels = new HashSet<>(clonedFromSegment.pixels);
+        this.totalRgb = clonedFromSegment.totalRgb;
     }
 
     // TODO Fitness functions
 
-    private double calculateColorDistance() {
+    public double calculateColorDistance() {
         double[] averageRgb = calculateAverageRgb();
         double totalDistance = 0;
         for (Pixel pixel : pixels) {

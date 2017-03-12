@@ -10,13 +10,20 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
 
-public class Chromosome {
+public class Chromosome implements Comparable<Chromosome>{
 
     public HashSet<Segment> segments;
 
     public Chromosome() {
         segments = initialiseSegments();
         mergeSegments(segments);
+    }
+
+    public Chromosome(Chromosome clonedFromChromosome) {
+        segments = new HashSet<>();
+        for (Segment segment : clonedFromChromosome.segments) {
+            this.segments.add(segment);
+        }
     }
 
     private HashSet<Segment> initialiseSegments() {
@@ -114,5 +121,25 @@ public class Chromosome {
             sb.append(segment.toString() + "\n");
         }
         return sb.toString();
+    }
+
+    private double calculateColorDistance() {
+        double totalColorDistance = 0;
+        for (Segment segment : segments) {
+            totalColorDistance += segment.calculateColorDistance();
+        }
+        return totalColorDistance;
+    }
+
+    private double calculateCost() {
+        return calculateColorDistance();
+    }
+
+
+    @Override
+    public int compareTo(Chromosome o) {
+        if (this.calculateCost() > o.calculateCost()) return 1;
+        else if (this.calculateCost() < o.calculateCost()) return -1;
+        return 0;
     }
 }

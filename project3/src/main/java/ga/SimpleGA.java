@@ -1,12 +1,11 @@
 package ga;
 
 
-import representation.Grid;
-
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 
 public class SimpleGA {
-    private Grid grid;
 
     // TODO Mutation - tumour (dumb)
     // TODO Mutation - loop outside border, add if closer to this (smart)
@@ -23,16 +22,18 @@ public class SimpleGA {
     // Mutation
     // TODO Survival selection
 
-    public SimpleGA(Grid grid) {
-        this.grid = grid;
+    public SimpleGA() {
     }
 
     public void runAlgorithm() {
         ArrayList<Chromosome> population = generateInitialPopulation();
+        ArrayList<Chromosome> nextPopulation = new ArrayList<>(Settings.populationSize);
+        nextPopulation.addAll(eliteSelection(population));
+        
 
     }
 
-    public ArrayList<Chromosome> generateInitialPopulation() {
+    private ArrayList<Chromosome> generateInitialPopulation() {
         ArrayList<Chromosome> initPopulation = new ArrayList<>(Settings.populationSize);
 
         for (int i = 0; i < Settings.populationSize; i++) {
@@ -40,6 +41,18 @@ public class SimpleGA {
         }
 
         return initPopulation;
+    }
+    
+    private HashSet<Chromosome> eliteSelection(ArrayList<Chromosome> population) {
+        HashSet<Chromosome> eliteSet = new HashSet<>(1 + Settings.eliteSize);
+        Collections.sort(population);
+        eliteSet.add(new Chromosome(population.get(0)));
+        for (int i = 0; i < Settings.eliteSize; i++) {
+            Chromosome eliteChromosome = new Chromosome(population.get(i));
+//            eliteChromosome.mutate();
+            eliteSet.add(eliteChromosome);
+        }
+        return eliteSet;
     }
 
 
