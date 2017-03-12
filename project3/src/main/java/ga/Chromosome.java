@@ -11,6 +11,8 @@ import java.util.HashSet;
 
 public class Chromosome implements Comparable<Chromosome>{
 
+    // TODO Run when necessary after mutate/crossover: Check if segments have been split by BFS and seeing if there are unvisited pixels in segment. If so, split to new, continue.
+
     public HashSet<Segment> segments;
 
     public Chromosome() {

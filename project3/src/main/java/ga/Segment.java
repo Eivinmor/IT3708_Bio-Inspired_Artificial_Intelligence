@@ -70,6 +70,7 @@ public class Segment {
         return null;
     }
 
+
     public void addPixel(Pixel pixel) {
         pixels.add(pixel);
         totalRgb[0] += pixel.rgb.getRed();
