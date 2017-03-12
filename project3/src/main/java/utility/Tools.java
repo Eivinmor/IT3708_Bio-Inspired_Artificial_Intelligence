@@ -2,8 +2,12 @@ package utility;
 
 import representation.Pixel;
 
+import java.util.Random;
 
-public class Formulas {
+
+public class Tools {
+
+    public static Random random = new Random();
 
     public static double rgbDistance3D(double dist1, double dist2, double dist3) {
         return Math.sqrt(Math.pow(dist1, 2) + Math.pow(dist2, 2) + Math.pow(dist3, 2));

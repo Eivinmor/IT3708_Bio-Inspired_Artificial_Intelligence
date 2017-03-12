@@ -49,7 +49,7 @@ public class SimpleGA {
         eliteSet.add(new Chromosome(population.get(0)));
         for (int i = 0; i < Settings.eliteSize; i++) {
             Chromosome eliteChromosome = new Chromosome(population.get(i));
-//            eliteChromosome.mutate();
+            eliteChromosome.mutate();
             eliteSet.add(eliteChromosome);
         }
         return eliteSet;

@@ -3,12 +3,11 @@ package ga;
 
 import representation.Grid;
 import representation.Pixel;
-import utility.Formulas;
+import utility.Tools;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Random;
 
 public class Chromosome implements Comparable<Chromosome>{
 
@@ -34,30 +33,24 @@ public class Chromosome implements Comparable<Chromosome>{
             unsegmentedPixels.addAll(Arrays.asList(pixelRow));
         }
 
-        Random random = new Random();
         ArrayList<Pixel> queue = new ArrayList<>();
 
         while (unsegmentedPixels.size() > 0) {
             Segment segment = new Segment(this);
             // Find random pixel
-            int randIndex = random.nextInt(unsegmentedPixels.size());
-            for (Pixel pixel : unsegmentedPixels) {
-                if (randIndex == 0) {
-                    unsegmentedPixels.remove(pixel);
-                    segment.addPixel(pixel);
-                    queue.add(pixel);
-                    break;
-                }
-                randIndex--;
-            }
+            Pixel randomPixel = segment.findRandomPixel(unsegmentedPixels);
+            unsegmentedPixels.remove(randomPixel);
+            segment.addPixel(randomPixel);
+            queue.add(randomPixel);
             // Loop and check neighbour pixels
-            double distThresholdVariance = random.nextDouble() * (Settings.initSegmentDistThreshold * Settings.initSegmentDistThresholdVariance)
-                    - (Settings.initSegmentDistThreshold * Settings.initSegmentDistThresholdVariance / 2);
+            double initSegmentThresholdPotentialVariance = Settings.initSegmentDistThreshold * Settings.initSegmentDistThresholdVariance;
+            double distThresholdVariance = Tools.random.nextDouble() * (initSegmentThresholdPotentialVariance * 2)
+                    - initSegmentThresholdPotentialVariance;
             System.out.println(distThresholdVariance);
             while (queue.size() > 0) {
                 Pixel pixel = queue.remove(0);
                 for (Pixel nbPixel : Grid.getNeighbourPixels(pixel)) {
-                    double nbDistance = Formulas.rgbDistance3D(nbPixel, segment.calculateAverageRgb());
+                    double nbDistance = Tools.rgbDistance3D(nbPixel, segment.calculateAverageRgb());
                     if (nbDistance < (Settings.initSegmentDistThreshold + distThresholdVariance) && unsegmentedPixels.contains(nbPixel)) {
                         queue.add(nbPixel);
                         unsegmentedPixels.remove(nbPixel);
@@ -96,8 +89,8 @@ public class Chromosome implements Comparable<Chromosome>{
     private Segment findClosestColorSegment(Segment segment) {
         Segment closestSegment = null;
         double closestDist = Double.MAX_VALUE;
-        for (Segment nbSegment : segment.findNeighbours()) {
-            double dist = Formulas.rgbDistance3D(segment.calculateAverageRgb(), nbSegment.calculateAverageRgb());
+        for (Segment nbSegment : segment.findNeighbourSegments()) {
+            double dist = Tools.rgbDistance3D(segment.calculateAverageRgb(), nbSegment.calculateAverageRgb());
             if (dist < closestDist) {
                 closestDist = dist;
                 closestSegment = nbSegment;
@@ -106,8 +99,23 @@ public class Chromosome implements Comparable<Chromosome>{
         return closestSegment;
     }
 
+    public void mutate() {
+        if (Tools.random.nextDouble() < Settings.mutationRate) {
+            // TODO probability distribution between mutate functions
+        }
+    }
 
-    public Segment findPixelSegment(Pixel pixel) {
+
+    Segment findRandomSegment(HashSet<Segment> segments) {
+        int randIndex = Tools.random.nextInt(segments.size());
+        for (Segment segment : segments) {
+            if (randIndex == 0) return segment;
+            randIndex--;
+        }
+        return null;
+    }
+
+    Segment findPixelSegment(Pixel pixel) {
         for (Segment segment : segments) {
             if (segment.pixels.contains(pixel)) return segment;
         }
@@ -134,7 +142,6 @@ public class Chromosome implements Comparable<Chromosome>{
     private double calculateCost() {
         return calculateColorDistance();
     }
-
 
     @Override
     public int compareTo(Chromosome o) {

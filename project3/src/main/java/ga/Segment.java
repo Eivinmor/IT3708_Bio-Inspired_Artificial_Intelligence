@@ -1,7 +1,7 @@
 package ga;
 
 import representation.*;
-import utility.Formulas;
+import utility.Tools;
 import java.util.HashSet;
 
 
@@ -29,12 +29,12 @@ public class Segment {
         double[] averageRgb = calculateAverageRgb();
         double totalDistance = 0;
         for (Pixel pixel : pixels) {
-            totalDistance += Formulas.rgbDistance3D(pixel, averageRgb);
+            totalDistance += Tools.rgbDistance3D(pixel, averageRgb);
         }
         return totalDistance;
     }
 
-    public HashSet<Segment> findNeighbours() {
+    public HashSet<Segment> findNeighbourSegments() {
         HashSet<Segment> adjacentTo = new HashSet<>();
         for (Pixel pixel : pixels) {
             for (Pixel nbPixel : Grid.getNeighbourPixels(pixel)) {
@@ -59,6 +59,15 @@ public class Segment {
             totalRgb[2] += pixel.rgb.getBlue();
         }
         return newTotalRgb;
+    }
+
+    public Pixel findRandomPixel(HashSet<Pixel> pixels) {
+        int randIndex = Tools.random.nextInt(pixels.size());
+        for (Pixel pixel : pixels) {
+            if (randIndex == 0) return pixel;
+            randIndex--;
+        }
+        return null;
     }
 
     public void addPixel(Pixel pixel) {
