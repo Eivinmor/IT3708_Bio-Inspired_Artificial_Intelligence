@@ -10,6 +10,7 @@ public class Settings {
     static double elitePercent = 3;
 
     static double initSegmentDistThreshold = 40;
+    static double initSegmentDistThresholdVariance = 0.5;
     static double initSegmentMinimumSize = 20;
 
     static int eliteSize = (int)(elitePercent/100)*populationSize;

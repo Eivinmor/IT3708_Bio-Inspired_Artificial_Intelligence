@@ -46,11 +46,14 @@ public class Chromosome {
                 randIndex--;
             }
             // Loop and check neighbour pixels
+            double distThresholdVariance = random.nextDouble() * (Settings.initSegmentDistThreshold * Settings.initSegmentDistThresholdVariance)
+                    - (Settings.initSegmentDistThreshold * Settings.initSegmentDistThresholdVariance / 2);
+            System.out.println(distThresholdVariance);
             while (queue.size() > 0) {
                 Pixel pixel = queue.remove(0);
                 for (Pixel nbPixel : grid.getNeighbourPixels(pixel)) {
                     double nbDistance = Formulas.rgbDistance3D(nbPixel, segment.calculateAverageRgb());
-                    if (nbDistance < Settings.initSegmentDistThreshold && unsegmentedPixels.contains(nbPixel)) {
+                    if (nbDistance < (Settings.initSegmentDistThreshold + distThresholdVariance) && unsegmentedPixels.contains(nbPixel)) {
                         queue.add(nbPixel);
                         unsegmentedPixels.remove(nbPixel);
                         segment.addPixel(nbPixel);
@@ -62,6 +65,7 @@ public class Chromosome {
         return newSegments;
     }
 
+    // TODO Randomise for initial pop diversity?
     private void mergeSegments(HashSet<Segment> segments) {
         ArrayList<Segment> tooSmallSegments = findTooSmallSegments(segments);
         while (tooSmallSegments.size() > 0) {
