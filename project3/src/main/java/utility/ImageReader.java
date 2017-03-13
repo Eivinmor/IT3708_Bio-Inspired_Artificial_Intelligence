@@ -16,17 +16,16 @@ public class ImageReader {
     public static void readImage(int imageId) {
         int imageWidth;
         int imageHeight;
-        Pixel[][] pixels;
+        Color[] pixels;
         try{
             BufferedImage image = ImageIO.read(new File(filePathRoot+imageId+"\\Test image.jpg"));
             imageWidth = image.getWidth();
             imageHeight = image.getHeight();
 
-            pixels = new Pixel[imageWidth][imageHeight];
-
-            for (int i = 0; i < imageWidth; i++) {
-                for (int j = 0; j < imageHeight; j++) {
-                    pixels[i][j] = new Pixel(i, j, new Color(image.getRGB(i, j)));
+            pixels = new Color[imageWidth*imageHeight];
+            for (int x = 0; x < imageWidth; x++) {
+                for (int y = 0; y < imageHeight; y++) {
+                    pixels[x + (y * imageWidth)] = new Color(image.getRGB(x, y));
                 }
             }
             Grid.pixelArray = pixels;

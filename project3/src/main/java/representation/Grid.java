@@ -1,22 +1,23 @@
 package representation;
 
 
+import java.awt.*;
 import java.util.HashSet;
 
 public class Grid {
 
-    public static Pixel[][] pixelArray;
+    public static Color[] pixelArray;
     public static int height, width;
-    private static int[][] cardinalCoordsArray = {{0,-1}, {1,0}, {0,1}, {-1,0}}; // N, E, S, W
+    private static int[] cardinalCoordsArray = {-width, 1, width, 1}; // N, E, S, W
 
-    public static HashSet<Pixel> getNeighbourPixels(Pixel pixel) {
-        HashSet<Pixel> neighbourPixels = new HashSet<>();
-        for (int i = 0; i < cardinalCoordsArray.length; i++) {
-            int nbX = pixel.x + cardinalCoordsArray[i][0];
-            int nbY = pixel.y + cardinalCoordsArray[i][1];
-            if (nbX >= 0 && nbX < width && nbY >= 0 && nbY < height)
-                neighbourPixels.add(pixelArray[nbX][nbY]);
-        }
+    public HashSet<Integer> getNeighbourPixels(int pixelId) {
+        HashSet<Integer> neighbourPixels = new HashSet<>();
+        if (Math.floorMod(pixelId, width) != 0) neighbourPixels.add(pixelId - 1);
+        if (Math.floorMod(pixelId, width) != width - 1) neighbourPixels.add(pixelId + 1);
+        if (pixelId >= width) neighbourPixels.add(pixelId - width);
+        if (pixelId < width * (height - 1)) neighbourPixels.add(pixelId + width);
         return neighbourPixels;
     }
+
+
 }
