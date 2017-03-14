@@ -1,5 +1,6 @@
 package ga;
 
+
 public class Settings {
 
     public static int imageId = 2;

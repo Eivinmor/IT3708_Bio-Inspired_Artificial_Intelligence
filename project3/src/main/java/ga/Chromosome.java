@@ -10,8 +10,8 @@ public class Chromosome implements Comparable<Chromosome>{
 
     private int[] pixelGraph;
     public int[] pixelSegments;
-    private double cost;
     public int numOfSegments;
+    private double cost;
 
     public Chromosome() {
         this.pixelGraph = new int[Grid.pixelArray.length];
@@ -97,25 +97,17 @@ public class Chromosome implements Comparable<Chromosome>{
     }
 
     private double calculateColorDistance() {
-        HashSet<Integer> visitedPixels = new HashSet<>(pixelGraph.length);
-        double totalColorDistance = 0;
-        for (int i = 0; i < pixelGraph.length; i++) {
-            if (!visitedPixels.contains(i)) {
-                visitedPixels.add(i);
-                int nextPixelId = i;
-                while (nextPixelId != -1) {
-                    // TODO Gjøre ferdig
-                }
-            }
-        }
-        return totalColorDistance;
+        double totalDistance = 0;
+        // TODO Calculate all segment averages
+        // TODO Compare each pixel to its segment average
+        return totalDistance;
     }
 
     @Override
     public int compareTo(Chromosome o) {
         //TODO Burde bli kalkulert 1 gang per runde og så henter denne bare verdien
-        if (this.calculateCost() > o.calculateCost()) return 1;
-        else if (this.calculateCost() < o.calculateCost()) return -1;
+        if (this.cost > o.cost) return 1;
+        else if (this.cost < o.cost) return -1;
         return 0;
     }
 

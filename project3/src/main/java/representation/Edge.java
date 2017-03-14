@@ -4,7 +4,7 @@ import utility.Tools;
 
 public class Edge implements Comparable<Edge>{
     public int from, to;
-    double weight;
+    private double weight;
 
     public Edge(int from, int to) {
         this.from = from;
