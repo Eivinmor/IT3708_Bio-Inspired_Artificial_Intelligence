@@ -10,8 +10,8 @@ public class Main {
         ImageReader.readImage(Settings.imageId);
         ImageWriter.writeGridImage();
         Chromosome chromosome = new Chromosome();
-        System.out.println(chromosome.pixelSegments.length);
-        System.out.println(chromosome.numOfSegments);
+        System.out.println("Number of pixels: " + chromosome.pixelSegments.length);
+        System.out.println("Number of segments: " + chromosome.numOfSegments);
         ImageWriter.writeChromosomeImageAvgRgb(chromosome, 1, false);
 
 //        for (int i = 0; i < Settings.populationSize - 1; i++) {

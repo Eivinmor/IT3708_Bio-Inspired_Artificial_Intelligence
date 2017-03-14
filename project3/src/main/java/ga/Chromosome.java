@@ -1,6 +1,8 @@
 package ga;
 
+import representation.Edge;
 import representation.Grid;
+import utility.Tools;
 import java.util.*;
 
 
@@ -13,31 +15,49 @@ public class Chromosome implements Comparable<Chromosome>{
 
     public Chromosome() {
         this.pixelGraph = new int[Grid.pixelArray.length];
-        initaliseSegmentation();
         this.pixelSegments = new int[Grid.pixelArray.length];
+        initaliseSegmentation();
+        removeEdgesAboveThreshold();
         calculateSegmentation();
     }
 
+    private void initaliseSegmentationRandom() {
+        for (int i = 0; i < Grid.pixelArray.length; i++) {
+            ArrayList<Integer> neighbours = new ArrayList<>(Grid.getNeighbourPixels(i));
+            int randomIndex = Tools.random.nextInt(neighbours.size());
+            pixelGraph[i] = neighbours.get(randomIndex);
+        }
+    }
+
     private void initaliseSegmentation(){
-        // Initialising as MST through Kruskal's
-        ArrayList<HashSet<Integer>> pixelSegments = new ArrayList<>();
-        int[] pixelSegmentIds = new int[Grid.pixelArray.length];
-        for (int i = 0; i < pixelSegmentIds.length; i++) pixelSegmentIds[i] = -1;
+        // Initialising as MST through Prim's
+        HashSet<Integer> visited = new HashSet<>(Grid.pixelArray.length);
+        PriorityQueue<Edge> priorityQueue = new PriorityQueue<>();
 
-        for (int i = 0; i < pixelGraph.length; i++) pixelGraph[i] = -1;
-        ArrayList<Integer[]> orderedEdges = new ArrayList<>();
-        for (ArrayList<Integer[]> edges : Grid.pixelNeighbourDistances.values()) {
-            orderedEdges.addAll(edges);
-        }
+        int current = 0;
 
-        for (Integer[] edge : orderedEdges) {
-            // TODO Assign edges based on shortest
-        }
-        // Assign self-edge those without outgoing connections
-        for (int i = 0; i < pixelGraph.length; i++) {
-            if (pixelGraph[i] == -1) {
-                pixelGraph[i] = i;
+        int i = 0;
+        while (i < Grid.pixelArray.length){
+            if (!visited.contains(current)){
+                visited.add(current);
+                for (int neighbour : Grid.getNeighbourPixels(current)) {
+                    priorityQueue.add(new Edge(current, neighbour));
+                }
+                i++;
             }
+            Edge edge = priorityQueue.poll();
+            if (!visited.contains(edge.to)){
+                pixelGraph[edge.from] = edge.to;
+            }
+            current = edge.to;
+        }
+    }
+
+    // TODO Fix this
+    private void removeEdgesAboveThreshold() {
+        for (int i = 0; i < pixelGraph.length; i++) {
+            if (Tools.rgbDistance(Grid.pixelArray[i], Grid.pixelArray[pixelGraph[i]]) >= Settings.initSegmentDistThreshold)
+                pixelGraph[i] = i;
         }
     }
 
@@ -98,5 +118,6 @@ public class Chromosome implements Comparable<Chromosome>{
         else if (this.calculateCost() < o.calculateCost()) return -1;
         return 0;
     }
+
 }
 
