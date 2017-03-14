@@ -1,3 +1,4 @@
+import ga.Chromosome;
 import ga.Settings;
 import utility.ImageReader;
 import utility.ImageWriter;
@@ -8,6 +9,10 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         ImageReader.readImage(Settings.imageId);
         ImageWriter.writeGridImage();
+        Chromosome chromosome = new Chromosome();
+        System.out.println(chromosome.pixelSegments.length);
+        System.out.println(chromosome.numOfSegments);
+        ImageWriter.writeChromosomeImageAvgRgb(chromosome, 1, false);
 
 //        for (int i = 0; i < Settings.populationSize - 1; i++) {
 //            new Chromosome();

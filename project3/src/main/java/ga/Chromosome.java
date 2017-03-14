@@ -1,56 +1,76 @@
 package ga;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import representation.Grid;
+import java.util.*;
 
 
 public class Chromosome implements Comparable<Chromosome>{
 
-    public int[] pixelGraph;
-    private int[] pixelSegments;
+    private int[] pixelGraph;
+    public int[] pixelSegments;
     private double cost;
+    public int numOfSegments;
 
     public Chromosome() {
-        this.pixelSegments = new int[pixelGraph.length];
+        this.pixelGraph = new int[Grid.pixelArray.length];
+        initaliseSegmentation();
+        this.pixelSegments = new int[Grid.pixelArray.length];
+        calculateSegmentation();
     }
-    
+
+    private void initaliseSegmentation(){
+        // Initialising as MST through Kruskal's
+        ArrayList<HashSet<Integer>> pixelSegments = new ArrayList<>();
+        int[] pixelSegmentIds = new int[Grid.pixelArray.length];
+        for (int i = 0; i < pixelSegmentIds.length; i++) pixelSegmentIds[i] = -1;
+
+        for (int i = 0; i < pixelGraph.length; i++) pixelGraph[i] = -1;
+        ArrayList<Integer[]> orderedEdges = new ArrayList<>();
+        for (ArrayList<Integer[]> edges : Grid.pixelNeighbourDistances.values()) {
+            orderedEdges.addAll(edges);
+        }
+
+        for (Integer[] edge : orderedEdges) {
+            // TODO Assign edges based on shortest
+        }
+        // Assign self-edge those without outgoing connections
+        for (int i = 0; i < pixelGraph.length; i++) {
+            if (pixelGraph[i] == -1) {
+                pixelGraph[i] = i;
+            }
+        }
+    }
+
     public void calculateSegmentation() {
         // Set all pixels to unassigned
-        for (int i = 0; i < pixelSegments.length; i++) {
-            pixelSegments[i] = -1;
-        }
+        for (int i = 0; i < pixelSegments.length; i++) pixelSegments[i] = -1;
         int curSegmentId = 0;
-        int counter;
-        ArrayList<Integer> curSegmentPixels = new ArrayList<>();
+        ArrayList<Integer> curSegmentPixels;
+
         for (int i = 0; i < pixelGraph.length; i++) {
-            counter = 0;
+            curSegmentPixels = new ArrayList<>();
             if (pixelSegments[i] == -1) {
                 curSegmentPixels.add(i);
                 pixelSegments[i] = curSegmentId;
                 int curPixelId = pixelGraph[i];
-                counter++;
 
                 // TODO Variation: Store all looped and set either curSegmentId or pixelSegments[curPixelId] for all instead of one at a time.
                 while (pixelSegments[curPixelId] == -1) {
                     curSegmentPixels.add(curPixelId);
                     pixelSegments[curPixelId] = curSegmentId;
                     curPixelId = pixelGraph[curPixelId];
-                    counter++;
                 }
 
                 if (pixelSegments[curPixelId] != curSegmentId) {
-                    counter--;
-                    while (counter >= 0) {
-                        pixelSegments[curSegmentPixels.get(counter)] = pixelSegments[curPixelId];
-                        counter--;
+                    for (int j = curSegmentPixels.size() - 1; j >= 0; j--) {
+                        pixelSegments[curSegmentPixels.get(j)] = pixelSegments[curPixelId];
                     }
                 }
                 else curSegmentId++;
             }
         }
-        // TODO - number of clusters = curClusterId + 1;
+        numOfSegments = curSegmentId + 1;
     }
-
 
     private double calculateCost() {
         return calculateColorDistance();

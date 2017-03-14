@@ -14,4 +14,5 @@ public class Settings {
     static double initSegmentMinimumSize = 20;
 
     static int eliteSize = (int)(elitePercent/100)*populationSize;
+    public static int numOfNeighbours = 4;
 }
