@@ -37,7 +37,7 @@ public class Chromosome implements Comparable<Chromosome>{
         }
     }
 
-    // TODO TROR denne er grei nå
+    // TODO Tror denne er grei nå
     private void initaliseSegmentation(){
         for (int i = 0; i < pixelGraph.length; i++) pixelGraph[i] = -1;
         // Initialising as MST through Prim's
@@ -53,7 +53,7 @@ public class Chromosome implements Comparable<Chromosome>{
                 }
             }
             Edge edge = priorityQueue.poll();
-            if (!visited.contains(edge.to)){
+            if (!visited.contains(edge.to)){    // TODO Kan gjøre threshold-sjekk av edges i denne if-en:
                 if (pixelGraph[edge.from] == -1) {
                     pixelGraph[edge.from] = edge.to;
                     System.out.println("EDGE: " + edge.from + " " + edge.to);
