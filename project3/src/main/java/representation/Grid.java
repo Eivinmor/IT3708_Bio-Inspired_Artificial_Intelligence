@@ -14,10 +14,10 @@ public class Grid {
 
     public static ArrayList<Integer> getNeighbourPixels(int pixelId) {
         ArrayList<Integer> neighbourPixels = new ArrayList<>();
-        if (pixelId >= width) neighbourPixels.add(pixelId - width);
-        if (Math.floorMod(pixelId, width) != width - 1) neighbourPixels.add(pixelId + 1);
-        if (pixelId < width * (height - 1)) neighbourPixels.add(pixelId + width);
-        if (Math.floorMod(pixelId, width) != 0) neighbourPixels.add(pixelId - 1);
+        if (pixelId >= width) neighbourPixels.add(pixelId - width);                         // N
+        if (Math.floorMod(pixelId, width) != width - 1) neighbourPixels.add(pixelId + 1);   // E
+        if (pixelId < width * (height - 1)) neighbourPixels.add(pixelId + width);           // S
+        if (Math.floorMod(pixelId, width) != 0) neighbourPixels.add(pixelId - 1);           // W
         return neighbourPixels;
     }
 

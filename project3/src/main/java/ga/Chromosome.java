@@ -16,9 +16,17 @@ public class Chromosome implements Comparable<Chromosome>{
     public Chromosome() {
         this.pixelGraph = new int[Grid.pixelArray.length];
         this.pixelSegments = new int[Grid.pixelArray.length];
+
+//        initaliseSegmentationRandom();
         initaliseSegmentation();
         removeEdgesAboveThreshold();
+        for (int i = 0; i < pixelGraph.length; i++) {
+            System.out.print(pixelGraph[i] + " ");
+        }
+        System.out.println();
+
         calculateSegmentation();
+
     }
 
     private void initaliseSegmentationRandom() {
@@ -29,31 +37,39 @@ public class Chromosome implements Comparable<Chromosome>{
         }
     }
 
+    // TODO TROR denne er grei nå
     private void initaliseSegmentation(){
+        for (int i = 0; i < pixelGraph.length; i++) pixelGraph[i] = -1;
         // Initialising as MST through Prim's
         HashSet<Integer> visited = new HashSet<>(Grid.pixelArray.length);
         PriorityQueue<Edge> priorityQueue = new PriorityQueue<>();
 
         int current = 0;
-
-        int i = 0;
-        while (i < Grid.pixelArray.length){
+        while (visited.size() < Grid.pixelArray.length){
             if (!visited.contains(current)){
                 visited.add(current);
                 for (int neighbour : Grid.getNeighbourPixels(current)) {
                     priorityQueue.add(new Edge(current, neighbour));
                 }
-                i++;
             }
             Edge edge = priorityQueue.poll();
             if (!visited.contains(edge.to)){
-                pixelGraph[edge.from] = edge.to;
+                if (pixelGraph[edge.from] == -1) {
+                    pixelGraph[edge.from] = edge.to;
+                    System.out.println("EDGE: " + edge.from + " " + edge.to);
+                }
+                else {
+                    pixelGraph[edge.to] = edge.from;
+                    System.out.println("EDGE: " + edge.to + " " + edge.from);
+                }
             }
             current = edge.to;
         }
+        for (int i = 0; i < pixelGraph.length; i++)
+            if (pixelGraph[i] == -1) pixelGraph[i] = i;
+
     }
 
-    // TODO Fix this
     private void removeEdgesAboveThreshold() {
         for (int i = 0; i < pixelGraph.length; i++) {
             if (Tools.rgbDistance(Grid.pixelArray[i], Grid.pixelArray[pixelGraph[i]]) >= Settings.initSegmentDistThreshold)
@@ -65,31 +81,32 @@ public class Chromosome implements Comparable<Chromosome>{
         // Set all pixels to unassigned
         for (int i = 0; i < pixelSegments.length; i++) pixelSegments[i] = -1;
         int curSegmentId = 0;
-        ArrayList<Integer> curSegmentPixels;
+        ArrayList<Integer> curPath;
 
-        for (int i = 0; i < pixelGraph.length; i++) {
-            curSegmentPixels = new ArrayList<>();
-            if (pixelSegments[i] == -1) {
-                curSegmentPixels.add(i);
-                pixelSegments[i] = curSegmentId;
-                int curPixelId = pixelGraph[i];
+        for (int rootPixel = 0; rootPixel < Grid.pixelArray.length; rootPixel++) {
 
-                // TODO Variation: Store all looped and set either curSegmentId or pixelSegments[curPixelId] for all instead of one at a time.
-                while (pixelSegments[curPixelId] == -1) {
-                    curSegmentPixels.add(curPixelId);
-                    pixelSegments[curPixelId] = curSegmentId;
-                    curPixelId = pixelGraph[curPixelId];
+            curPath = new ArrayList<>();
+
+            if (pixelSegments[rootPixel] == -1) {
+                curPath.add(rootPixel);
+                pixelSegments[rootPixel] = curSegmentId;
+                int curPixel = pixelGraph[rootPixel];
+
+                // TODO Variation: Store all looped and set either curSegmentId or pixelSegments[curPixel] for all instead of one at a time.
+                while (pixelSegments[curPixel] == -1) {
+                    curPath.add(curPixel);
+                    pixelSegments[curPixel] = curSegmentId;
+                    curPixel = pixelGraph[curPixel];
                 }
-
-                if (pixelSegments[curPixelId] != curSegmentId) {
-                    for (int j = curSegmentPixels.size() - 1; j >= 0; j--) {
-                        pixelSegments[curSegmentPixels.get(j)] = pixelSegments[curPixelId];
+                if (pixelSegments[curPixel] != curSegmentId) {
+                    for (int segmentPixel : curPath) {
+                        pixelSegments[segmentPixel] = pixelSegments[curPixel];
                     }
                 }
                 else curSegmentId++;
             }
         }
-        numOfSegments = curSegmentId + 1;
+        numOfSegments = curSegmentId;
     }
 
     private double calculateCost() {
@@ -109,6 +126,15 @@ public class Chromosome implements Comparable<Chromosome>{
         if (this.cost > o.cost) return 1;
         else if (this.cost < o.cost) return -1;
         return 0;
+    }
+
+    private void printSegments(int initId) {
+        System.out.print(initId + "\t");
+        for (int j = 0; j < pixelSegments.length; j++) {
+            if (pixelSegments[j] == -1) System.out.print("-\t");
+            else System.out.print(pixelSegments[j] + "\t");
+        }
+        System.out.println("\n");
     }
 
 }

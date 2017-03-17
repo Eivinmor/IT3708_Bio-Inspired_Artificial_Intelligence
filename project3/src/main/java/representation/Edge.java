@@ -15,7 +15,12 @@ public class Edge implements Comparable<Edge>{
     @Override
     public int compareTo(Edge o) {
         if (this.weight > o.weight) return 1;
-        else if (this.weight < o.weight) return -1;
+        if (this.weight < o.weight) return -1;
         return 0;
+    }
+
+    @Override
+    public String toString() {
+        return "(" + from + " " + to + ")";
     }
 }
