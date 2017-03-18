@@ -16,10 +16,8 @@ public class Main {
 
 //        for (int i = 0; i < Settings.populationSize - 1; i++) {
 //            new Chromosome();
+//            if (i%10 == 0) System.out.println("-");
 //        }
-//        Chromosome chromosome = new Chromosome();
-//        ImageWriter.writeChromosomeImageAvgRgb(chromosome, 1, true);
-//        ImageWriter.writeChromosomeImageRandRgb(chromosome, 1, true);
     }
 
 }

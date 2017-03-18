@@ -21,7 +21,7 @@ public class ImageWriter {
                     image.setRGB(x, y, Grid.pixelArray[x + (y * Grid.width)].getRGB());
                 }
             }
-            File outputFile = new File(filePathRoot + "Grid.png");
+            File outputFile = new File(filePathRoot + "grid.png");
             ImageIO.write(image, "png", outputFile);
         }
         catch (IOException e) {

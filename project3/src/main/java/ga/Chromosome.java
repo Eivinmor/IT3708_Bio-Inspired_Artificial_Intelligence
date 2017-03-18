@@ -18,12 +18,13 @@ public class Chromosome implements Comparable<Chromosome>{
         this.pixelSegments = new int[Grid.pixelArray.length];
 
 //        initaliseSegmentationRandom();
-        initaliseSegmentation();
-        removeEdgesAboveThreshold();
-        for (int i = 0; i < pixelGraph.length; i++) {
-            System.out.print(pixelGraph[i] + " ");
-        }
-        System.out.println();
+        initaliseSegmentationAsMST();
+        removeKLargestEdges(100);
+//        removeEdgesAboveThreshold();
+//        for (int i = 0; i < pixelGraph.length; i++) {
+//            System.out.print(pixelGraph[i] + " ");
+//        }
+//        System.out.println();
 
         calculateSegmentation();
 
@@ -37,9 +38,8 @@ public class Chromosome implements Comparable<Chromosome>{
         }
     }
 
-    // TODO Tror denne er grei nå
-    private void initaliseSegmentation(){
-        for (int i = 0; i < pixelGraph.length; i++) pixelGraph[i] = -1;
+    private void initaliseSegmentationAsMST(){
+        for (int i = 0; i < pixelGraph.length; i++) pixelGraph[i] = i;
         // Initialising as MST through Prim's
         HashSet<Integer> visited = new HashSet<>(Grid.pixelArray.length);
         PriorityQueue<Edge> priorityQueue = new PriorityQueue<>();
@@ -53,28 +53,69 @@ public class Chromosome implements Comparable<Chromosome>{
                 }
             }
             Edge edge = priorityQueue.poll();
-            if (!visited.contains(edge.to)){    // TODO Kan gjøre threshold-sjekk av edges i denne if-en:
-                if (pixelGraph[edge.from] == -1) {
-                    pixelGraph[edge.from] = edge.to;
-                    System.out.println("EDGE: " + edge.from + " " + edge.to);
-                }
-                else {
-                    pixelGraph[edge.to] = edge.from;
-                    System.out.println("EDGE: " + edge.to + " " + edge.from);
-                }
+            if (!visited.contains(edge.to)){
+                pixelGraph[edge.to] = edge.from;
             }
             current = edge.to;
         }
-        for (int i = 0; i < pixelGraph.length; i++)
-            if (pixelGraph[i] == -1) pixelGraph[i] = i;
-
     }
+
+//    private void initaliseSegmentationAsMST(){
+//        for (int i = 0; i < pixelGraph.length; i++) pixelGraph[i] = -1;
+//        // Initialising as MST through Prim's
+//        HashSet<Integer> visited = new HashSet<>(Grid.pixelArray.length);
+//        PriorityQueue<Edge> priorityQueue = new PriorityQueue<>();
+//
+//        int current = 0;
+//        while (visited.size() < Grid.pixelArray.length){
+//            if (!visited.contains(current)){
+//                visited.add(current);
+//                for (int neighbour : Grid.getNeighbourPixels(current)) {
+//                    priorityQueue.add(new Edge(current, neighbour));
+//                }
+//            }
+//            Edge edge = priorityQueue.poll();
+//            if (!visited.contains(edge.to)){
+//                if (pixelGraph[edge.from] == -1) {
+//                    System.out.println("hei");
+//                    pixelGraph[edge.from] = edge.to;
+////                    System.out.println("EDGE: " + edge.from + " " + edge.to);
+//                }
+//                else {
+//                    pixelGraph[edge.to] = edge.from;
+////                    System.out.println("EDGE: " + edge.to + " " + edge.from);
+//                }
+//            }
+//            current = edge.to;
+//        }
+//        for (int i = 0; i < pixelGraph.length; i++)
+//            if (pixelGraph[i] == -1) pixelGraph[i] = i;
+//
+//    }
 
     private void removeEdgesAboveThreshold() {
         for (int i = 0; i < pixelGraph.length; i++) {
             if (Tools.rgbDistance(Grid.pixelArray[i], Grid.pixelArray[pixelGraph[i]]) >= Settings.initSegmentDistThreshold)
                 pixelGraph[i] = i;
         }
+    }
+
+    private void removeKLargestEdges(int k) {
+        ArrayList<Edge> edges = calculateEdges();
+        Collections.sort(edges);
+        Collections.reverse(edges);
+        for (int i = 0; i < k; i++) {
+            Edge edge = edges.get(i);
+            pixelGraph[edge.from] = edge.from;
+        }
+    }
+
+    private ArrayList<Edge> calculateEdges() {
+        ArrayList<Edge> edges = new ArrayList<>(pixelGraph.length);
+        for (int i = 0; i < pixelGraph.length; i++) {
+            edges.add(new Edge(i, pixelGraph[i]));
+        }
+        return edges;
     }
 
     public void calculateSegmentation() {
