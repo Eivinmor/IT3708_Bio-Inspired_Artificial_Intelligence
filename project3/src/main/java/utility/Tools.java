@@ -24,9 +24,11 @@ public class Tools {
     }
 
     public static double colorDistance(Color c1, Color c2) {
-        if (Settings.colorSpace == Settings.ColorSpaceType.RGB) return rgbDistance(c1, c2);
-        else if (Settings.colorSpace == Settings.ColorSpaceType.LAB) return cieLabDistance(c1, c2);
-        return -1;
+        switch (Settings.colorSpace) {
+            case RGB: return rgbDistance(c1, c2);
+            case LAB: return cieLabDistance(c1, c2);
+        }
+        throw new IllegalArgumentException("Settings.colorSpace value is not recognised.");
     }
 
     private static double rgbDistance(Color c1, Color c2) {
@@ -67,7 +69,4 @@ public class Tools {
         }
         System.out.println();
     }
-
-
-
 }

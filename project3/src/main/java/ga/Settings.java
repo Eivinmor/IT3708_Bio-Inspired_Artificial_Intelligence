@@ -11,7 +11,8 @@ public class Settings {
     public static final double elitePercent = 3;
     public static final ColorSpaceType colorSpace = ColorSpaceType.RGB;
 
-//    public static final double initSegmentDistThreshold = 30;
+    // Currently unused
+    public static final double initSegmentDistThreshold = 30;
 
     // Helpers
     static int eliteSize = (int) ((elitePercent / 100) * populationSize);
