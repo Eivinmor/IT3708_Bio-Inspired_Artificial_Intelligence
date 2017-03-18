@@ -9,7 +9,7 @@ public class Edge implements Comparable<Edge>{
     public Edge(int from, int to) {
         this.from = from;
         this.to = to;
-        this.weight = Tools.rgbDistance(Grid.pixelArray[from], Grid.pixelArray[to]);
+        this.weight = Tools.colorDistance(Grid.pixelArray[from], Grid.pixelArray[to]);
     }
 
     @Override

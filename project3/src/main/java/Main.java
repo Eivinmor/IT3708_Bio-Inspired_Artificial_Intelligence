@@ -18,6 +18,8 @@ public class Main {
 //            new Chromosome();
 //            if (i%10 == 0) System.out.println("-");
 //        }
+
+
     }
 
 }

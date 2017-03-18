@@ -19,7 +19,7 @@ public class Chromosome implements Comparable<Chromosome>{
 
 //        initaliseSegmentationRandom();
         initaliseSegmentationAsMST();
-        removeKLargestEdges(100);
+        removeKLargestEdges(15000);
 //        removeEdgesAboveThreshold();
 //        for (int i = 0; i < pixelGraph.length; i++) {
 //            System.out.print(pixelGraph[i] + " ");
@@ -38,9 +38,8 @@ public class Chromosome implements Comparable<Chromosome>{
         }
     }
 
-    private void initaliseSegmentationAsMST(){
+    private void initaliseSegmentationAsMST() {  //Using Prim's
         for (int i = 0; i < pixelGraph.length; i++) pixelGraph[i] = i;
-        // Initialising as MST through Prim's
         HashSet<Integer> visited = new HashSet<>(Grid.pixelArray.length);
         PriorityQueue<Edge> priorityQueue = new PriorityQueue<>();
 
@@ -95,7 +94,7 @@ public class Chromosome implements Comparable<Chromosome>{
 
     private void removeEdgesAboveThreshold() {
         for (int i = 0; i < pixelGraph.length; i++) {
-            if (Tools.rgbDistance(Grid.pixelArray[i], Grid.pixelArray[pixelGraph[i]]) >= Settings.initSegmentDistThreshold)
+            if (Tools.colorDistance(Grid.pixelArray[i], Grid.pixelArray[pixelGraph[i]]) >= Settings.initSegmentDistThreshold)
                 pixelGraph[i] = i;
         }
     }
