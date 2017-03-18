@@ -4,7 +4,7 @@ import utility.Tools;
 
 public class Edge implements Comparable<Edge>{
     public int from, to;
-    private double weight;
+    public double weight;
 
     public Edge(int from, int to) {
         this.from = from;
@@ -21,6 +21,6 @@ public class Edge implements Comparable<Edge>{
 
     @Override
     public String toString() {
-        return "(" + from + " " + to + ")";
+        return "(" + from + " " + to + ") " + weight;
     }
 }
