@@ -15,11 +15,10 @@ public class Main {
         System.out.println("Number of segments: " + chromosome.numOfSegments);
         ImageWriter.writeChromosomeImageAvgRgb(chromosome, 1, false);
 
-        for (int i = 0; i < Settings.populationSize - 1; i++) {
-            new Chromosome();
-            if (i % 10 == 0) System.out.println("-");
-        }
-
+//        for (int i = 0; i < Settings.populationSize - 1; i++) {
+//            new Chromosome();
+//            if (i % 10 == 0) System.out.println("-");
+//        }
 
     }
 
