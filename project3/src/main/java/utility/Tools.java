@@ -1,8 +1,11 @@
 package utility;
 
+import ga.Chromosome;
 import ga.Settings;
+import representation.Edge;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Random;
 
 
@@ -38,6 +41,31 @@ public class Tools {
         return Math.sqrt(Math.pow(c1Lab[0] - c2Lab[0], 2)
                 + Math.pow(c1Lab[1] - c2Lab[1], 2)
                 + Math.pow(c1Lab[2] - c2Lab[2], 2));
+    }
+
+    public static void printDistance(Chromosome chromosome, boolean printEdges) {
+        double totalDistance = 0;
+        ArrayList<Edge> edges = chromosome.calculateEdges();
+        for (Edge edge : edges) {
+            totalDistance += edge.weight;
+            if (printEdges) System.out.println(edge);
+        }
+        System.out.println("Distance: " + totalDistance);
+    }
+
+    public static void printSegments(Chromosome chromosome) {
+        for (int j = 0; j < chromosome.pixelSegments.length; j++) {
+            if (chromosome.pixelSegments[j] == -1) System.out.print(" ");
+            else System.out.print(chromosome.pixelSegments[j] + " ");
+        }
+        System.out.println("\n");
+    }
+
+    public static void printGraph(Chromosome chromosome) {
+        for (int i = 0; i < chromosome.pixelGraph.length; i++) {
+            System.out.print(chromosome.pixelGraph[i] + " ");
+        }
+        System.out.println();
     }
 
 
