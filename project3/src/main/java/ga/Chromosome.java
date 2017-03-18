@@ -6,6 +6,10 @@ import utility.Tools;
 import java.util.*;
 
 
+// TODO Mutation - edge to random neighbour
+// TODO Mutation - remove edge (change to self)
+
+
 public class Chromosome implements Comparable<Chromosome>{
 
     private int[] pixelGraph;
@@ -19,7 +23,7 @@ public class Chromosome implements Comparable<Chromosome>{
 
 //        initaliseSegmentationRandom();
         initaliseSegmentationAsMST();
-        removeKLargestEdges(15000);
+        removeKLargestEdges(20000); // TODO Gjøre om til å ta inn prosent
 //        removeEdgesAboveThreshold();
 //        for (int i = 0; i < pixelGraph.length; i++) {
 //            System.out.print(pixelGraph[i] + " ");
@@ -43,7 +47,7 @@ public class Chromosome implements Comparable<Chromosome>{
         HashSet<Integer> visited = new HashSet<>(Grid.pixelArray.length);
         PriorityQueue<Edge> priorityQueue = new PriorityQueue<>();
 
-        int current = 0;
+        int current = pixelGraph.length-1; // Starts at the last pixel
         while (visited.size() < Grid.pixelArray.length){
             if (!visited.contains(current)){
                 visited.add(current);

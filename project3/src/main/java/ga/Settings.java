@@ -7,7 +7,7 @@ public class Settings {
 
     // ---- SETTINGS ----------------------------------
     public static final int imageId = 1;
-    public static final int populationSize = 100;
+    public static final int populationSize = 1000;
     public static final int generationsPerPause = 100;
     public static final double crossoverRate = 0.7;
     public static final double mutationRate = 0.8;
