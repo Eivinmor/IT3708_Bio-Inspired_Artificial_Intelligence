@@ -24,7 +24,7 @@ public class Chromosome {
         this.pixelSegments = new int[Grid.pixelArray.length];
 
         initaliseSegmentationAsMST();
-//        Tools.printDistance(this, false);
+        Tools.printDistance(this, false);
         removeKLargestEdges(15000); // TODO Gjøre om til å ta inn prosent
         calculateSegmentation();
     }
@@ -74,7 +74,6 @@ public class Chromosome {
             pixelGraph[edge.from] = edge.from;
         }
     }
-
 
     public ArrayList<Edge> calculateEdges() {
         ArrayList<Edge> edges = new ArrayList<>(pixelGraph.length);
