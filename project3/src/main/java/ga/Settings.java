@@ -5,7 +5,7 @@ package ga;
 public class Settings {
 
     public static final int imageId = 1;
-    public static final Algorithm algorithm = Algorithm.NSGA2;
+    public static final Algorithm algorithm = Algorithm.TEST;
 
     // MOEA
     public static final int populationSize = 1000;
@@ -25,6 +25,8 @@ public class Settings {
     public static final double mutateSetRandomEdgeRate = 0.4;
     public static final double mutateRemoveEdge = 0.4;
 
+    // Output
+    public static final boolean drawBorders = true;
 
 
     // Currently unused
@@ -32,5 +34,5 @@ public class Settings {
 
     // Helpers
     public enum ColorSpaceType {RGB, LAB}
-    public enum Algorithm {PAES, NSGA2}
+    public enum Algorithm {PAES, NSGA2, TEST}
 }

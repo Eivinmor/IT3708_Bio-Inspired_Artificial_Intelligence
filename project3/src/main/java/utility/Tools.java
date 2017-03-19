@@ -82,7 +82,7 @@ public class Tools {
     }
 
     public static void printPause(int generation, Chromosome bestChromosome) {
-        ImageWriter.writeChromosomeImageRandomRgb(bestChromosome, generation, false);
+        ImageWriter.writeChromosomeImageRandomRgb(bestChromosome, generation);
         System.out.println("Generation: " + generation);
         System.out.println("Press Enter to continue...");
         scanner.nextLine();

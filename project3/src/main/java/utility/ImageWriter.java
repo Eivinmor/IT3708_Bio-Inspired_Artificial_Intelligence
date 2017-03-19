@@ -1,6 +1,7 @@
 package utility;
 
 import ga.Chromosome;
+import ga.Settings;
 import representation.*;
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -29,7 +30,7 @@ public class ImageWriter {
         }
     }
 
-    public static void writeChromosomeImageRandomRgb(Chromosome chromosome, int chromosomeId, boolean drawBorder){
+    public static void writeChromosomeImageRandomRgb(Chromosome chromosome, int chromosomeId){
         if (chromosome.segmentationIsOutdated) chromosome.calculateSegmentation();
         System.out.println("Writing image");
         try{
@@ -41,7 +42,9 @@ public class ImageWriter {
             BufferedImage image = new BufferedImage(Grid.width, Grid.height, BufferedImage.TYPE_INT_RGB);
             for (int x = 0; x < Grid.width; x++) {
                 for (int y = 0; y < Grid.height; y++) {
-                    image.setRGB(x, y, segmentColors[chromosome.segmentation[x + (y * Grid.width)]].getRGB());
+                    int pixelId = x + (y * Grid.width);
+                    if (Settings.drawBorders && isEdgePixel(chromosome, pixelId)) image.setRGB(x, y, Color.WHITE.getRGB());
+                    else image.setRGB(x, y, segmentColors[chromosome.segmentation[pixelId]].getRGB());
                 }
             }
             File outputFile = new File(filePathRoot + "chromosome" + chromosomeId + "Avg.png");
@@ -50,6 +53,12 @@ public class ImageWriter {
         catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static boolean isEdgePixel(Chromosome chromosome, int pixelId) {
+        for (int nb : Grid.getNeighbourPixels(pixelId))
+            if (chromosome.segmentation[pixelId] != chromosome.segmentation[nb]) return true;
+        return false;
     }
 //
 //    public static void writeChromosomeImageRandRgb(Chromosome chromosome, int chromosomeId, boolean drawBorder){
