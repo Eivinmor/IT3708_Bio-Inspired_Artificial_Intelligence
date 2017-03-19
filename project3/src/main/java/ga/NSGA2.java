@@ -1,16 +1,12 @@
 package ga;
 
 import utility.Tools;
-
 import java.util.ArrayList;
-import java.util.Scanner;
+
 
 public class NSGA2 {
 
-
-
     public void runAlgorithm() {
-
         ArrayList<Chromosome> population = createInitialPopulation();
 
         int generation = 1;
@@ -33,6 +29,15 @@ public class NSGA2 {
          ArrayList<Chromosome> offsprintPopulation = new ArrayList<>(Settings.populationSize);
          // TODO Do shit
          return offsprintPopulation;
+    }
+
+    private void calculateFronts() {
+        // TODO Do heavy shit
+    }
+
+    private void crowdingTournament() {
+        // TODO 1. Rank
+        // TODO 2. Crowding distance
     }
 
 }
