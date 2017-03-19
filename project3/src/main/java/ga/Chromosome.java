@@ -31,7 +31,7 @@ public class Chromosome {
         }
     }
 
-    private void initaliseSegmentationRandom() {
+    private void initaliseGraphAsRandom() {
         for (int i = 0; i < Grid.numOfPixels; i++) {
             ArrayList<Integer> neighbours = new ArrayList<>(Grid.getNeighbourPixels(i));
             int randomIndex = Tools.random.nextInt(neighbours.size());
@@ -197,9 +197,10 @@ public class Chromosome {
             ArrayList<Integer> neighbours = Grid.getNeighbourPixels(i);
             int connectedNeighbours = 0;
             for (int j : neighbours) {
-                if (segmentation[i] != segmentation[j])
+                if (segmentation[i] != segmentation[j]) {
                     connectedNeighbours++;
-                    connectivity += 1.0/connectedNeighbours;
+                    connectivity += 1.0 / connectedNeighbours;
+                }
             }
         }
         return connectivity;
