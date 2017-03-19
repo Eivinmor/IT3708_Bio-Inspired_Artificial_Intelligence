@@ -14,13 +14,17 @@ public class Chromosome implements Comparable<Chromosome>{
     public int[] segmentation = new int[Grid.numOfPixels];
     public int numOfSegments;
     public boolean segmentationIsOutdated = true;
-    private double[] cost = new double[3];
+    public double[] cost = new double[3];
 
     // New
     public Chromosome() {
         initaliseGraphAsMST();
         Tools.printDistance(this, false);
-        removeKLargestEdges(20000); // TODO Gjøre om til å ta inn prosent
+    }
+
+    // Clone
+    public Chromosome(Chromosome clonosome) {
+        for (int i = 0; i < Grid.numOfPixels; i++) this.graph[i] = clonosome.graph[i];
     }
 
     // Crossover
@@ -68,10 +72,19 @@ public class Chromosome implements Comparable<Chromosome>{
         }
     }
 
-    private void removeKLargestEdges(int k) {
+    public void removeKLargestEdges(int k) {
         ArrayList<Edge> edges = calculateEdges();
         Collections.sort(edges);
         Collections.reverse(edges);
+        for (int i = 0; i < k; i++) {
+            Edge edge = edges.get(i);
+            graph[edge.from] = edge.from;
+        }
+    }
+
+    public void removeKRandomEdges(int k) {
+        ArrayList<Edge> edges = calculateEdges();
+        Collections.shuffle(edges);
         for (int i = 0; i < k; i++) {
             Edge edge = edges.get(i);
             graph[edge.from] = edge.from;
@@ -214,14 +227,17 @@ public class Chromosome implements Comparable<Chromosome>{
     }
 
     // Pareto
-    @Override
-    public int compareTo(Chromosome o) {
-        if (cost[0] >= o.cost[0] && cost[1] >= o.cost[1] && cost[2] >= o.cost[2]) {
-            if (cost[0] > o.cost[0] || cost[1] > o.cost[1] || cost[2] > o.cost[2])
-                return 1;
-            return 0;
+    public boolean dominates(Chromosome o) {
+        if (cost[0] <= o.cost[0] && cost[1] <= o.cost[1] && cost[2] <= o.cost[2]) {
+            if (cost[0] < o.cost[0] || cost[1] < o.cost[1] || cost[2] < o.cost[2]) {
+                return true;
+            }
         }
-        return -1;
+        return false;
+    }
+
+    public void printCost() {
+        System.out.println(cost[0] + " " + cost[1] + " " + cost[2]);
     }
 }
 
