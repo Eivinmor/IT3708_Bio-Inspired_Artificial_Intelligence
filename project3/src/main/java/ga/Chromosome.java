@@ -175,6 +175,36 @@ public class Chromosome {
         return overallDeviation;
     }
 
+    public double edgeValue () {
+        if (segmentationIsOutdated) calculateSegmentation();
+
+        double totalEdgeValue = 0;
+        for (int i = 0; i < Grid.numOfPixels; i++) {
+            ArrayList<Integer> neighbours = Grid.getNeighbourPixels(i);
+            for (int nb : neighbours) {
+                if (segmentation[i] != segmentation[nb])
+                    totalEdgeValue -= Tools.colorDistance(Grid.pixelArray[i], Grid.pixelArray[nb]);
+            }
+        }
+        return totalEdgeValue;
+    }
+
+    public double connectivity() {
+        if (segmentationIsOutdated) calculateSegmentation();
+
+        double connectivity = 0;
+        for (int i = 0; i < Grid.numOfPixels; i++) {
+            ArrayList<Integer> neighbours = Grid.getNeighbourPixels(i);
+            int connectedNeighbours = 0;
+            for (int j : neighbours) {
+                if (segmentation[i] != segmentation[j])
+                    connectedNeighbours++;
+                    connectivity += 1.0/connectedNeighbours;
+            }
+        }
+        return connectivity;
+    }
+
 
 
 }

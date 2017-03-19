@@ -2,7 +2,6 @@ import ga.Chromosome;
 import ga.Settings;
 import utility.ImageReader;
 import utility.ImageWriter;
-import java.util.Locale;
 
 
 public class Main {
@@ -11,22 +10,29 @@ public class Main {
         System.out.println("Image: " + Settings.imageId);
         ImageReader.readImage(Settings.imageId);
         ImageWriter.writeGridImage();
-        Chromosome chromosome = new Chromosome();
-        System.out.println("Overall deviation: " + String.format(Locale.US, "%.2f", chromosome.overallColorDeviation()));
-        System.out.println("Number of pixels: " + chromosome.segmentation.length);
-        System.out.println("Number of segments: " + chromosome.numOfSegments);
-        ImageWriter.writeChromosomeImageAvgRgb(chromosome, 1, false);
+        Chromosome chromosome1 = new Chromosome();
+        Chromosome chromosome2 = new Chromosome();
 
-        for (int i = 0; i < 100000; i++) {
-            chromosome.mutate();
-            if (i % 10000 == 0) ImageWriter.writeChromosomeImageAvgRgb(chromosome, i, false);
-        }
+//        System.out.println("Overall deviation: " + String.format(Locale.US, "%.2f", chromosome.overallColorDeviation()));
+//        System.out.println("Number of pixels: " + chromosome.segmentation.length);
+//        System.out.println("Number of segments: " + chromosome.numOfSegments);
+//        ImageWriter.writeChromosomeImageAvgRgb(chromosome, 1, false);
 
-//        for (int i = 0; i < Settings.populationSize - 1; i++) {
-//            new Chromosome();
-//            if (i % 10 == 0) System.out.println("-");
+//        for (int i = 0; i < 10; i++) {
+//            ImageWriter.writeChromosomeImageAvgRgb(new Chromosome(chromosome1, chromosome2), i, false);
 //        }
 
+        for (int i = 0; i < Settings.generations; i++) {
+            long startTIme = System.currentTimeMillis();
+            for (int j = 0; j < 50; j++) {
+                chromosome1 = new Chromosome(chromosome1, chromosome2);
+                chromosome1.mutate();
+                chromosome1.overallColorDeviation();
+                chromosome1.connectivity();
+                chromosome1.edgeValue();
+            }
+            System.out.println(System.currentTimeMillis() - startTIme);
+        }
     }
 
 }
