@@ -7,12 +7,14 @@ import representation.Edge;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Scanner;
 
 
 public class Tools {
 
     private static CIELab cieLab = new CIELab();
     public static Random random = new Random();
+    private static Scanner scanner = new Scanner(System.in);
 
     public static double euclideanDist3D(double dist1, double dist2, double dist3) {
         return Math.sqrt(Math.pow(dist1, 2) + Math.pow(dist2, 2) + Math.pow(dist3, 2));
@@ -68,4 +70,22 @@ public class Tools {
         }
         System.out.println();
     }
+
+    public static double costDistance(Chromosome c1, Chromosome c2) {
+        return Math.sqrt(Math.pow(c1.cost[0] - c2.cost[0], 2)
+                + Math.pow(c1.cost[1] - c2.cost[1], 2)
+                + Math.pow(c1.cost[2] - c2.cost[2], 2));
+    }
+
+    public static void printCost(Chromosome chromosome) {
+        System.out.println(chromosome.cost[0] + " " + chromosome.cost[1] + " " + chromosome.cost[2]);
+    }
+
+    public static void printPause(int generation, Chromosome bestChromosome) {
+        ImageWriter.writeChromosomeImageRandomRgb(bestChromosome, generation, false);
+        System.out.println("Generation: " + generation);
+        System.out.println("Press Enter to continue...");
+        scanner.nextLine();
+    }
+
 }

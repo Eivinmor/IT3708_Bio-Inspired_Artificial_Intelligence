@@ -235,9 +235,5 @@ public class Chromosome {
         }
         return false;
     }
-
-    public void printCost() {
-        System.out.println(cost[0] + " " + cost[1] + " " + cost[2]);
-    }
 }
 

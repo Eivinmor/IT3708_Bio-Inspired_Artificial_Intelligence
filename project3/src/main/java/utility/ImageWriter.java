@@ -29,7 +29,7 @@ public class ImageWriter {
         }
     }
 
-    public static void writeChromosomeImageAvgRgb(Chromosome chromosome, int chromosomeId, boolean drawBorder){
+    public static void writeChromosomeImageRandomRgb(Chromosome chromosome, int chromosomeId, boolean drawBorder){
         if (chromosome.segmentationIsOutdated) chromosome.calculateSegmentation();
         System.out.println("Writing image");
         try{
