@@ -9,6 +9,7 @@ import java.util.TreeMap;
 public class Grid {
 
     public static Color[] pixelArray;
+    public static int numOfPixels;
     public static int height, width;
 //    public static TreeMap<Double, ArrayList<Integer[]>> pixelNeighbourDistances;
 

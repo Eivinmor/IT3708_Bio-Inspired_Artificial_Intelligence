@@ -30,6 +30,7 @@ public class ImageReader {
             Grid.pixelArray = pixels;
             Grid.width = imageWidth;
             Grid.height = imageHeight;
+            Grid.numOfPixels = pixels.length;
 //            Grid.pixelNeighbourDistances = Grid.calculatePixelNeighbourDistances();
         } catch (IOException e) {
             e.printStackTrace();

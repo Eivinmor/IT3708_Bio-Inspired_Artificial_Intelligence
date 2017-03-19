@@ -8,32 +8,31 @@ import java.awt.*;
 import java.util.*;
 
 
-// TODO Mutation - edge to random neighbour
-// TODO Mutation - remove edge (change to self)
-
-// TODO Crossover - for each gene choose from p1 or p2 randomly
-// TODO Crossover - divide chromosome into sections and for each sections choose from p1 or p2 randomly
-
-
 public class Chromosome {
 
-    public int[] graph;
-    public int[] segmentation;
+    public int[] graph = new int[Grid.numOfPixels];
+    public int[] segmentation = new int[Grid.numOfPixels];
     public int numOfSegments;
-    public boolean segmentationIsOutdated;
+    public boolean segmentationIsOutdated = true;
 
+    // New
     public Chromosome() {
-        this.graph = new int[Grid.pixelArray.length];
-        this.segmentation = new int[Grid.pixelArray.length];
-
         initaliseGraphAsMST();
         Tools.printDistance(this, false);
         removeKLargestEdges(20000); // TODO Gjøre om til å ta inn prosent
-        this.segmentationIsOutdated = true;
+    }
+
+    // Crossover
+    public Chromosome(Chromosome p1, Chromosome p2) {
+        // TODO Crossover - divide chromosome into sections and for each sections choose from p1 or p2 randomly
+        for (int i = 0; i < Grid.numOfPixels; i++) {
+            if (Tools.random.nextBoolean()) graph[i] = p1.graph[i];
+            else graph[i] = p2.graph[i];
+        }
     }
 
     private void initaliseSegmentationRandom() {
-        for (int i = 0; i < Grid.pixelArray.length; i++) {
+        for (int i = 0; i < Grid.numOfPixels; i++) {
             ArrayList<Integer> neighbours = new ArrayList<>(Grid.getNeighbourPixels(i));
             int randomIndex = Tools.random.nextInt(neighbours.size());
             graph[i] = neighbours.get(randomIndex);
@@ -42,11 +41,11 @@ public class Chromosome {
 
     private void initaliseGraphAsMST() {  //Using Prim's
         for (int i = 0; i < graph.length; i++) graph[i] = i;
-        HashSet<Integer> visited = new HashSet<>(Grid.pixelArray.length);
+        HashSet<Integer> visited = new HashSet<>(Grid.numOfPixels);
         PriorityQueue<Edge> priorityQueue = new PriorityQueue<>();
 
         int current = graph.length - 1; // Starts at the last pixel
-        while (visited.size() < Grid.pixelArray.length){
+        while (visited.size() < Grid.numOfPixels){
             if (!visited.contains(current)){
                 visited.add(current);
                 for (int neighbour : Grid.getNeighbourPixels(current)) {
@@ -92,7 +91,7 @@ public class Chromosome {
         int curSegmentId = 0;
         ArrayList<Integer> curPath;
 
-        for (int rootPixel = 0; rootPixel < Grid.pixelArray.length; rootPixel++) {
+        for (int rootPixel = 0; rootPixel < Grid.numOfPixels; rootPixel++) {
 
             curPath = new ArrayList<>();
 
@@ -120,14 +119,21 @@ public class Chromosome {
     }
 
     public void mutate() {
-        // Mutate function 1
-        // Mutate function 2
+        // TODO Logarithmic mutation prob if necessary
+        if (Tools.random.nextDouble() > 0.2) mutateSetEdge();
+        else mutateRemoveEdge();
         segmentationIsOutdated = true;
     }
 
-    public void crossover() {
-        // As constructor?
-        segmentationIsOutdated = true;
+    private void mutateSetEdge() {
+        int i = Tools.random.nextInt(Grid.numOfPixels);
+        ArrayList<Integer> neighbours = Grid.getNeighbourPixels(i);
+        graph[i] = neighbours.get(Tools.random.nextInt(neighbours.size()));
+    }
+
+    private void mutateRemoveEdge() {
+        int i = Tools.random.nextInt(Grid.numOfPixels);
+        graph[i] = i;
     }
 
     public double overallColorDeviation() {
@@ -136,7 +142,7 @@ public class Chromosome {
         // Calculate average segment color
         float[][] segmentAvgColor = new float[numOfSegments][3];
         int[] segmentSize = new int[numOfSegments];
-        for (int i = 0; i < Grid.pixelArray.length; i++) {
+        for (int i = 0; i < Grid.numOfPixels; i++) {
             float[] colorValues = Grid.pixelArray[i].getRGBColorComponents(null);
             int segment = segmentation[i];
             for (int j = 0; j < colorValues.length; j++) segmentAvgColor[segment][j] = colorValues[j];
@@ -147,13 +153,15 @@ public class Chromosome {
         }
         // Compare pixel color to avg
         double overallDeviation = 0;
-        for (int i = 0; i < Grid.pixelArray.length; i++) {
+        for (int i = 0; i < Grid.numOfPixels; i++) {
             float[] segmentColorValues = segmentAvgColor[segmentation[i]];
             overallDeviation += Tools.colorDistance(Grid.pixelArray[i],
                     new Color(segmentColorValues[0], segmentColorValues[1], segmentColorValues[2]));
         }
         return overallDeviation;
     }
+
+
 
 }
 
