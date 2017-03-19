@@ -120,15 +120,29 @@ public class Chromosome {
 
     public void mutate() {
         // TODO Logarithmic mutation prob if necessary
-        if (Tools.random.nextDouble() > 0.2) mutateSetEdge();
-        else mutateRemoveEdge();
+        double r = Tools.random.nextDouble();
+        if (r < Settings.mutateAddEdgeRate) mutateAddEdge();
+        else if ((r += Settings.mutateAddEdgeRate) < Settings.mutateSetRandomEdgeRate) mutateSetRandomEdge();
+        else if ((r + Settings.mutateSetRandomEdgeRate) < Settings.mutateRemoveEdge) mutateRemoveEdge();
         segmentationIsOutdated = true;
     }
 
-    private void mutateSetEdge() {
+    private void mutateSetRandomEdge() {
         int i = Tools.random.nextInt(Grid.numOfPixels);
         ArrayList<Integer> neighbours = Grid.getNeighbourPixels(i);
         graph[i] = neighbours.get(Tools.random.nextInt(neighbours.size()));
+    }
+
+    private void mutateAddEdge() {
+        ArrayList<Integer> noEdge = new ArrayList<>();
+        for (int i = 0; i < Grid.numOfPixels; i++) {
+            if (graph[i] == i) noEdge.add(i);
+        }
+        if (noEdge.size() > 0) {
+            int i = Tools.random.nextInt(noEdge.size());
+            ArrayList<Integer> neighbours = Grid.getNeighbourPixels(noEdge.get(i));
+            graph[noEdge.get(i)] = neighbours.get(Tools.random.nextInt(neighbours.size()));
+        }
     }
 
     private void mutateRemoveEdge() {
