@@ -30,6 +30,7 @@ public class ImageWriter {
     }
 
     public static void writeChromosomeImageAvgRgb(Chromosome chromosome, int chromosomeId, boolean drawBorder){
+        if (chromosome.segmentationIsOutdated) chromosome.calculateSegmentation();
         System.out.println("Writing image");
         try{
             Color[] segmentColors = new Color[chromosome.numOfSegments];
@@ -40,7 +41,7 @@ public class ImageWriter {
             BufferedImage image = new BufferedImage(Grid.width, Grid.height, BufferedImage.TYPE_INT_RGB);
             for (int x = 0; x < Grid.width; x++) {
                 for (int y = 0; y < Grid.height; y++) {
-                    image.setRGB(x, y, segmentColors[chromosome.pixelSegments[x + (y * Grid.width)]].getRGB());
+                    image.setRGB(x, y, segmentColors[chromosome.segmentation[x + (y * Grid.width)]].getRGB());
                 }
             }
             File outputFile = new File(filePathRoot + "chromosome" + chromosomeId + "Avg.png");

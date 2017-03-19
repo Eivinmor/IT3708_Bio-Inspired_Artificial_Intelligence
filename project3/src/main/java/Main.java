@@ -2,6 +2,7 @@ import ga.Chromosome;
 import ga.Settings;
 import utility.ImageReader;
 import utility.ImageWriter;
+import java.util.Locale;
 
 
 public class Main {
@@ -11,7 +12,8 @@ public class Main {
         ImageReader.readImage(Settings.imageId);
         ImageWriter.writeGridImage();
         Chromosome chromosome = new Chromosome();
-        System.out.println("Number of pixels: " + chromosome.pixelSegments.length);
+        System.out.println("Overall deviation: " + String.format(Locale.US, "%.2f", chromosome.overallColorDeviation()));
+        System.out.println("Number of pixels: " + chromosome.segmentation.length);
         System.out.println("Number of segments: " + chromosome.numOfSegments);
         ImageWriter.writeChromosomeImageAvgRgb(chromosome, 1, false);
 

@@ -12,7 +12,6 @@ import java.util.Random;
 public class Tools {
 
     private static CIELab cieLab = new CIELab();
-
     public static Random random = new Random();
 
     public static double euclideanDist3D(double dist1, double dist2, double dist3) {
@@ -56,16 +55,16 @@ public class Tools {
     }
 
     public static void printSegments(Chromosome chromosome) {
-        for (int j = 0; j < chromosome.pixelSegments.length; j++) {
-            if (chromosome.pixelSegments[j] == -1) System.out.print(" ");
-            else System.out.print(chromosome.pixelSegments[j] + " ");
+        for (int j = 0; j < chromosome.segmentation.length; j++) {
+            if (chromosome.segmentation[j] == -1) System.out.print(" ");
+            else System.out.print(chromosome.segmentation[j] + " ");
         }
         System.out.println("\n");
     }
 
     public static void printGraph(Chromosome chromosome) {
-        for (int i = 0; i < chromosome.pixelGraph.length; i++) {
-            System.out.print(chromosome.pixelGraph[i] + " ");
+        for (int i = 0; i < chromosome.graph.length; i++) {
+            System.out.print(chromosome.graph[i] + " ");
         }
         System.out.println();
     }
