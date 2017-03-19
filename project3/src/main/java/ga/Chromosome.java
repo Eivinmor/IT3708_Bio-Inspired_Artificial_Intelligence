@@ -8,7 +8,7 @@ import java.awt.*;
 import java.util.*;
 
 
-public class Chromosome implements Comparable<Chromosome>{
+public class Chromosome {
 
     public int[] graph = new int[Grid.numOfPixels];
     public int[] segmentation = new int[Grid.numOfPixels];
