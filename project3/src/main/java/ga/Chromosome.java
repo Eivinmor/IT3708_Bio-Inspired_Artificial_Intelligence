@@ -8,12 +8,13 @@ import java.awt.*;
 import java.util.*;
 
 
-public class Chromosome {
+public class Chromosome implements Comparable<Chromosome>{
 
     public int[] graph = new int[Grid.numOfPixels];
     public int[] segmentation = new int[Grid.numOfPixels];
     public int numOfSegments;
     public boolean segmentationIsOutdated = true;
+    private double[] cost = new double[3];
 
     // New
     public Chromosome() {
@@ -206,7 +207,21 @@ public class Chromosome {
         return connectivity;
     }
 
+    public void calculateCost() { // TODO Manually call this before comparing
+        if (Settings.useOverallDeviation) cost[0] = overallColorDeviation();
+        if (Settings.useEdgeValue) cost[1] = edgeValue();
+        if (Settings.useConnectivity) cost[2] = connectivity();
+    }
 
-
+    // Pareto
+    @Override
+    public int compareTo(Chromosome o) {
+        if (cost[0] >= o.cost[0] && cost[1] >= o.cost[1] && cost[2] >= o.cost[2]) {
+            if (cost[0] > o.cost[0] || cost[1] > o.cost[1] || cost[2] > o.cost[2])
+                return 1;
+            return 0;
+        }
+        return -1;
+    }
 }
 

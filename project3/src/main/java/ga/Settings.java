@@ -15,6 +15,11 @@ public class Settings {
     public static final double elitePercent = 3;
     public static final ColorSpaceType colorSpace = ColorSpaceType.RGB;
 
+    // Cost functions
+    public static final boolean useOverallDeviation = true;
+    public static final boolean useEdgeValue = true;
+    public static final boolean useConnectivity = true;
+
     // Chromosome
     public static final double mutateAddEdgeRate = 0.2;
     public static final double mutateSetRandomEdgeRate = 0.4;
