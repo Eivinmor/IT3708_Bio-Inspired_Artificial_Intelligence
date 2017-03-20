@@ -80,6 +80,44 @@ public class NSGA2 {
         else return c2;
     }
 
+//    private void rankPopulationByNonDomination() {
+//
+//        rankedPopulation.clear();
+//
+//        ArrayList<NSGA2Chromosome> rank = new ArrayList<>();
+//        for (NSGA2Chromosome c1 : population) {
+//            c1.dominates = new HashSet<>();
+//            c1.numOfDominators = 0;
+//            for (NSGA2Chromosome c2 : population) {
+//                // TODO loop diagonal and check both ways
+//                if (c1.dominates(c2)) c1.dominates.add(c2);
+//                else if (c2.dominates(c1)) c1.numOfDominators++;
+//            }
+//            if (c1.numOfDominators == 0) {
+//                c1.rank = 0;
+//                rank.add(c1);
+//            }
+//        }
+//        rankedPopulation.add(rank);
+//
+//        int rankNum = 0;
+//        while (!rank.isEmpty()) {
+//            ArrayList<NSGA2Chromosome> newRank = new ArrayList<>();
+//            for (NSGA2Chromosome chromosome : rank) {
+//                for (NSGA2Chromosome dominated : chromosome.dominates) {
+//                    dominated.numOfDominators--;
+//                    if (dominated.numOfDominators == 0) {
+//                        dominated.rank = rankNum + 1;
+//                        newRank.add(dominated);
+//                    }
+//                }
+//            }
+//            rankNum++;
+//            if (!newRank.isEmpty())rankedPopulation.add(newRank);
+//            rank = newRank;
+//        }
+//    }
+
     private void rankPopulationByNonDomination() {
         // Generate numOfDominators and domnates set
         for (NSGA2Chromosome c1 : population) {
