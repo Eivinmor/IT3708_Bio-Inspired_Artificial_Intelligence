@@ -1,5 +1,6 @@
-package ga;
+package ga.nsga2;
 
+import ga.Settings;
 import ga.nsga2.NSGA2Chromosome;
 import representation.Grid;
 import utility.Tools;
@@ -106,7 +107,7 @@ public class NSGA2 {
     }
 
     private void assignCrowdingDistance(ArrayList<NSGA2Chromosome> rank) {
-        
+
     }
 
 
