@@ -10,7 +10,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 
-public class Tools {
+public abstract class Tools {
 
     private static CIELab cieLab = new CIELab();
     public static Random random = new Random();

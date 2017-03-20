@@ -19,7 +19,6 @@ public class Chromosome {
     // New
     public Chromosome() {
         initaliseGraphAsMST();
-        Tools.printDistance(this, false);
     }
 
     // Clone
@@ -34,6 +33,7 @@ public class Chromosome {
             if (Tools.random.nextBoolean()) graph[i] = p1.graph[i];
             else graph[i] = p2.graph[i];
         }
+        if (Tools.random.nextDouble() < Settings.mutationRate) mutate();
     }
 
     private void initaliseGraphAsRandom() {
@@ -235,5 +235,6 @@ public class Chromosome {
         }
         return false;
     }
+
 }
 

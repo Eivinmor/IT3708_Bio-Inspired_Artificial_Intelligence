@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.IOException;
 
 
-public class ImageWriter {
+public abstract class ImageWriter {
 
     private static String filePathRoot = System.getProperty("user.dir") + "\\src\\main\\resources\\output\\";
 

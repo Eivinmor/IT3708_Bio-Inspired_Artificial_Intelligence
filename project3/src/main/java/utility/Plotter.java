@@ -14,8 +14,6 @@ public class Plotter {
     public Plotter() {
         p.newGraph3D();
         p.setTitle("Pareto front");
-        System.out.println(p.getParameters());
-        System.out.println(p.getCommands());
     }
 
     public void addChromosome(Chromosome chromosome) {

@@ -8,6 +8,10 @@ import utility.Plotter;
 public class Main {
 
     public static void main(String[] args) throws InterruptedException {
+        System.out.println("Image: " + Settings.imageId);
+        ImageReader.readImage(Settings.imageId);
+        ImageWriter.writeGridImage();
+
         switch (Settings.algorithm) {
             case NSGA2:
                 NSGA2 nsga2 = new NSGA2();
@@ -16,20 +20,18 @@ public class Main {
             case PAES:
                 break;
             case TEST:
-                System.out.println("Image: " + Settings.imageId);
-                ImageReader.readImage(Settings.imageId);
-                ImageWriter.writeGridImage();
 
                 Plotter plotter = new Plotter();
                 Chromosome origChromosome = new Chromosome();
+                Chromosome chromosome = new Chromosome(origChromosome);
                 for (int i = 0; i < 200; i++) {
-                    Chromosome chromosome = new Chromosome(origChromosome);
-                    chromosome.removeKRandomEdges(10000);
+                    chromosome = new Chromosome(origChromosome);
+                    chromosome.removeKRandomEdges(1000);
                     chromosome.calculateCost();
                     plotter.addChromosome(chromosome);
                 }
+                ImageWriter.writeChromosomeImageRandomRgb(chromosome, 0);
                 plotter.plot();
-                break;
         }
     }
 }

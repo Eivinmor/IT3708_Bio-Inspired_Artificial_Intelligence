@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.IOException;
 
 
-public class ImageReader {
+public abstract class ImageReader {
 
     private static String filePathRoot = System.getProperty("user.dir") + "\\src\\main\\resources\\input\\";
 
