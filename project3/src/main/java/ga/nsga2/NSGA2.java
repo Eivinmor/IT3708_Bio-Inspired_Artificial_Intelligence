@@ -82,6 +82,7 @@ public class NSGA2 {
                     for (NSGA2Chromosome dominated : chromosome.dominates) {
                         dominated.numOfDominators--;
                     }
+                    chromosome.rank = rankedPopulation.size() - 1;
                     rank.add(chromosome);
                 }
                 else i++;
@@ -107,7 +108,10 @@ public class NSGA2 {
     }
 
     private void assignCrowdingDistance(ArrayList<NSGA2Chromosome> rank) {
+        double setDistance = 0;
+        if (Settings.useConnectivity) {
 
+        }
     }
 
 

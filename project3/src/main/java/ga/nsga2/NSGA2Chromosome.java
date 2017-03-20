@@ -1,10 +1,12 @@
 package ga.nsga2;
 
 import ga.Chromosome;
+
+import java.util.Comparator;
 import java.util.HashSet;
 
 
-public class NSGA2Chromosome extends Chromosome implements Comparable<NSGA2Chromosome> {
+public class NSGA2Chromosome extends Chromosome {
 
     public int numOfDominators;
     public HashSet<NSGA2Chromosome> dominates;
@@ -23,12 +25,46 @@ public class NSGA2Chromosome extends Chromosome implements Comparable<NSGA2Chrom
         super(c1, c2);
     }
 
-    @Override
-    public int compareTo(NSGA2Chromosome o) {
-//        if (rank < o.rank) return -1;
-//        if (rank > o.rank) return 1;
-        if (crowdingDistance > o.crowdingDistance) return -1;
-        if (crowdingDistance < o.crowdingDistance) return 1;
-        return 0;
+    static Comparator<NSGA2Chromosome> crowdingDistanceComparator() {
+        return (o1, o2) -> {
+            if (o1.crowdingDistance > o2.crowdingDistance) return -1;
+            if (o1.crowdingDistance < o2.crowdingDistance) return 1;
+            return 0;
+        };
+    }
+
+    static Comparator<NSGA2Chromosome> nonDominationRankComparator() {
+        return (o1, o2) -> {
+            if (o1.rank < o2.rank) return -1;
+            if (o1.rank > o2.rank) return 1;
+            if (o1.crowdingDistance > o2.crowdingDistance) return -1;
+            if (o1.crowdingDistance < o2.crowdingDistance) return 1;
+            return 0;
+        };
+    }
+
+    static Comparator<NSGA2Chromosome> overallDistanceComparator() {
+        return (o1, o2) -> {
+            if (o1.cost[0] < o2.cost[0]) return -1;
+            if (o1.cost[0] > o2.cost[0]) return 1;
+            return 0;
+        };
+    }
+
+    static Comparator<NSGA2Chromosome> edgeValueComparator() {
+        return (o1, o2) -> {
+            if (o1.cost[1] < o2.cost[1]) return -1;
+            if (o1.cost[1] > o2.cost[1]) return 1;
+            return 0;
+        };
+    }
+
+    static Comparator<NSGA2Chromosome> connectivityComparator() {
+        return (o1, o2) -> {
+            if (o1.cost[2] < o2.cost[2]) return -1;
+            if (o1.cost[2] > o2.cost[2]) return 1;
+            return 0;
+        };
     }
 }
+
