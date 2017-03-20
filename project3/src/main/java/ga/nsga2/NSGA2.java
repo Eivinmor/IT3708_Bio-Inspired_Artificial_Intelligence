@@ -1,7 +1,6 @@
 package ga.nsga2;
 
 import ga.Settings;
-import ga.nsga2.NSGA2Chromosome;
 import representation.Grid;
 import utility.Tools;
 import java.util.ArrayList;
@@ -54,7 +53,9 @@ public class NSGA2 {
     private NSGA2Chromosome binaryTournament(ArrayList<NSGA2Chromosome> population) {
         NSGA2Chromosome c1 = population.get(Tools.random.nextInt(Settings.populationSize));
         NSGA2Chromosome c2 = population.get(Tools.random.nextInt(Settings.populationSize));
-        if (c1.compareTo(c2) < 0) return c1;
+//        if (c1.compare(c2) < 0) return c1;
+        // TODO Sjekk at denne blir riktig
+        if (NSGA2Chromosome.nonDominationRankAndCrowdingDistanceComparator().compare(c1, c2) < 0 ) return c1;
         else return c2;
     }
 
@@ -70,7 +71,6 @@ public class NSGA2 {
             }
         }
         // Add to ranks depending on domination relationships
-        // TODO Stop generating ranks when total assigned > Settings.populationSize
         rankedPopulation.clear();
         int totalRanked = 0;
         while (totalRanked < Settings.populationSize) {
@@ -108,9 +108,21 @@ public class NSGA2 {
     }
 
     private void assignCrowdingDistance(ArrayList<NSGA2Chromosome> rank) {
-        double setDistance = 0;
-        if (Settings.useConnectivity) {
+        for (NSGA2Chromosome chromosome : rank) {
+            chromosome.crowdingDistance = 0;
+        }
+        if (Settings.useOverallDeviation) assignCrowdingDistancePerObjective(rank, 0);
+        if (Settings.useEdgeValue) assignCrowdingDistancePerObjective(rank, 1);
+        if (Settings.useConnectivity) assignCrowdingDistancePerObjective(rank, 2);
+    }
 
+    private void assignCrowdingDistancePerObjective(ArrayList<NSGA2Chromosome> rank, int index) {
+        rank.sort(NSGA2Chromosome.connectivityComparator());
+        rank.get(0).crowdingDistance = Double.POSITIVE_INFINITY;
+        rank.get(rank.size() - 1).crowdingDistance = Double.POSITIVE_INFINITY;
+        double span = Math.abs(rank.get(0).cost[index] - rank.get(rank.size() - 1).cost[index]);
+        for (int i = 1; i < rank.size() - 1; i++) {
+            rank.get(i).crowdingDistance += Math.abs(rank.get(i-1).cost[index] - rank.get(i+1).cost[index]) / span;
         }
     }
 

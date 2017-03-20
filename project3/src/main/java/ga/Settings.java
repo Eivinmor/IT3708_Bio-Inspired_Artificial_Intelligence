@@ -5,7 +5,7 @@ package ga;
 public class Settings {
 
     public static final int imageId = 1;
-    public static final Algorithm algorithm = Algorithm.NSGA2;
+    public static final Algorithm algorithm = Algorithm.TEST;
 
     // MOEA
     public static final int populationSize = 1000;
@@ -16,9 +16,9 @@ public class Settings {
     public static final ColorSpaceType colorSpace = ColorSpaceType.RGB;
 
     // Cost functions
-    public static final boolean useOverallDeviation = true;
-    public static final boolean useEdgeValue = true;
-    public static final boolean useConnectivity = true;
+    public static final boolean useOverallDeviation = true;     // 0
+    public static final boolean useEdgeValue = true;            // 1
+    public static final boolean useConnectivity = true;         // 2
 
     // Chromosome
     public static final double mutateAddEdgeRate = 0.2;

@@ -33,7 +33,7 @@ public class NSGA2Chromosome extends Chromosome {
         };
     }
 
-    static Comparator<NSGA2Chromosome> nonDominationRankComparator() {
+    static Comparator<NSGA2Chromosome> nonDominationRankAndCrowdingDistanceComparator() {
         return (o1, o2) -> {
             if (o1.rank < o2.rank) return -1;
             if (o1.rank > o2.rank) return 1;
