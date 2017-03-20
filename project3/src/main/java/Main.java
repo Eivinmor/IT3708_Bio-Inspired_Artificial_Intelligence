@@ -3,6 +3,7 @@ import ga.NSGA2;
 import ga.Settings;
 import utility.ImageReader;
 import utility.ImageWriter;
+import utility.Plotter;
 
 public class Main {
 
@@ -19,9 +20,15 @@ public class Main {
                 ImageReader.readImage(Settings.imageId);
                 ImageWriter.writeGridImage();
 
-                Chromosome chromosome = new Chromosome();
-                chromosome.removeKRandomEdges(100);
-                ImageWriter.writeChromosomeImageRandomRgb(chromosome, 0);
+                Plotter plotter = new Plotter();
+                Chromosome origChromosome = new Chromosome();
+                for (int i = 0; i < 200; i++) {
+                    Chromosome chromosome = new Chromosome(origChromosome);
+                    chromosome.removeKRandomEdges(10000);
+                    chromosome.calculateCost();
+                    plotter.addChromosome(chromosome);
+                }
+                plotter.plot();
                 break;
         }
     }
