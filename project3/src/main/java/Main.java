@@ -8,6 +8,7 @@ import utility.Plotter;
 public class Main {
 
     public static void main(String[] args) throws InterruptedException {
+        ImageWriter.clearFolder();
         System.out.println("Image: " + Settings.imageId);
         ImageReader.readImage(Settings.imageId);
         ImageWriter.writeGridImage();
@@ -20,8 +21,6 @@ public class Main {
             case PAES:
                 break;
             case TEST:
-
-                Plotter plotter = new Plotter();
                 Chromosome origChromosome = new Chromosome();
                 Chromosome chromosome = new Chromosome(origChromosome);
                 chromosome.removeKRandomEdges(20000);

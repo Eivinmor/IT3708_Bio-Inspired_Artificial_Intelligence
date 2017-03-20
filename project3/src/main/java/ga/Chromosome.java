@@ -29,10 +29,13 @@ public class Chromosome {
     // Crossover
     public Chromosome(Chromosome p1, Chromosome p2) {
         // TODO Crossover - divide chromosome into sections and for each sections choose from p1 or p2 randomly
-        for (int i = 0; i < Grid.numOfPixels; i++) {
-            if (Tools.random.nextBoolean()) graph[i] = p1.graph[i];
-            else graph[i] = p2.graph[i];
+        if (Tools.random.nextDouble() < Settings.crossoverRate) {
+            for (int i = 0; i < Grid.numOfPixels; i++) {
+                if (Tools.random.nextBoolean()) graph[i] = p1.graph[i];
+                else graph[i] = p2.graph[i];
+            }
         }
+        else for (int i = 0; i < Grid.numOfPixels; i++) this.graph[i] = p1.graph[i];
         if (Tools.random.nextDouble() < Settings.mutationRate) mutate();
     }
 

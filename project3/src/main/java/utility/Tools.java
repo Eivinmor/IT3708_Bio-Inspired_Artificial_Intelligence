@@ -15,6 +15,7 @@ public abstract class Tools {
     private static CIELab cieLab = new CIELab();
     public static Random random = new Random();
     private static Scanner scanner = new Scanner(System.in);
+    public static Plotter plotter = new Plotter();
 
     public static double euclideanDist3D(double dist1, double dist2, double dist3) {
         return Math.sqrt(Math.pow(dist1, 2) + Math.pow(dist2, 2) + Math.pow(dist3, 2));
@@ -85,7 +86,7 @@ public abstract class Tools {
         ImageWriter.writeChromosomeImageRandomRgb(bestChromosome, generation);
         System.out.println("Generation: " + generation);
         System.out.println("Press Enter to continue...");
-        scanner.nextLine();
+        if (scanner.nextLine().equals("gif")) ImagesToGif.readImages();
     }
 
 }

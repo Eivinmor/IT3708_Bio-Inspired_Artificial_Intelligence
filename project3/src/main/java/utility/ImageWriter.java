@@ -8,6 +8,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 
 public abstract class ImageWriter {
@@ -22,7 +25,7 @@ public abstract class ImageWriter {
                     image.setRGB(x, y, Grid.pixelArray[x + (y * Grid.width)].getRGB());
                 }
             }
-            File outputFile = new File(filePathRoot + "grid.png");
+            File outputFile = new File(filePathRoot + "actual.png");
             ImageIO.write(image, "png", outputFile);
         }
         catch (IOException e) {
@@ -47,7 +50,7 @@ public abstract class ImageWriter {
                     else image.setRGB(x, y, segmentColors[chromosome.segmentation[pixelId]].getRGB());
                 }
             }
-            File outputFile = new File(filePathRoot + "chromosome" + chromosomeId + "Avg.png");
+            File outputFile = new File(filePathRoot + "chromosome" + String.format("%05d", chromosomeId) + ".png");
             ImageIO.write(image, "png", outputFile);
         }
         catch (IOException e) {
@@ -60,23 +63,18 @@ public abstract class ImageWriter {
             if (chromosome.segmentation[pixelId] != chromosome.segmentation[nb]) return true;
         return false;
     }
-//
-//    public static void writeChromosomeImageRandRgb(Chromosome chromosome, int chromosomeId, boolean drawBorder){
-//        System.out.println("Writing image");
-//        try{
-//            BufferedImage image = new BufferedImage(Grid.width, Grid.height, BufferedImage.TYPE_INT_RGB);
-//
-//            for (Segment segment : chromosome.segments) {
-//                Color segmentColor = new Color((int)(Math.random() * 0x1000000));
-//                for (Pixel pixel  : segment.pixels) {
-//                    image.setRGB(pixel.x, pixel.y, segmentColor.getRGB());
-//                }
-//            }
-//            File outputFile = new File(filePathRoot + "chromosome" + chromosomeId + "Random.png");
-//            ImageIO.write(image, "png", outputFile);
-//        }
-//        catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
+
+    public static void clearFolder() {
+        try{
+            File folder = new File(filePathRoot);
+            File[] fileArray = folder.listFiles();
+            for (int i = 0; i < fileArray.length; i++){
+                Files.deleteIfExists(Paths.get(filePathRoot + fileArray[i].getName()));
+                System.out.println(fileArray[i].getName());
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

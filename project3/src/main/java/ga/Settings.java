@@ -5,13 +5,12 @@ package ga;
 public class Settings {
 
     public static final int imageId = 1;
-    public static final Algorithm algorithm = Algorithm.TEST;
+    public static final Algorithm algorithm = Algorithm.NSGA2;
 
     // MOEA
-    public static final int populationSize = 1000;
-    public static final int generations = 100;
-    public static final int generationsPerPause = 100;
-    public static final double crossoverRate = 0.7;
+    public static final int populationSize = 50;
+    public static final int generationsPerPause = 10;
+    public static final double crossoverRate = 0.5;
     public static final double mutationRate = 0.8;
     public static final ColorSpaceType colorSpace = ColorSpaceType.RGB;
 
@@ -21,12 +20,12 @@ public class Settings {
     public static final boolean useConnectivity = true;         // 2
 
     // Chromosome
-    public static final double mutateAddEdgeRate = 0.2;
+    public static final double mutateAddEdgeRate = 0.4;
     public static final double mutateSetRandomEdgeRate = 0.4;
-    public static final double mutateRemoveEdge = 0.4;
+    public static final double mutateRemoveEdge = 0.2;
 
     // Output
-    public static final boolean drawBorders = true;
+    public static final boolean drawBorders = false;
 
 
     // Currently unused

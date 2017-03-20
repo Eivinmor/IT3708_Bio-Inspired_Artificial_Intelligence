@@ -59,7 +59,7 @@ public class ImagesToGif {
             Iterator<ImageWriter> itr = ImageIO.getImageWritersByFormatName("gif");
             if(itr.hasNext()) writer = itr.next();
             ImageOutputStream outputStream = ImageIO.createImageOutputStream(new File(filePath + name));
-            IIOMetadata metadata = getMetadata(writer, 100, true);
+            IIOMetadata metadata = getMetadata(writer, 50, true);
 
             writer.setOutput(outputStream);
             writer.prepareWriteSequence(null);
