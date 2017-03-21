@@ -23,20 +23,9 @@ public class Main {
             case TEST:
                 Chromosome origChromosome = new Chromosome();
                 Chromosome chromosome = new Chromosome(origChromosome);
-                chromosome.removeKRandomEdges(20000);
-                long startTime = System.currentTimeMillis();
-                for (int i = 0; i < 1000; i++) {
-                    chromosome.overallColorDeviation();
-                }
-                System.out.println(System.currentTimeMillis() - startTime);
-//                for (int i = 0; i < 200; i++) {
-//                    chromosome = new Chromosome(origChromosome);
-//                    chromosome.removeKRandomEdges(1000);
-//                    chromosome.calculateCost();
-//                    plotter.addChromosome(chromosome);
-//                }
-//                ImageWriter.writeChromosomeImageRandomRgb(chromosome, 0);
-//                plotter.plot();
+                chromosome.removeKLargestEdges(12000);
+                ImageWriter.writeChromosomeImageRandomRgb(chromosome, 0);
+
         }
     }
 }

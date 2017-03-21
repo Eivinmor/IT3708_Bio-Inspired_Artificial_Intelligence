@@ -28,7 +28,6 @@ public class Chromosome {
 
     // Crossover
     public Chromosome(Chromosome p1, Chromosome p2) {
-        // TODO Crossover - divide chromosome into sections and for each sections choose from p1 or p2 randomly
         if (Tools.random.nextDouble() < Settings.crossoverRate) {
             for (int i = 0; i < Grid.numOfPixels; i++) {
                 if (Tools.random.nextBoolean()) graph[i] = p1.graph[i];
@@ -68,13 +67,13 @@ public class Chromosome {
         }
     }
 
-    private void removeEdgesAboveThreshold() {
-        for (int i = 0; i < graph.length; i++) {
-            if (Tools.colorDistance(Grid.pixelArray[i], Grid.pixelArray[graph[i]]) >= Settings.initSegmentDistThreshold)
-                graph[i] = i;
-        }
-        segmentationIsOutdated = true;
-    }
+//    private void removeEdgesAboveThreshold() {
+//        for (int i = 0; i < graph.length; i++) {
+//            if (Tools.colorDistance(Grid.pixelArray[i], Grid.pixelArray[graph[i]]) >= Settings.initSegmentDistThreshold)
+//                graph[i] = i;
+//        }
+//        segmentationIsOutdated = true;
+//    }
 
     public void removeKLargestEdges(int k) {
         ArrayList<Edge> edges = calculateEdges();
@@ -141,8 +140,8 @@ public class Chromosome {
     public void mutate() {
         // TODO Logarithmic mutation prob if necessary
         double r = Tools.random.nextDouble();
-        if (r < Settings.mutateAddEdgeRate) mutateAddEdge();
-        else if ((r += Settings.mutateAddEdgeRate) < Settings.mutateSetRandomEdgeRate) mutateSetRandomEdge();
+        if (r < Settings.mutateMergeSegments) mutateMergeSegments();
+        else if ((r += Settings.mutateMergeSegments) < Settings.mutateSetRandomEdgeRate) mutateSetRandomEdge();
         else if ((r + Settings.mutateSetRandomEdgeRate) < Settings.mutateRemoveEdge) mutateRemoveEdge();
         segmentationIsOutdated = true;
     }
@@ -153,17 +152,30 @@ public class Chromosome {
         graph[i] = neighbours.get(Tools.random.nextInt(neighbours.size()));
     }
 
-    private void mutateAddEdge() {
-        ArrayList<Integer> noEdge = new ArrayList<>();
+    private void mutateMergeSegments() {
+        if (segmentationIsOutdated) calculateSegmentation();
+        ArrayList<Integer[]> interSegmentConnections = new ArrayList<>();
         for (int i = 0; i < Grid.numOfPixels; i++) {
-            if (graph[i] == i) noEdge.add(i);
+            for (int nb : Grid.getNeighbourPixels(i))
+                if (segmentation[i] != segmentation[nb]) interSegmentConnections.add(new Integer[] {i, nb});
         }
-        if (noEdge.size() > 0) {
-            int i = Tools.random.nextInt(noEdge.size());
-            ArrayList<Integer> neighbours = Grid.getNeighbourPixels(noEdge.get(i));
-            graph[noEdge.get(i)] = neighbours.get(Tools.random.nextInt(neighbours.size()));
+        if (interSegmentConnections.size() > 0) {
+            int i = Tools.random.nextInt(interSegmentConnections.size());
+            graph[interSegmentConnections.get(i)[0]] = interSegmentConnections.get(i)[1];
         }
     }
+
+//    private void mutateAddEdge() {
+//        ArrayList<Integer> noEdge = new ArrayList<>();
+//        for (int i = 0; i < Grid.numOfPixels; i++) {
+//            if (graph[i] == i) noEdge.add(i);
+//        }
+//        if (noEdge.size() > 0) {
+//            int i = Tools.random.nextInt(noEdge.size());
+//            ArrayList<Integer> neighbours = Grid.getNeighbourPixels(noEdge.get(i));
+//            graph[noEdge.get(i)] = neighbours.get(Tools.random.nextInt(neighbours.size()));
+//        }
+//    }
 
     private void mutateRemoveEdge() {
         int i = Tools.random.nextInt(Grid.numOfPixels);
