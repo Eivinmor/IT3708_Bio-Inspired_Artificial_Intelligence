@@ -60,6 +60,46 @@ public abstract class ImageWriter {
         }
     }
 
+    public static void writeChromosomeImageWithEdges(Chromosome chromosome, int id){
+        if (chromosome.segmentationIsOutdated) chromosome.calculateSegmentation();
+        System.out.println("Writing image " + id);
+        try{
+            BufferedImage image = new BufferedImage(Grid.width, Grid.height, BufferedImage.TYPE_INT_RGB);
+            for (int x = 0; x < Grid.width; x++) {
+                for (int y = 0; y < Grid.height; y++) {
+                    int pixelId = x + (y * Grid.width);
+                    if (isEdgePixel(chromosome, pixelId)) image.setRGB(x, y, Color.GREEN.getRGB());
+                    else image.setRGB(x, y, Grid.pixelArray[pixelId].getRGB());
+                }
+            }
+            File outputFile = new File(filePathRoot + "chromosome" + String.format("%05d", id) + "-" + chromosome.numOfSegments + ".png");
+            ImageIO.write(image, "png", outputFile);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void writeChromosomeEdgesBlackOnWhite(Chromosome chromosome, int id){
+        if (chromosome.segmentationIsOutdated) chromosome.calculateSegmentation();
+        System.out.println("Writing image " + id);
+        try{
+            BufferedImage image = new BufferedImage(Grid.width, Grid.height, BufferedImage.TYPE_INT_RGB);
+            for (int x = 0; x < Grid.width; x++) {
+                for (int y = 0; y < Grid.height; y++) {
+                    int pixelId = x + (y * Grid.width);
+                    if (isEdgePixel(chromosome, pixelId)) image.setRGB(x, y, Color.BLACK.getRGB());
+                    else image.setRGB(x, y, Color.WHITE.getRGB());
+                }
+            }
+            File outputFile = new File(filePathRoot + "chromosome" + String.format("%05d", id) + "-" + chromosome.numOfSegments + ".png");
+            ImageIO.write(image, "png", outputFile);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private static boolean isEdgePixel(Chromosome chromosome, int pixelId) {
         for (int nb : Grid.getNeighbourPixels(pixelId))
             if (chromosome.segmentation[pixelId] != chromosome.segmentation[nb]) return true;

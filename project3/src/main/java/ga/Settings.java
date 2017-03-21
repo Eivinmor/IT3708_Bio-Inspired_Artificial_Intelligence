@@ -5,7 +5,7 @@ package ga;
 public class Settings {
 
     public static final int imageId = 1;
-    public static final Algorithm algorithm = Algorithm.NSGA2;
+    public static final Algorithm algorithm = Algorithm.TEST;
 
     // MOEA
     public static final int populationSize = 50;

@@ -1,8 +1,10 @@
 import ga.Chromosome;
 import ga.nsga2.NSGA2;
 import ga.Settings;
+import representation.Grid;
 import utility.ImageReader;
 import utility.ImageWriter;
+import utility.Tools;
 
 
 public class Main {
@@ -21,11 +23,15 @@ public class Main {
             case PAES:
                 break;
             case TEST:
-                Chromosome origChromosome = new Chromosome();
-                Chromosome chromosome = new Chromosome(origChromosome);
-                chromosome.removeKLargestEdges(12000);
-                ImageWriter.writeChromosomeImageRandomRgb(chromosome, 0);
-
+                Chromosome chromosome = new Chromosome();
+                chromosome.removeKLargestEdges(20000);
+                ImageWriter.writeChromosomeImageWithEdges(chromosome, 0);
+                ImageWriter.writeChromosomeEdgesBlackOnWhite(chromosome, 1);
+                double totalDist = 0;
+                for (int i = 0; i < chromosome.graph.length; i++) {
+                    totalDist += Tools.colorDistance(Grid.pixelArray[i], Grid.pixelArray[chromosome.graph[i]]);
+                }
+                System.out.println(totalDist);
         }
     }
 }
