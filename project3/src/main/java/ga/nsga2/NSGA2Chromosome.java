@@ -43,7 +43,7 @@ public class NSGA2Chromosome extends Chromosome {
         };
     }
 
-    static Comparator<NSGA2Chromosome> overallDistanceComparator() {
+    static Comparator<NSGA2Chromosome> overallDeviationComparator() {
         return (o1, o2) -> {
             if (o1.cost[0] < o2.cost[0]) return -1;
             if (o1.cost[0] > o2.cost[0]) return 1;

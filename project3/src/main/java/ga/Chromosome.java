@@ -73,6 +73,7 @@ public class Chromosome {
             if (Tools.colorDistance(Grid.pixelArray[i], Grid.pixelArray[graph[i]]) >= Settings.initSegmentDistThreshold)
                 graph[i] = i;
         }
+        segmentationIsOutdated = true;
     }
 
     public void removeKLargestEdges(int k) {
@@ -83,6 +84,7 @@ public class Chromosome {
             Edge edge = edges.get(i);
             graph[edge.from] = edge.from;
         }
+        segmentationIsOutdated = true;
     }
 
     public void removeKRandomEdges(int k) {
@@ -92,6 +94,7 @@ public class Chromosome {
             Edge edge = edges.get(i);
             graph[edge.from] = edge.from;
         }
+        segmentationIsOutdated = true;
     }
 
     public ArrayList<Edge> calculateEdges() {
@@ -169,7 +172,6 @@ public class Chromosome {
 
     public double overallColorDeviation() {
         if (segmentationIsOutdated) calculateSegmentation();
-
         // Calculate average segment color
         float[][] segmentAvgColor = new float[numOfSegments][3];
         int[] segmentSize = new int[numOfSegments];
@@ -194,7 +196,6 @@ public class Chromosome {
 
     public double edgeValue () {
         if (segmentationIsOutdated) calculateSegmentation();
-
         double totalEdgeValue = 0;
         for (int i = 0; i < Grid.numOfPixels; i++) {
             ArrayList<Integer> neighbours = Grid.getNeighbourPixels(i);
@@ -208,15 +209,14 @@ public class Chromosome {
 
     public double connectivity() {
         if (segmentationIsOutdated) calculateSegmentation();
-
         double connectivity = 0;
         for (int i = 0; i < Grid.numOfPixels; i++) {
             ArrayList<Integer> neighbours = Grid.getNeighbourPixels(i);
-            int connectedNeighbours = 0;
+            int notConnectedNeighbours = 0;
             for (int j : neighbours) {
                 if (segmentation[i] != segmentation[j]) {
-                    connectedNeighbours++;
-                    connectivity += 1.0 / connectedNeighbours;
+                    notConnectedNeighbours++;
+                    connectivity += 1.0 / notConnectedNeighbours;
                 }
             }
         }

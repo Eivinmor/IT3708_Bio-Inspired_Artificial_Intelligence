@@ -3,7 +3,7 @@ import ga.nsga2.NSGA2;
 import ga.Settings;
 import utility.ImageReader;
 import utility.ImageWriter;
-import utility.Plotter;
+
 
 public class Main {
 

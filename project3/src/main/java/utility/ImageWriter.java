@@ -2,6 +2,7 @@ package utility;
 
 import ga.Chromosome;
 import ga.Settings;
+import ga.nsga2.NSGA2Chromosome;
 import representation.*;
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 
 public abstract class ImageWriter {
@@ -33,9 +35,9 @@ public abstract class ImageWriter {
         }
     }
 
-    public static void writeChromosomeImageRandomRgb(Chromosome chromosome, int chromosomeId){
+    public static void writeChromosomeImageRandomRgb(Chromosome chromosome, int id){
         if (chromosome.segmentationIsOutdated) chromosome.calculateSegmentation();
-        System.out.println("Writing image");
+        System.out.println("Writing image " + id);
         try{
             Color[] segmentColors = new Color[chromosome.numOfSegments];
 
@@ -50,7 +52,7 @@ public abstract class ImageWriter {
                     else image.setRGB(x, y, segmentColors[chromosome.segmentation[pixelId]].getRGB());
                 }
             }
-            File outputFile = new File(filePathRoot + "chromosome" + String.format("%05d", chromosomeId) + ".png");
+            File outputFile = new File(filePathRoot + "chromosome" + String.format("%05d", id) + "-" + chromosome.numOfSegments + ".png");
             ImageIO.write(image, "png", outputFile);
         }
         catch (IOException e) {
@@ -69,12 +71,22 @@ public abstract class ImageWriter {
             File folder = new File(filePathRoot);
             File[] fileArray = folder.listFiles();
             for (int i = 0; i < fileArray.length; i++){
+                if (fileArray[i].getName().equals("actual.png")) continue;
                 Files.deleteIfExists(Paths.get(filePathRoot + fileArray[i].getName()));
-                System.out.println(fileArray[i].getName());
+//                System.out.println(fileArray[i].getName());
 
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void writeAllNSGA2Chromosomes(ArrayList<NSGA2Chromosome> chromosomes) {
+        clearFolder();
+        int i = 0;
+        for (NSGA2Chromosome c : chromosomes) {
+            ImageWriter.writeChromosomeImageRandomRgb(c, i);
+            i++;
         }
     }
 }

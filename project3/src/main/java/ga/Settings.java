@@ -9,7 +9,7 @@ public class Settings {
 
     // MOEA
     public static final int populationSize = 50;
-    public static final int generationsPerPause = 10;
+    public static final int generationsPerPause = 5;
     public static final double crossoverRate = 0.5;
     public static final double mutationRate = 0.8;
     public static final ColorSpaceType colorSpace = ColorSpaceType.RGB;
@@ -25,7 +25,7 @@ public class Settings {
     public static final double mutateRemoveEdge = 0.2;
 
     // Output
-    public static final boolean drawBorders = false;
+    public static final boolean drawBorders = true;
 
 
     // Currently unused
