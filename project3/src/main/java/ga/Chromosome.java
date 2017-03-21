@@ -244,12 +244,20 @@ public class Chromosome {
     // Pareto
     // TODO OPTIMISE
     public boolean dominates(Chromosome o) {
-        if (cost[0] <= o.cost[0] && cost[1] <= o.cost[1] && cost[2] <= o.cost[2]) {
-            if (cost[0] < o.cost[0] || cost[1] < o.cost[1] || cost[2] < o.cost[2]) {
-                return true;
-            }
-        }
+        if (cost[0] > o.cost[0]) return false;
+        if (cost[1] > o.cost[1]) return false;
+        if (cost[2] > o.cost[2]) return false;
+
+        if (cost[0] < o.cost[0]) return true;
+        if (cost[1] < o.cost[1]) return true;
+        if (cost[2] < o.cost[2]) return true;
         return false;
+//        if (cost[0] <= o.cost[0] && cost[1] <= o.cost[1] && cost[2] <= o.cost[2]) {
+//            if (cost[0] < o.cost[0] || cost[1] < o.cost[1] || cost[2] < o.cost[2]) {
+//                return true;
+//            }
+//        }
+//        return false;
     }
 
 }

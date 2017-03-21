@@ -18,9 +18,10 @@ public class NSGA2 {
         for (NSGA2Chromosome chromosome : population) {
             chromosome.calculateCost();
         }
+        ImageWriter.writeAllNSGA2Chromosomes(population);
         rankPopulationByNonDomination();
         selectNewPopulationFromRankedPopulation();
-        ImageWriter.writeAllNSGA2Chromosomes(rankedPopulation.get(0));
+//        ImageWriter.writeAllNSGA2Chromosomes(rankedPopulation.get(0));
 
         int generation = 1;
         while (true) {
@@ -45,7 +46,7 @@ public class NSGA2 {
         population = new ArrayList<>(Settings.populationSize * 2);
         for (int i = 0; i < Settings.populationSize * 2; i++) {
             NSGA2Chromosome chromosome = new NSGA2Chromosome(mstChromosome);
-            chromosome.removeKRandomEdges(Tools.random.nextInt(20));
+            chromosome.removeKRandomEdges(Tools.random.nextInt(10));
             population.add(chromosome);
         }
     }
@@ -114,14 +115,13 @@ public class NSGA2 {
             c1.dominates = new HashSet<>();
             c1.numOfDominators = 0;
             for (NSGA2Chromosome c2 : population) {
-                // TODO loop diagonal and check both ways
                 if (c1.dominates(c2)) c1.dominates.add(c2);
                 else if (c2.dominates(c1)) c1.numOfDominators++;
             }
         }
         for (NSGA2Chromosome chromosome : population)
             System.out.print(chromosome.numOfDominators + " ");
-        System.out.println("\n");
+        System.out.println();
         // Add to ranks depending on domination relationships
         rankedPopulation.clear();
         int totalRanked = 0;
@@ -140,22 +140,21 @@ public class NSGA2 {
             for (NSGA2Chromosome dominator : rank)
                 for (NSGA2Chromosome dominated : dominator.dominates)
                     dominated.numOfDominators--;
-            System.out.println(rank.size());
             rankedPopulation.add(rank);
             totalRanked += rank.size();
         }
+        System.out.println("Rank0 size: " + rankedPopulation.get(0).size());
     }
 
 
     private void selectNewPopulationFromRankedPopulation() {
         population.clear();
         for (ArrayList<NSGA2Chromosome> rank : rankedPopulation) {
+            assignCrowdingDistance(rank);
             if (rank.size() <= Settings.populationSize - population.size()) {
-                assignCrowdingDistance(rank);
                 population.addAll(rank);
             }
             else {
-                assignCrowdingDistance(rank);
                 while (population.size() < Settings.populationSize) {
                     NSGA2Chromosome winner = binaryTournament(rank);
                     rank.remove(winner);
@@ -187,9 +186,8 @@ public class NSGA2 {
     }
 
     private void outputStuff(int generation) {
-        System.out.println("Generation: " + generation);
+        System.out.println("\nGeneration: " + generation);
         System.out.println("Population: " + population.size());
-        System.out.println("Rank0 : " + rankedPopulation.get(0).size());
 //            for (NSGA2Chromosome chromosome : rankedPopulation.get(0)) {
 //                System.out.print(String.format("%10f\t%10f\t%10f\t\t\t\n", chromosome.cost[0], chromosome.cost[1], chromosome.cost[2]));
 //            }
