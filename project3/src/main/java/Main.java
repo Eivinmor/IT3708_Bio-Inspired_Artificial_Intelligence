@@ -18,25 +18,13 @@ public class Main {
                 NSGA2 nsga2 = new NSGA2();
                 nsga2.runAlgorithm();
                 break;
-            case PAES:
-                break;
             case TEST:
                 Chromosome chromosome = new Chromosome();
                 for (int i = 1; i < 100; i++) {
-//                    chromosome.mutateAddNewSegmendWithinThreshold(5);
+                    chromosome.mutateAddNewSegmendWithinThreshold(Settings.mutateAddNewSegmentMaxThreshold);
+                    chromosome.segmentationIsOutdated = true;
                     ImageWriter.writeChromosomeImageRandomRgb(chromosome, i);
                 }
-//                chromosome.removeKLargestEdges(2000);
-//                ImageWriter.writeChromosomeImageRandomRgb(chromosome, 0);
-//                chromosome.mergeSegmentsSmallerThanK(4000);
-//                ImageWriter.writeChromosomeImageWithEdges(chromosome, 0);
-//                ImageWriter.writeChromosomeEdgesBlackOnWhite(chromosome, 1);
-//                ImageWriter.writeChromosomeImageRandomRgb(chromosome, 2);
-//                double totalDist = 0;
-//                for (int i = 0; i < chromosome.graph.length; i++) {
-//                    totalDist += Tools.colorDistance(Grid.pixelArray[i], Grid.pixelArray[chromosome.graph[i]]);
-//                }
-//                System.out.println(totalDist);
         }
     }
 }

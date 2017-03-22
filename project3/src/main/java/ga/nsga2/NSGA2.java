@@ -14,7 +14,7 @@ public class NSGA2 {
 
     public void runAlgorithm() {
 
-        createInitialPopulation();
+        createInitialPopulation1();
         for (NSGA2Chromosome chromosome : population) chromosome.calculateCost();
 
         rankPopulationByNonDomination();
@@ -24,7 +24,7 @@ public class NSGA2 {
             outputStuff(generation);
             ArrayList<NSGA2Chromosome> offspring = createOffspringPopulation();
             for (NSGA2Chromosome chromosome : offspring) {
-                chromosome.mergeSegmentsSmallerThanK(50); // TODO MERGING HER?
+                chromosome.mergeSegmentsSmallerThanK(Settings.minimumSegmentationSize);
                 chromosome.calculateCost();
             }
             population.addAll(offspring);
@@ -46,7 +46,7 @@ public class NSGA2 {
         }
     }
 
-    private void createInitialPopulation() {
+    private void createInitialPopulation1() {
         NSGA2Chromosome mstChromosome = new NSGA2Chromosome();
         population = new ArrayList<>(Settings.populationSize * 2);
         NSGA2Chromosome cloneChromosome = new NSGA2Chromosome(mstChromosome);

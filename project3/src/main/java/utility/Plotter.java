@@ -23,21 +23,34 @@ public class Plotter {
         if (Settings.useOverallDeviation && Settings.useEdgeValue && Settings.useConnectivity) {
 //            p = new JavaPlot(true);
 //            p.setTitle("Pareto front");
+            p.set("xlabel", "'Deviation' offset -4,0,0");
+            p.set("ylabel", "'Edge value' offset -4,0,0");
+            p.set("zlabel", "'Connectivity' offset -4,0,0");
             for (Chromosome chromosome : front)
                 d.add(new Point<>(chromosome.cost[0], chromosome.cost[1], chromosome.cost[2]));
         }
         else {
 //            p = new JavaPlot();
 //            p.setTitle("Pareto front");
-            if (Settings.useOverallDeviation && Settings.useEdgeValue)
+            if (Settings.useOverallDeviation && Settings.useEdgeValue) {
+                p.set("xlabel", "'Deviation' offset -4,0,0");
+                p.set("ylabel", "'Edge value' offset -4,0,0");
                 for (Chromosome chromosome : front)
                     d.add(new Point<>(chromosome.cost[0], chromosome.cost[1]));
-            else if (Settings.useOverallDeviation && Settings.useConnectivity)
+            }
+            else if (Settings.useOverallDeviation && Settings.useConnectivity) {
+                p.set("xlabel", "'Deviation' offset -4,0,0");
+                p.set("ylabel", "'Connectivity' offset -4,0,0");
                 for (Chromosome chromosome : front)
                     d.add(new Point<>(chromosome.cost[0], chromosome.cost[2]));
-            else if (Settings.useEdgeValue && Settings.useConnectivity)
+            }
+            else if (Settings.useEdgeValue && Settings.useConnectivity) {
+                p.set("xlabel", "'Edge value' offset -4,0,0");
+                p.set("ylabel", "'Connectivity' offset -4,0,0");
                 for (Chromosome chromosome : front)
                     d.add(new Point<>(chromosome.cost[1], chromosome.cost[2]));
+            }
+
         }
         p.addPlot(d);
         p.plot();

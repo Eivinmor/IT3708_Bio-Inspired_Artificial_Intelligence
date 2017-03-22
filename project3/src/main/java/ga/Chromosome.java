@@ -2,7 +2,6 @@ package ga;
 
 import representation.Edge;
 import representation.Grid;
-import utility.ImageWriter;
 import utility.Tools;
 
 import java.awt.*;
@@ -184,7 +183,9 @@ public class Chromosome {
         double r = Tools.random.nextDouble();
         if (r < Settings.mutateMergeSegments) mutateMergeSegments();
         else if ((r += Settings.mutateMergeSegments) < Settings.mutateSetRandomEdgeRate) mutateSetRandomEdge();
-        else if ((r + Settings.mutateSetRandomEdgeRate) < Settings.mutateRemoveEdge) mutateRemoveEdge();
+        else if ((r += Settings.mutateSetRandomEdgeRate) < Settings.mutateRemoveEdge) mutateRemoveEdge();
+        else if ((r + Settings.mutateRemoveEdge) < Settings.mutateAddNewSegmentWithinThreshold)
+            mutateAddNewSegmendWithinThreshold(5 + Tools.random.nextInt(Settings.mutateAddNewSegmentMaxThreshold));
         segmentationIsOutdated = true;
     }
 

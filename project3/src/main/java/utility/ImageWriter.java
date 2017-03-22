@@ -1,7 +1,6 @@
 package utility;
 
 import ga.Chromosome;
-import ga.Settings;
 import ga.nsga2.NSGA2Chromosome;
 import representation.*;
 import javax.imageio.ImageIO;
@@ -50,7 +49,7 @@ public abstract class ImageWriter {
                     image.setRGB(x, y, segmentColors[chromosome.segmentation[pixelId]].getRGB());
                 }
             }
-            File outputFile = new File(filePathRoot + String.format("%05d", chromosome.numOfSegments) + "-" + id + ".png");
+            File outputFile = new File(filePathRoot + String.format("%05d", chromosome.numOfSegments) + "_" + id + ".png");
             ImageIO.write(image, "png", outputFile);
         }
         catch (IOException e) {
@@ -70,7 +69,7 @@ public abstract class ImageWriter {
                     else image.setRGB(x, y, Grid.pixelArray[pixelId].getRGB());
                 }
             }
-            File outputFile = new File(filePathRoot + String.format("%05d", chromosome.numOfSegments) + "-" + id + ".png");
+            File outputFile = new File(filePathRoot + String.format("%05d", chromosome.numOfSegments) + "_" + id + "_edges.png");
             ImageIO.write(image, "png", outputFile);
         }
         catch (IOException e) {
@@ -90,7 +89,7 @@ public abstract class ImageWriter {
                     else image.setRGB(x, y, Color.WHITE.getRGB());
                 }
             }
-            File outputFile = new File(filePathRoot + String.format("%05d", chromosome.numOfSegments) + "-" + id + ".png");
+            File outputFile = new File(filePathRoot + String.format("%05d", chromosome.numOfSegments) + "_" + id + "_white.png");
             ImageIO.write(image, "png", outputFile);
         }
         catch (IOException e) {
@@ -124,7 +123,7 @@ public abstract class ImageWriter {
         clearFolder();
         int i = 0;
         for (NSGA2Chromosome c : chromosomes) {
-//            ImageWriter.writeChromosomeImageRandomRgb(c, i);
+            writeChromosomeEdgesBlackOnWhite(c, i);
             writeChromosomeImageWithEdges(c, i);
             i++;
         }
