@@ -10,7 +10,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
@@ -122,7 +121,7 @@ public abstract class ImageWriter {
     }
 
     public static void writeAllNSGA2Chromosomes(ArrayList<NSGA2Chromosome> chromosomes) {
-        System.out.println("Writing images...");
+        System.out.print("\nWriting images...");
         clearFolder();
         int i = 0;
         for (NSGA2Chromosome c : chromosomes) {
@@ -130,5 +129,6 @@ public abstract class ImageWriter {
             writeChromosomeImageWithEdges(c, i);
             i++;
         }
+        System.out.println(" done");
     }
 }

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 @SuppressWarnings("ConstantConditions")
 public class Plotter {
 
-    JavaPlot p;
+    JavaPlot p = new JavaPlot(Settings.useOverallDeviation && Settings.useEdgeValue && Settings.useConnectivity);
     public Plotter() {
     }
 
@@ -21,14 +21,14 @@ public class Plotter {
         PointDataSet<Double> d = new PointDataSet<>();
 
         if (Settings.useOverallDeviation && Settings.useEdgeValue && Settings.useConnectivity) {
-            p = new JavaPlot(true);
-            p.setTitle("Pareto front");
+//            p = new JavaPlot(true);
+//            p.setTitle("Pareto front");
             for (Chromosome chromosome : front)
                 d.add(new Point<>(chromosome.cost[0], chromosome.cost[1], chromosome.cost[2]));
         }
         else {
-            p = new JavaPlot();
-            p.setTitle("Pareto front");
+//            p = new JavaPlot();
+//            p.setTitle("Pareto front");
             if (Settings.useOverallDeviation && Settings.useEdgeValue)
                 for (Chromosome chromosome : front)
                     d.add(new Point<>(chromosome.cost[0], chromosome.cost[1]));

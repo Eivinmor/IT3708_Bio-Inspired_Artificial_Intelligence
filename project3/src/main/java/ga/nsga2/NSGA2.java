@@ -30,6 +30,7 @@ public class NSGA2 {
 
             ArrayList<NSGA2Chromosome> offspring = createOffspringPopulation();
             for (NSGA2Chromosome chromosome : offspring) {
+//                chromosome.mergeSegmentsSmallerThanK(50); // TODO MERGING HER?
                 chromosome.calculateCost();
             }
             population.addAll(offspring);
@@ -43,12 +44,25 @@ public class NSGA2 {
 
     private void createInitialPopulation() {
         NSGA2Chromosome mstChromosome = new NSGA2Chromosome();
+        mstChromosome.removeKLargestEdges(20000);
         population = new ArrayList<>(Settings.populationSize * 2);
-        for (int i = 0; i < Settings.populationSize * 2; i++) {
+        for (int i = 0; i < Settings.populationSize; i++) {
+//            NSGA2Chromosome cloneChromosome = new NSGA2Chromosome(mstChromosome);
+            if (i % (Settings.populationSize / 10) == 0) {
+                System.out.println("---------" + i);
+                System.out.println(200 + 500 * i/Settings.populationSize * 10);
+                mstChromosome.mergeSegmentsSmallerThanK(200 + 500 * i/Settings.populationSize * 10);
+                ImageWriter.writeChromosomeImageRandomRgb(mstChromosome, i);
+//                cloneChromosome = new NSGA2Chromosome(mstChromosome);
+//                cloneChromosome.removeKLargestEdges(i*200);
+            }
+            System.out.print(i + " ");
             NSGA2Chromosome chromosome = new NSGA2Chromosome(mstChromosome);
-            chromosome.removeKRandomEdges(Tools.random.nextInt(10));
+            chromosome.removeKRandomEdges(Tools.random.nextInt(10)); // TODO Merge her?
+            chromosome.mergeSegmentsSmallerThanK(500 + Tools.random.nextInt(1500));
             population.add(chromosome);
         }
+        System.out.println();
     }
 
     // TODO Calculate score before this
@@ -110,6 +124,7 @@ public class NSGA2 {
 //    }
 
     private void rankPopulationByNonDomination() {
+
         // Generate numOfDominators and domnates set
         for (NSGA2Chromosome c1 : population) {
             c1.dominates = new HashSet<>();
@@ -119,9 +134,10 @@ public class NSGA2 {
                 else if (c2.dominates(c1)) c1.numOfDominators++;
             }
         }
-        for (NSGA2Chromosome chromosome : population)
-            System.out.print(chromosome.numOfDominators + " ");
-        System.out.println();
+//        for (NSGA2Chromosome chromosome : population)
+//            System.out.print(chromosome.numOfDominators + " ");
+//        System.out.println();
+
         // Add to ranks depending on domination relationships
         rankedPopulation.clear();
         int totalRanked = 0;

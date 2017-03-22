@@ -1,10 +1,8 @@
 import ga.Chromosome;
 import ga.nsga2.NSGA2;
 import ga.Settings;
-import representation.Grid;
 import utility.ImageReader;
 import utility.ImageWriter;
-import utility.Tools;
 
 
 public class Main {
@@ -24,8 +22,9 @@ public class Main {
                 break;
             case TEST:
                 Chromosome chromosome = new Chromosome();
-                chromosome.removeKRandomEdges(2000);
-                chromosome.mergeSegmentsSmallerThanK(1000);
+                chromosome.removeKLargestEdges(20000);
+                ImageWriter.writeChromosomeImageRandomRgb(chromosome, 0);
+                chromosome.mergeSegmentsSmallerThanK(4000);
                 ImageWriter.writeChromosomeImageWithEdges(chromosome, 0);
                 ImageWriter.writeChromosomeEdgesBlackOnWhite(chromosome, 1);
                 ImageWriter.writeChromosomeImageRandomRgb(chromosome, 2);

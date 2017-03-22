@@ -2,6 +2,7 @@ package ga;
 
 import representation.Edge;
 import representation.Grid;
+import utility.ImageWriter;
 import utility.Tools;
 
 import java.awt.*;
@@ -18,10 +19,9 @@ public class Chromosome {
 
     // New
     public Chromosome() {
+        System.out.print("Initialising MST...");
         initaliseGraphAsMST();
-        removeKLargestEdges(20000);
-        mergeSegmentsSmallerThanK(2000);
-        System.out.println("mst done");
+        System.out.println(" done");
     }
 
     // Clone
@@ -36,9 +36,9 @@ public class Chromosome {
                 if (Tools.random.nextBoolean()) graph[i] = p1.graph[i];
                 else graph[i] = p2.graph[i];
             }
+            if (Tools.random.nextDouble() < Settings.mutationRate) mutate();
         }
         else for (int i = 0; i < Grid.numOfPixels; i++) this.graph[i] = p1.graph[i];
-        if (Tools.random.nextDouble() < Settings.mutationRate) mutate();
     }
 
     private void initaliseGraphAsRandom() {
@@ -71,12 +71,13 @@ public class Chromosome {
     }
 
     public void mergeSegmentsSmallerThanK(int k) {
+        System.out.print("Cutting and merging segments...");
         if (segmentationIsOutdated) calculateSegmentation();
         int[] segmentSizes = new int[numOfSegments];
         HashSet<Integer> tooSmall = new HashSet<>();
         for (int i = 0; i < Grid.numOfPixels; i++) segmentSizes[segmentation[i]]++;
-        for (int i = 0; i < segmentSizes.length; i++)
-            if (segmentSizes[i] < k) tooSmall.add(i);
+        for (int i = 0; i < segmentSizes.length; i++) if (segmentSizes[i] < k) tooSmall.add(i);
+
         while (tooSmall.size() > 0) {
 //            System.out.println(tooSmall.size());
             for (int segment : tooSmall) {
@@ -87,9 +88,10 @@ public class Chromosome {
             segmentSizes = new int[numOfSegments];
             tooSmall.clear();
             for (int i = 0; i < Grid.numOfPixels; i++) segmentSizes[segmentation[i]]++;
-            for (int i = 0; i < segmentSizes.length; i++)
-                if (segmentSizes[i] < k) tooSmall.add(i);
+            for (int i = 0; i < segmentSizes.length; i++) if (segmentSizes[i] < k) tooSmall.add(i);
+//            ImageWriter.writeChromosomeImageRandomRgb(this, 0);
         }
+        System.out.println(" done");
     }
 
     private Edge findBestOutgoingEdge(int segmentId) {
@@ -179,11 +181,14 @@ public class Chromosome {
     }
 
     public void mutate() {
-        // TODO Logarithmic mutation prob if necessary
         double r = Tools.random.nextDouble();
         if (r < Settings.mutateMergeSegments) mutateMergeSegments();
         else if ((r += Settings.mutateMergeSegments) < Settings.mutateSetRandomEdgeRate) mutateSetRandomEdge();
         else if ((r + Settings.mutateSetRandomEdgeRate) < Settings.mutateRemoveEdge) mutateRemoveEdge();
+//        else {
+//            removeKLargestEdges(20);
+//            mergeSegmentsSmallerThanK(Tools.random.nextInt(2000)); // TODO MERGING HER?
+//        }
         segmentationIsOutdated = true;
     }
 
@@ -205,6 +210,7 @@ public class Chromosome {
             graph[interSegmentConnections.get(i)[0]] = interSegmentConnections.get(i)[1];
         }
     }
+
 
 //    private void mutateAddEdge() {
 //        ArrayList<Integer> noEdge = new ArrayList<>();
