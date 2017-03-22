@@ -22,12 +22,18 @@ public class Main {
                 break;
             case TEST:
                 Chromosome chromosome = new Chromosome();
-                chromosome.removeKLargestEdges(20000);
+                chromosome.removeKLargestEdges(0);
                 ImageWriter.writeChromosomeImageRandomRgb(chromosome, 0);
-                chromosome.mergeSegmentsSmallerThanK(4000);
-                ImageWriter.writeChromosomeImageWithEdges(chromosome, 0);
-                ImageWriter.writeChromosomeEdgesBlackOnWhite(chromosome, 1);
-                ImageWriter.writeChromosomeImageRandomRgb(chromosome, 2);
+                for (int i = 1; i < 10; i++) {
+                    chromosome.removeKLargestEdges(2000);
+                    ImageWriter.writeChromosomeImageRandomRgb(chromosome, i);
+                }
+//                chromosome.removeKLargestEdges(2000);
+//                ImageWriter.writeChromosomeImageRandomRgb(chromosome, 0);
+//                chromosome.mergeSegmentsSmallerThanK(4000);
+//                ImageWriter.writeChromosomeImageWithEdges(chromosome, 0);
+//                ImageWriter.writeChromosomeEdgesBlackOnWhite(chromosome, 1);
+//                ImageWriter.writeChromosomeImageRandomRgb(chromosome, 2);
 //                double totalDist = 0;
 //                for (int i = 0; i < chromosome.graph.length; i++) {
 //                    totalDist += Tools.colorDistance(Grid.pixelArray[i], Grid.pixelArray[chromosome.graph[i]]);

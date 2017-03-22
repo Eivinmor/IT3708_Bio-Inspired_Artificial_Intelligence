@@ -30,7 +30,7 @@ public class NSGA2 {
 
             ArrayList<NSGA2Chromosome> offspring = createOffspringPopulation();
             for (NSGA2Chromosome chromosome : offspring) {
-//                chromosome.mergeSegmentsSmallerThanK(50); // TODO MERGING HER?
+                chromosome.mergeSegmentsSmallerThanK(50); // TODO MERGING HER?
                 chromosome.calculateCost();
             }
             population.addAll(offspring);
@@ -44,22 +44,25 @@ public class NSGA2 {
 
     private void createInitialPopulation() {
         NSGA2Chromosome mstChromosome = new NSGA2Chromosome();
-        mstChromosome.removeKLargestEdges(20000);
         population = new ArrayList<>(Settings.populationSize * 2);
+        NSGA2Chromosome cloneChromosome = new NSGA2Chromosome(mstChromosome);
         for (int i = 0; i < Settings.populationSize; i++) {
-//            NSGA2Chromosome cloneChromosome = new NSGA2Chromosome(mstChromosome);
             if (i % (Settings.populationSize / 10) == 0) {
                 System.out.println("---------" + i);
-                System.out.println(200 + 500 * i/Settings.populationSize * 10);
-                mstChromosome.mergeSegmentsSmallerThanK(200 + 500 * i/Settings.populationSize * 10);
-                ImageWriter.writeChromosomeImageRandomRgb(mstChromosome, i);
+                mstChromosome.removeKLargestEdges(2000);
+                mstChromosome.calculateSegmentation();
+                cloneChromosome = new NSGA2Chromosome(mstChromosome);
+//                System.out.println(200 + 500 * i/Settings.populationSize * 10);
+                cloneChromosome.mergeSegmentsSmallerThanK(1000);
+//                cloneChromosome.mergeSegmentsSmallerThanK(200 + 500 * i/Settings.populationSize * 10);
 //                cloneChromosome = new NSGA2Chromosome(mstChromosome);
 //                cloneChromosome.removeKLargestEdges(i*200);
             }
             System.out.print(i + " ");
-            NSGA2Chromosome chromosome = new NSGA2Chromosome(mstChromosome);
+            NSGA2Chromosome chromosome = new NSGA2Chromosome(cloneChromosome);
             chromosome.removeKRandomEdges(Tools.random.nextInt(10)); // TODO Merge her?
-            chromosome.mergeSegmentsSmallerThanK(500 + Tools.random.nextInt(1500));
+            chromosome.mergeSegmentsSmallerThanK(1000 + Tools.random.nextInt(1000));
+            ImageWriter.writeChromosomeImageRandomRgb(chromosome, i);
             population.add(chromosome);
         }
         System.out.println();
@@ -171,10 +174,22 @@ public class NSGA2 {
                 population.addAll(rank);
             }
             else {
-                while (population.size() < Settings.populationSize) {
-                    NSGA2Chromosome winner = binaryTournament(rank);
-                    rank.remove(winner);
-                    population.add(winner);
+                if (Settings.useTournamentForSurvivalSelection) {
+                    while (population.size() < Settings.populationSize) {
+                        NSGA2Chromosome winner = binaryTournament(rank);
+                        rank.remove(winner);
+                        population.add(winner);
+                    }
+                }
+                else {
+                    System.out.print("Sorting...");
+                    rank.sort(NSGA2Chromosome.crowdingDistanceComparator());
+                    System.out.println("done");
+                    System.out.print("Collecting best...");
+                    while (population.size() < Settings.populationSize) {
+                        population.add(rank.remove(0));
+                    }
+                    System.out.println("done");
                 }
                 return;
             }

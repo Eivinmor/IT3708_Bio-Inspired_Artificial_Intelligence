@@ -71,7 +71,7 @@ public class Chromosome {
     }
 
     public void mergeSegmentsSmallerThanK(int k) {
-        System.out.print("Cutting and merging segments...");
+        System.out.print("Merging segments...");
         if (segmentationIsOutdated) calculateSegmentation();
         int[] segmentSizes = new int[numOfSegments];
         HashSet<Integer> tooSmall = new HashSet<>();
@@ -89,7 +89,6 @@ public class Chromosome {
             tooSmall.clear();
             for (int i = 0; i < Grid.numOfPixels; i++) segmentSizes[segmentation[i]]++;
             for (int i = 0; i < segmentSizes.length; i++) if (segmentSizes[i] < k) tooSmall.add(i);
-//            ImageWriter.writeChromosomeImageRandomRgb(this, 0);
         }
         System.out.println(" done");
     }

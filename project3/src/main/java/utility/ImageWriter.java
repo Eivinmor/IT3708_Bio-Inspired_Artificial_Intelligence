@@ -47,11 +47,10 @@ public abstract class ImageWriter {
             for (int x = 0; x < Grid.width; x++) {
                 for (int y = 0; y < Grid.height; y++) {
                     int pixelId = x + (y * Grid.width);
-                    if (Settings.drawBorders && isEdgePixel(chromosome, pixelId)) image.setRGB(x, y, Color.WHITE.getRGB());
-                    else image.setRGB(x, y, segmentColors[chromosome.segmentation[pixelId]].getRGB());
+                    image.setRGB(x, y, segmentColors[chromosome.segmentation[pixelId]].getRGB());
                 }
             }
-            File outputFile = new File(filePathRoot + "chromosome" + String.format("%05d", id) + "-" + chromosome.numOfSegments + ".png");
+            File outputFile = new File(filePathRoot + String.format("%05d", chromosome.numOfSegments) + "-" + id + ".png");
             ImageIO.write(image, "png", outputFile);
         }
         catch (IOException e) {
@@ -71,7 +70,7 @@ public abstract class ImageWriter {
                     else image.setRGB(x, y, Grid.pixelArray[pixelId].getRGB());
                 }
             }
-            File outputFile = new File(filePathRoot + "chromosome" + String.format("%05d", id) + "-" + chromosome.numOfSegments + ".png");
+            File outputFile = new File(filePathRoot + String.format("%05d", chromosome.numOfSegments) + "-" + id + ".png");
             ImageIO.write(image, "png", outputFile);
         }
         catch (IOException e) {
@@ -91,7 +90,7 @@ public abstract class ImageWriter {
                     else image.setRGB(x, y, Color.WHITE.getRGB());
                 }
             }
-            File outputFile = new File(filePathRoot + "chromosome" + String.format("%05d", id) + "-" + chromosome.numOfSegments + ".png");
+            File outputFile = new File(filePathRoot + String.format("%05d", chromosome.numOfSegments) + "-" + id + ".png");
             ImageIO.write(image, "png", outputFile);
         }
         catch (IOException e) {
