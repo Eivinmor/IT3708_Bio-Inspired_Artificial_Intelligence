@@ -19,6 +19,9 @@ public class Chromosome {
     // New
     public Chromosome() {
         initaliseGraphAsMST();
+        removeKLargestEdges(20000);
+        mergeSegmentsSmallerThanK(2000);
+        System.out.println("mst done");
     }
 
     // Clone
@@ -66,6 +69,44 @@ public class Chromosome {
             current = edge.to;
         }
     }
+
+    public void mergeSegmentsSmallerThanK(int k) {
+        if (segmentationIsOutdated) calculateSegmentation();
+        int[] segmentSizes = new int[numOfSegments];
+        HashSet<Integer> tooSmall = new HashSet<>();
+        for (int i = 0; i < Grid.numOfPixels; i++) segmentSizes[segmentation[i]]++;
+        for (int i = 0; i < segmentSizes.length; i++)
+            if (segmentSizes[i] < k) tooSmall.add(i);
+        while (tooSmall.size() > 0) {
+//            System.out.println(tooSmall.size());
+            for (int segment : tooSmall) {
+                Edge bestEdge = findBestOutgoingEdge(segment);
+                graph[bestEdge.from] = bestEdge.to;
+            }
+            calculateSegmentation();
+            segmentSizes = new int[numOfSegments];
+            tooSmall.clear();
+            for (int i = 0; i < Grid.numOfPixels; i++) segmentSizes[segmentation[i]]++;
+            for (int i = 0; i < segmentSizes.length; i++)
+                if (segmentSizes[i] < k) tooSmall.add(i);
+        }
+    }
+
+    private Edge findBestOutgoingEdge(int segmentId) {
+        Edge bestEdge = new Edge();
+        for (int i = 0; i < Grid.numOfPixels; i++) {
+            if (segmentation[i] == segmentId) {
+                for (int nb : Grid.getNeighbourPixels(i)) {
+                    if (segmentation[nb] != segmentId) {
+                        Edge edge = new Edge(i, nb);
+                        if (edge.compareTo(bestEdge) < 0) bestEdge = edge;
+                    }
+                }
+            }
+        }
+        return bestEdge;
+    }
+
 
 //    private void removeEdgesAboveThreshold() {
 //        for (int i = 0; i < graph.length; i++) {

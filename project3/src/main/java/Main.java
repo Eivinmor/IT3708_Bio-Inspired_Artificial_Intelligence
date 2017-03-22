@@ -24,14 +24,16 @@ public class Main {
                 break;
             case TEST:
                 Chromosome chromosome = new Chromosome();
-                chromosome.removeKLargestEdges(20000);
+                chromosome.removeKRandomEdges(2000);
+                chromosome.mergeSegmentsSmallerThanK(1000);
                 ImageWriter.writeChromosomeImageWithEdges(chromosome, 0);
                 ImageWriter.writeChromosomeEdgesBlackOnWhite(chromosome, 1);
-                double totalDist = 0;
-                for (int i = 0; i < chromosome.graph.length; i++) {
-                    totalDist += Tools.colorDistance(Grid.pixelArray[i], Grid.pixelArray[chromosome.graph[i]]);
-                }
-                System.out.println(totalDist);
+                ImageWriter.writeChromosomeImageRandomRgb(chromosome, 2);
+//                double totalDist = 0;
+//                for (int i = 0; i < chromosome.graph.length; i++) {
+//                    totalDist += Tools.colorDistance(Grid.pixelArray[i], Grid.pixelArray[chromosome.graph[i]]);
+//                }
+//                System.out.println(totalDist);
         }
     }
 }

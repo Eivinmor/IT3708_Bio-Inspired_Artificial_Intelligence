@@ -37,7 +37,7 @@ public abstract class ImageWriter {
 
     public static void writeChromosomeImageRandomRgb(Chromosome chromosome, int id){
         if (chromosome.segmentationIsOutdated) chromosome.calculateSegmentation();
-        System.out.println("Writing image " + id);
+//        System.out.println("Writing image " + id);
         try{
             Color[] segmentColors = new Color[chromosome.numOfSegments];
 
@@ -62,7 +62,7 @@ public abstract class ImageWriter {
 
     public static void writeChromosomeImageWithEdges(Chromosome chromosome, int id){
         if (chromosome.segmentationIsOutdated) chromosome.calculateSegmentation();
-        System.out.println("Writing image " + id);
+//        System.out.println("Writing image " + id);
         try{
             BufferedImage image = new BufferedImage(Grid.width, Grid.height, BufferedImage.TYPE_INT_RGB);
             for (int x = 0; x < Grid.width; x++) {
@@ -82,7 +82,7 @@ public abstract class ImageWriter {
 
     public static void writeChromosomeEdgesBlackOnWhite(Chromosome chromosome, int id){
         if (chromosome.segmentationIsOutdated) chromosome.calculateSegmentation();
-        System.out.println("Writing image " + id);
+//        System.out.println("Writing image " + id);
         try{
             BufferedImage image = new BufferedImage(Grid.width, Grid.height, BufferedImage.TYPE_INT_RGB);
             for (int x = 0; x < Grid.width; x++) {
@@ -122,10 +122,12 @@ public abstract class ImageWriter {
     }
 
     public static void writeAllNSGA2Chromosomes(ArrayList<NSGA2Chromosome> chromosomes) {
+        System.out.println("Writing images...");
         clearFolder();
         int i = 0;
         for (NSGA2Chromosome c : chromosomes) {
-            ImageWriter.writeChromosomeImageRandomRgb(c, i);
+//            ImageWriter.writeChromosomeImageRandomRgb(c, i);
+            writeChromosomeImageWithEdges(c, i);
             i++;
         }
     }
