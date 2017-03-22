@@ -22,10 +22,8 @@ public class Main {
                 break;
             case TEST:
                 Chromosome chromosome = new Chromosome();
-                chromosome.removeKLargestEdges(0);
-                ImageWriter.writeChromosomeImageRandomRgb(chromosome, 0);
-                for (int i = 1; i < 10; i++) {
-                    chromosome.removeKLargestEdges(2000);
+                for (int i = 1; i < 100; i++) {
+//                    chromosome.mutateAddNewSegmendWithinThreshold(5);
                     ImageWriter.writeChromosomeImageRandomRgb(chromosome, i);
                 }
 //                chromosome.removeKLargestEdges(2000);

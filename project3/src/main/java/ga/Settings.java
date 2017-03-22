@@ -13,7 +13,7 @@ public class Settings {
     public static final double crossoverRate = 0.5;
     public static final double mutationRate = 0.8;
     public static final ColorSpaceType colorSpace = ColorSpaceType.RGB;
-    public static final boolean useTournamentForSurvivalSelection = false;
+    public static final boolean useTournamentForSurvivalSelection = true;
 
     // Cost functions
     public static final boolean useOverallDeviation = true;     // 0

@@ -71,7 +71,7 @@ public class Chromosome {
     }
 
     public void mergeSegmentsSmallerThanK(int k) {
-        System.out.print("Merging segments...");
+//        System.out.print("Merging segments...");
         if (segmentationIsOutdated) calculateSegmentation();
         int[] segmentSizes = new int[numOfSegments];
         HashSet<Integer> tooSmall = new HashSet<>();
@@ -90,7 +90,7 @@ public class Chromosome {
             for (int i = 0; i < Grid.numOfPixels; i++) segmentSizes[segmentation[i]]++;
             for (int i = 0; i < segmentSizes.length; i++) if (segmentSizes[i] < k) tooSmall.add(i);
         }
-        System.out.println(" done");
+//        System.out.println(" done");
     }
 
     private Edge findBestOutgoingEdge(int segmentId) {
@@ -180,14 +180,11 @@ public class Chromosome {
     }
 
     public void mutate() {
+//        mutateAddNewSegmendWithinThreshold(500);
         double r = Tools.random.nextDouble();
         if (r < Settings.mutateMergeSegments) mutateMergeSegments();
         else if ((r += Settings.mutateMergeSegments) < Settings.mutateSetRandomEdgeRate) mutateSetRandomEdge();
         else if ((r + Settings.mutateSetRandomEdgeRate) < Settings.mutateRemoveEdge) mutateRemoveEdge();
-//        else {
-//            removeKLargestEdges(20);
-//            mergeSegmentsSmallerThanK(Tools.random.nextInt(2000)); // TODO MERGING HER?
-//        }
         segmentationIsOutdated = true;
     }
 
@@ -208,6 +205,25 @@ public class Chromosome {
             int i = Tools.random.nextInt(interSegmentConnections.size());
             graph[interSegmentConnections.get(i)[0]] = interSegmentConnections.get(i)[1];
         }
+    }
+
+    public void mutateAddNewSegmendWithinThreshold(double threshold) {
+        System.out.print("Mutating...");
+        ArrayList<Integer> check = new ArrayList<>();
+        HashSet<Integer> visited = new HashSet<>();
+        check.add(Tools.random.nextInt(Grid.numOfPixels));
+        visited.add(check.get(0));
+        while (check.size() > 0) {
+            int current = check.remove(0);
+            for (int nb: Grid.getNeighbourPixels(current)) {
+                if (!visited.contains(nb) && Tools.colorDistance(Grid.pixelArray[current], Grid.pixelArray[nb]) < threshold) {
+                    check.add(nb);
+                    visited.add(nb);
+                    graph[nb] = current;
+                }
+            }
+        }
+        System.out.println("done");
     }
 
 
@@ -236,7 +252,7 @@ public class Chromosome {
         for (int i = 0; i < Grid.numOfPixels; i++) {
             float[] colorValues = Grid.pixelArray[i].getRGBColorComponents(null);
             int segment = segmentation[i];
-            for (int j = 0; j < colorValues.length; j++) segmentAvgColor[segment][j] = colorValues[j];
+            for (int j = 0; j < colorValues.length; j++) segmentAvgColor[segment][j] += colorValues[j];
             segmentSize[segment]++;
         }
         for (int i = 0; i < segmentAvgColor.length; i++) {

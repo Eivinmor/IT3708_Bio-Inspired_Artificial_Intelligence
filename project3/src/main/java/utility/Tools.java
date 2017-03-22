@@ -14,7 +14,7 @@ public abstract class Tools {
 
     private static CIELab cieLab = new CIELab();
     public static Random random = new Random();
-    private static Scanner scanner = new Scanner(System.in);
+    public static Scanner scanner = new Scanner(System.in);
     public static Plotter plotter = new Plotter();
 
     public static double euclideanDist3D(double dist1, double dist2, double dist3) {
