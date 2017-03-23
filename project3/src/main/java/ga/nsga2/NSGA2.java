@@ -229,10 +229,19 @@ public class NSGA2 {
 //            System.out.println();
 
         if (generation % Settings.generationsPerPause == 0) {
-            Tools.printObjectiveValues(rankedPopulation.get(0));
-            ImageWriter.writeAllNSGA2Chromosomes(rankedPopulation.get(0));
-            if (Settings.openImagesToWindow) ImageWriter.openAllChromosomesInWindow(rankedPopulation.get(0));
-            Tools.plotter.plotFront((rankedPopulation.get(0)));
+            ArrayList<NSGA2Chromosome> printRank = new ArrayList<>(rankedPopulation.get(0));
+            if (Settings.printOnlyFive) {
+                printRank = new ArrayList<>(5);
+                printRank.add(rankedPopulation.get(0).get(0));
+                printRank.add(rankedPopulation.get(0).get(rankedPopulation.get(0).size() -1));
+                for (int i = 1; i < 4; i++) {
+                    printRank.add(rankedPopulation.get(0).get(i*(rankedPopulation.get(0).size()/3)-1));
+                }
+            }
+            Tools.printObjectiveValues(printRank);
+            ImageWriter.writeAllNSGA2Chromosomes(printRank);
+            if (Settings.openImagesToWindow) ImageWriter.openAllChromosomesInWindow(printRank);
+            Tools.plotter.plotFront(rankedPopulation.get(0));
         }
     }
 
