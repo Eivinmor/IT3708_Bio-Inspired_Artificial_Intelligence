@@ -36,7 +36,6 @@ public class NSGA2 {
 
             generation++;
         }
-
     }
 
     private void createInitialPopulation2() {
@@ -45,6 +44,7 @@ public class NSGA2 {
         for (int i = 0; i < Settings.populationSize * 2; i++) {
             NSGA2Chromosome chromosome = new NSGA2Chromosome(mstChromosome);
             chromosome.removeKRandomEdges(Tools.random.nextInt(100));
+            chromosome.mergeSegmentsSmallerThanK(Settings.minimumSegmentationSize);
             population.add(chromosome);
         }
     }

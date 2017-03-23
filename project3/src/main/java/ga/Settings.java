@@ -28,7 +28,7 @@ public class Settings {
     public static int mutateAddNewSegmentMaxThreshold = 20;
 
 
-    public static final int minimumSegmentationSize = 100;
+    public static final int minimumSegmentationSize = 40;
 
 
     // Helpers
