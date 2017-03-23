@@ -4,6 +4,7 @@ import ga.Chromosome;
 import ga.nsga2.NSGA2Chromosome;
 import representation.*;
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -128,5 +129,44 @@ public abstract class ImageWriter {
             i++;
         }
         System.out.println(" done");
+    }
+
+    public static void openAllChromosomesInWindow(ArrayList<NSGA2Chromosome> chromosomes) {
+        int i = 0;
+        for (NSGA2Chromosome c : chromosomes) {
+            openPicturesInWindow(c, i);
+            i++;
+        }
+    }
+
+    private static void openPicturesInWindow(Chromosome chromosome, int id){
+        if (chromosome.segmentationIsOutdated) chromosome.calculateSegmentation();
+        BufferedImage image = new BufferedImage(Grid.width, Grid.height, BufferedImage.TYPE_INT_RGB);
+        BufferedImage image2 = new BufferedImage(Grid.width, Grid.height, BufferedImage.TYPE_INT_RGB);
+        for (int x = 0; x < Grid.width; x++) {
+            for (int y = 0; y < Grid.height; y++) {
+                int pixelId = x + (y * Grid.width);
+                if (isEdgePixel(chromosome, pixelId)) image.setRGB(x, y, Color.BLACK.getRGB());
+                else image.setRGB(x, y, Color.WHITE.getRGB());
+                if (isEdgePixel(chromosome, pixelId)) image2.setRGB(x, y, Color.GREEN.getRGB());
+                else image2.setRGB(x, y, Grid.pixelArray[pixelId].getRGB());
+            }
+        }
+
+        final JFrame showPictureFrame = new JFrame("seg" + chromosome.numOfSegments + "_id" + id);
+        JPanel jp = new JPanel();
+        JLabel pictureLabel = new JLabel();
+        JLabel pictureLabel2 = new JLabel();
+
+        pictureLabel.setIcon(new ImageIcon(image));
+        pictureLabel2.setIcon(new ImageIcon(image2));
+
+        jp.add(pictureLabel2);
+        jp.add(pictureLabel);
+
+        showPictureFrame.add(jp);
+        showPictureFrame.pack();
+
+        EventQueue.invokeLater(() -> showPictureFrame.setVisible(true));
     }
 }

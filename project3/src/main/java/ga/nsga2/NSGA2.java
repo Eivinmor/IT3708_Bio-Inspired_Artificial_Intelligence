@@ -231,6 +231,7 @@ public class NSGA2 {
         if (generation % Settings.generationsPerPause == 0) {
             Tools.printObjectiveValues(rankedPopulation.get(0));
             ImageWriter.writeAllNSGA2Chromosomes(rankedPopulation.get(0));
+            if (Settings.openImagesToWindow) ImageWriter.openAllChromosomesInWindow(rankedPopulation.get(0));
             Tools.plotter.plotFront((rankedPopulation.get(0)));
         }
     }

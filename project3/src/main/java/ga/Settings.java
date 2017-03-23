@@ -27,8 +27,11 @@ public class Settings {
     public static final double mutateAddNewSegmentWithinThreshold = 0.4;
     public static int mutateAddNewSegmentMaxThreshold = 20;
 
-
     public static final int minimumSegmentationSize = 40;
+
+
+    // Output
+    public static final boolean openImagesToWindow = false;
 
 
     // Helpers
