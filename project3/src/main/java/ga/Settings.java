@@ -37,7 +37,7 @@ public class Settings {
 
 
     // Helpers
-    public enum ColorSpaceType {RGB, LAB}
+    public enum ColorSpaceType {RGB}
     public enum Algorithm {NSGA2, TEST}
     public enum InitialisePopulation{LIGHT, HEAVY}
 }

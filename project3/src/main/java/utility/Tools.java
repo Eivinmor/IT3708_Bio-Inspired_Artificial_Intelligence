@@ -14,7 +14,6 @@ import java.util.Scanner;
 
 public abstract class Tools {
 
-    private static CIELab cieLab = new CIELab();
     public static Random random = new Random();
     public static Scanner scanner = new Scanner(System.in);
     public static Plotter plotter = new Plotter();
@@ -30,7 +29,6 @@ public abstract class Tools {
     public static double colorDistance(Color c1, Color c2) {
         switch (Settings.colorSpace) {
             case RGB: return rgbDistance(c1, c2);
-            case LAB: return cieLabDistance(c1, c2);
         }
         throw new IllegalArgumentException("Settings.colorSpace value is not recognised.");
     }
@@ -41,13 +39,6 @@ public abstract class Tools {
                 + Math.pow(c1.getBlue() - c2.getBlue(), 2));
     }
 
-    private static double cieLabDistance(Color c1, Color c2) {
-        float[] c1Lab = cieLab.fromRGB(c1.getRGBColorComponents(null));
-        float[] c2Lab = cieLab.fromRGB(c2.getRGBColorComponents(null));
-        return Math.sqrt(Math.pow(c1Lab[0] - c2Lab[0], 2)
-                + Math.pow(c1Lab[1] - c2Lab[1], 2)
-                + Math.pow(c1Lab[2] - c2Lab[2], 2));
-    }
 
     public static void printDistance(Chromosome chromosome, boolean printEdges) {
         double totalDistance = 0;
@@ -88,7 +79,6 @@ public abstract class Tools {
         ImageWriter.writeChromosomeImageRandomRgb(bestChromosome, generation);
         System.out.println("Generation: " + generation);
         System.out.println("Press Enter to continue...");
-        if (scanner.nextLine().equals("gif")) ImagesToGif.readImages();
     }
 
     public static void printObjectiveValues(ArrayList<NSGA2Chromosome> chromosomes) {
