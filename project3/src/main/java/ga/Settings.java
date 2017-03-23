@@ -12,6 +12,7 @@ public class Settings {
     public static final boolean useConnectivity = true;         // 2
 
     // NSGA2
+    public static final InitialisePopulation initPop = InitialisePopulation.LIGHT;
     public static final int populationSize = 50;
     public static final int generationsPerPause = 10;
     public static final double crossoverRate = 0.5;
@@ -33,4 +34,5 @@ public class Settings {
     // Helpers
     public enum ColorSpaceType {RGB, LAB}
     public enum Algorithm {NSGA2, TEST}
+    public enum InitialisePopulation{LIGHT, HEAVY}
 }

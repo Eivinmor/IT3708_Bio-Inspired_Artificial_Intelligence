@@ -2,10 +2,12 @@ package utility;
 
 import ga.Chromosome;
 import ga.Settings;
+import ga.nsga2.NSGA2Chromosome;
 import representation.Edge;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -87,6 +89,15 @@ public abstract class Tools {
         System.out.println("Generation: " + generation);
         System.out.println("Press Enter to continue...");
         if (scanner.nextLine().equals("gif")) ImagesToGif.readImages();
+    }
+
+    public static void printObjectiveValues(ArrayList<NSGA2Chromosome> chromosomes) {
+        int i = 0;
+        System.out.println(String.format(Locale.US, "%3s%6s%20s%20s%20s", "Id", "Segments", "Deviation", "Edge", "Connectivity"));
+        for (NSGA2Chromosome c : chromosomes) {
+            System.out.println(String.format(Locale.US, "%3s%6d%20f%20f%20f", i, c.numOfSegments, c.cost[0], c.cost[1], c.cost[2]));
+            i++;
+        }
     }
 
 }

@@ -14,12 +14,15 @@ public class NSGA2 {
 
     public void runAlgorithm() {
 
-        createInitialPopulation1();
+        // INITIALISE
+        if (Settings.initPop == Settings.InitialisePopulation.HEAVY) createInitialPopulation1();
+        else if (Settings.initPop == Settings.InitialisePopulation.LIGHT) createInitialPopulation2();
         for (NSGA2Chromosome chromosome : population) chromosome.calculateCost();
-
         rankPopulationByNonDomination();
         selectNewPopulationFromRankedPopulation();
         int generation = 1;
+
+        // GENERATION
         while (true) {
             outputStuff(generation);
             ArrayList<NSGA2Chromosome> offspring = createOffspringPopulation();
@@ -226,6 +229,7 @@ public class NSGA2 {
 //            System.out.println();
 
         if (generation % Settings.generationsPerPause == 0) {
+            Tools.printObjectiveValues(rankedPopulation.get(0));
             ImageWriter.writeAllNSGA2Chromosomes(rankedPopulation.get(0));
             Tools.plotter.plotFront((rankedPopulation.get(0)));
         }
