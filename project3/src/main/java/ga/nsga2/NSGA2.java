@@ -235,7 +235,7 @@ public class NSGA2 {
                 printRank.add(rankedPopulation.get(0).get(0));
                 printRank.add(rankedPopulation.get(0).get(rankedPopulation.get(0).size() -1));
                 for (int i = 1; i < 4; i++) {
-                    printRank.add(rankedPopulation.get(0).get(i*(rankedPopulation.get(0).size()/3)-1));
+                    printRank.add(rankedPopulation.get(0).get(i*(rankedPopulation.get(0).size()/4)-1));
                 }
             }
             Tools.printObjectiveValues(printRank);
