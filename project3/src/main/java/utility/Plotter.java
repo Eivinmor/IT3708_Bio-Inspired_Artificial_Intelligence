@@ -21,8 +21,10 @@ public class Plotter {
         PointDataSet<Double> d = new PointDataSet<>();
 
         if (Settings.useOverallDeviation && Settings.useEdgeValue && Settings.useConnectivity) {
-//            p = new JavaPlot(true);
-//            p.setTitle("Pareto front");
+            if (Settings.plotParetoSolo) {
+                p = new JavaPlot(true);
+                p.setTitle("Pareto front");
+            }
             p.set("xlabel", "'Deviation' offset -4,0,0");
             p.set("ylabel", "'Edge value' offset -4,0,0");
             p.set("zlabel", "'Connectivity' offset -4,0,0");
@@ -30,8 +32,10 @@ public class Plotter {
                 d.add(new Point<>(chromosome.cost[0], chromosome.cost[1], chromosome.cost[2]));
         }
         else {
-//            p = new JavaPlot();
-//            p.setTitle("Pareto front");
+            if (Settings.plotParetoSolo) {
+                p = new JavaPlot();
+                p.setTitle("Pareto front");
+            }
             if (Settings.useOverallDeviation && Settings.useEdgeValue) {
                 p.set("xlabel", "'Deviation' offset -4,0,0");
                 p.set("ylabel", "'Edge value' offset -4,0,0");

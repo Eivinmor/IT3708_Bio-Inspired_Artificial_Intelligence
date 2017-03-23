@@ -3,7 +3,7 @@ package ga;
 
 public class Settings {
 
-    public static final int imageId = 2;
+    public static final int imageId = 1;
     public static final Algorithm algorithm = Algorithm.NSGA2;
 
     // Cost functions
@@ -25,13 +25,14 @@ public class Settings {
     public static final double mutateSetRandomEdgeRate = 0.2;
     public static final double mutateRemoveEdge = 0.1;
     public static final double mutateAddNewSegmentWithinThreshold = 0.4;
-    public static int mutateAddNewSegmentMaxThreshold = 20;
+    public static int mutateAddNewSegmentMaxThreshold = 20;     //
 
-    public static final int minimumSegmentationSize = 40;
+    public static final int minimumSegmentationSize = 40;      // Lower for more segments
 
 
     // Output
     public static final boolean openImagesToWindow = false;
+    public static final boolean plotParetoSolo = false;
 
 
     // Helpers

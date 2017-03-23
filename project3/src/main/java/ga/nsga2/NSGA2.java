@@ -65,7 +65,7 @@ public class NSGA2 {
             NSGA2Chromosome chromosome = new NSGA2Chromosome(cloneChromosome);
             chromosome.removeKRandomEdges(Tools.random.nextInt(10)); // TODO Merge her?
             chromosome.mergeSegmentsSmallerThanK(1000 + Tools.random.nextInt(1000));
-            ImageWriter.writeChromosomeImageRandomRgb(chromosome, i);
+//            ImageWriter.writeChromosomeImageRandomRgb(chromosome, i);
             population.add(chromosome);
         }
         System.out.println();
