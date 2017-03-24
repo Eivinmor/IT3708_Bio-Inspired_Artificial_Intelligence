@@ -239,7 +239,7 @@ public class NSGA2 {
                 }
             }
             Tools.printObjectiveValues(printRank);
-            ImageWriter.writeAllNSGA2Chromosomes(printRank);
+            ImageWriter.writeAllNSGA2Chromosomes(rankedPopulation.get(0));
             if (Settings.openImagesToWindow) ImageWriter.openAllChromosomesInWindow(printRank);
             Tools.plotter.plotFront(rankedPopulation.get(0));
         }

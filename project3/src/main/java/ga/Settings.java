@@ -3,7 +3,7 @@ package ga;
 
 public class Settings {
 
-    public static final int imageId = 3;
+    public static final int imageId = 1;
     public static final Algorithm algorithm = Algorithm.NSGA2;
 
     // Cost functions
@@ -13,7 +13,7 @@ public class Settings {
 
     // NSGA2
     public static final InitialisePopulation initPop = InitialisePopulation.LIGHT;
-    public static final int populationSize = 50;
+    public static final int populationSize = 100;
     public static final int generationsPerPause = 10;
     public static final double crossoverRate = 0.5;
     public static final double mutationRate = 0.8;
@@ -32,7 +32,7 @@ public class Settings {
 
     // Output
     public static final boolean openImagesToWindow = false;
-    public static final boolean plotParetoSolo = true;
+    public static final boolean plotParetoSolo = false;
     public static final boolean printOnlyFive = false;
 
 
