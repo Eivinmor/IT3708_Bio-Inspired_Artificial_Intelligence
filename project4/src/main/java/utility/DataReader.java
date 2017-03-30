@@ -32,7 +32,7 @@ public abstract class DataReader {
             for (int j = 0; j < lineStringArray.length; j+=2) {
                 int machine = Integer.parseInt(lineStringArray[j]);
                 int duration = Integer.parseInt(lineStringArray[j+1]);
-                Operation op = new Operation(i, machine, duration);
+                Operation op = new Operation(i-1, machine, duration);
                 JSP.jobs[i-1][j/2] = op;
             }
         }

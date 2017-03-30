@@ -3,9 +3,10 @@ package representation;
 
 public class Operation {
 
-    public final int job, machine, duration;
+    public final int job, machine;
+    public final double duration;
 
-    public Operation(int job, int machine, int duration) {
+    public Operation(int job, int machine, double duration) {
         this.job = job;
         this.machine = machine;
         this.duration = duration;
@@ -13,6 +14,6 @@ public class Operation {
 
     @Override
     public String toString() {
-        return "O={ j:" + job + " m:" + machine + " d:" + duration + "}";
+        return "O={j" + job + " m" + machine + " d" + duration + "}";
     }
 }
