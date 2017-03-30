@@ -9,7 +9,7 @@ import java.util.Arrays;
 public class Main {
 
     public static void main(String[] args) {
-        String[] strAr = DataReader.readOdtToStringArray(1);
+        String[] strAr = DataReader.readOdtToStringArray(0);
         DataReader.makeRepresentation(strAr);
 
         for (int i = 0; i < JSP.numOfJobs; i++) {

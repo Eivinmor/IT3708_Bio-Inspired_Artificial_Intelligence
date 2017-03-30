@@ -14,6 +14,6 @@ public class Operation {
 
     @Override
     public String toString() {
-        return "O={j" + job + " m" + machine + " d" + duration + "}";
+        return "O={m" + machine + " j" + job + " d" + duration + "}";
     }
 }

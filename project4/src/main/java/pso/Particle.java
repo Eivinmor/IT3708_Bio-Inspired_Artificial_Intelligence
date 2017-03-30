@@ -39,20 +39,32 @@ public class Particle {
             schedulable.add(jobQueues[i].remove(0));
         }
         while (!schedulable.isEmpty()) {
-            Operation bestOperation = schedulable.get(0);
-            double bestFinishTime = jobEndTime[bestOperation.job] + bestOperation.duration;
+            // Find best machine
+            Operation earliestDoneOperation = schedulable.get(0);
+            double bestFinishTime = jobEndTime[earliestDoneOperation.job] + earliestDoneOperation.duration;
             for (int i = 1; i < schedulable.size(); i++) {
                 Operation op = schedulable.get(i);
                 double opFinisTime = jobEndTime[op.job] + op.duration;
                 if (opFinisTime < bestFinishTime) {
-                    bestOperation = op;
+                    earliestDoneOperation = op;
                     bestFinishTime = opFinisTime;
                 }
             }
-            schedulable.remove(bestOperation);
-            if (!jobQueues[bestOperation.job].isEmpty()) schedulable.add(jobQueues[bestOperation.job].remove(0));
-            schedule[bestOperation.machine][bestOperation.job] = machineOperations[bestOperation.machine];
-            machineOperations[bestOperation.machine]++;
+            // Find highest prio within machine of best
+            int bestMachine = earliestDoneOperation.machine;
+            Operation prioOp = earliestDoneOperation;
+            for (Operation op : schedulable) {
+                if (op.machine == bestMachine
+                        && preferenceMatrix[op.machine][op.job] < preferenceMatrix[prioOp.machine][prioOp.job])
+                    prioOp = op;
+            }
+
+
+            schedulable.remove(prioOp);
+            if (!jobQueues[prioOp.job].isEmpty()) schedulable.add(jobQueues[prioOp.job].remove(0));
+            schedule[prioOp.machine][prioOp.job] = machineOperations[prioOp.machine];
+            machineOperations[prioOp.machine]++;
+            System.out.println(prioOp);
         }
         return schedule;
     }

@@ -1,6 +1,7 @@
 package utility;
 
 import java.io.*;
+import java.util.Arrays;
 
 import org.odftoolkit.simple.TextDocument;
 import org.odftoolkit.simple.common.TextExtractor;
@@ -27,8 +28,9 @@ public abstract class DataReader {
         JSP.numOfJobs = Integer.parseInt(lineStringArray[0]);
         JSP.numOfMachines = Integer.parseInt(lineStringArray[1]);
         JSP.jobs = new Operation[JSP.numOfJobs][JSP.numOfMachines];
-        for (int i = 1; i < stringArray.length; i++) {
+        for (int i = 1; i < JSP.numOfJobs + 1; i++) {
             lineStringArray = stringArray[i].trim().replaceAll(" +", " ").split(" ");
+            System.out.println(Arrays.toString(lineStringArray));
             for (int j = 0; j < lineStringArray.length; j+=2) {
                 int machine = Integer.parseInt(lineStringArray[j]);
                 int duration = Integer.parseInt(lineStringArray[j+1]);
