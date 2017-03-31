@@ -1,6 +1,5 @@
 import pso.Particle;
 import representation.JSP;
-import representation.Operation;
 import utility.DataReader;
 import utility.Plotter;
 
@@ -37,14 +36,17 @@ public class Main {
         Plotter plotter = new Plotter();
         plotter.plotPSOSchedule(p);
 
-//        try {
-//            TimeUnit.SECONDS.sleep(1);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        Particle p2 = new Particle();
-//        plotter.plotPSOSchedule(p2);
 
+        for (int i = 0; i < 100; i++) {
+            try {
+                TimeUnit.MILLISECONDS.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Particle p2 = new Particle();
+            p2.generateSchedule();
+            plotter.plotPSOSchedule(p2);
+        }
     }
 
 }
