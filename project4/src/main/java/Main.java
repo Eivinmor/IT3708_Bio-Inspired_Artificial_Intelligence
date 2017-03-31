@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 public class Main {
 
     public static void main(String[] args) {
-        String[] strAr = DataReader.readOdtToStringArray(3);
+        String[] strAr = DataReader.readOdtToStringArray(1);
         DataReader.makeRepresentation(strAr);
 
         for (int i = 0; i < JSP.numOfJobs; i++) {

@@ -6,7 +6,6 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.SymbolAxis;
 import org.jfree.chart.plot.PlotOrientation;
 
-
 import org.jfree.chart.plot.XYPlot;
 
 import org.jfree.chart.renderer.xy.StandardXYBarPainter;
@@ -14,7 +13,6 @@ import org.jfree.chart.renderer.xy.XYBarRenderer;
 import org.jfree.data.xy.XYIntervalSeries;
 import org.jfree.data.xy.XYIntervalSeriesCollection;
 import org.jfree.ui.ApplicationFrame;
-import org.jfree.ui.RefineryUtilities;
 import representation.JSP;
 import representation.Operation;
 
@@ -23,6 +21,7 @@ import java.awt.*;
 
 public class Plotter extends ApplicationFrame {
 
+    // TODO Add (op order), (job id) labels for operation bars
 
     String[] machines, jobs;
     XYIntervalSeriesCollection dataset;
@@ -62,7 +61,7 @@ public class Plotter extends ApplicationFrame {
         renderer.setDrawBarOutline(true);
         renderer.setBaseOutlinePaint(Color.BLACK);
 
-        XYPlot plot = new XYPlot(dataset, new SymbolAxis("Machines", machines), new NumberAxis(), renderer);
+        XYPlot plot = new XYPlot(dataset, new SymbolAxis("Machines", machines), new NumberAxis("Time"), renderer);
 
         plot.getDomainAxis().setInverted(true);
         plot.setDomainGridlinesVisible(false);
