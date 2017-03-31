@@ -76,7 +76,7 @@ public class Particle {
                 counter++;
             }
 //            operationStartTimes[prioOp.job][prioOp.machine] = prioOpFinishTime - prioOp.duration;
-            System.out.println(prioOp);
+//            System.out.println(prioOp);
         }
         double maxSpan = machineEndTime[0];
         for (int i = 1; i < machineEndTime.length; i++)

@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 public class Main {
 
     public static void main(String[] args) {
-        String[] strAr = DataReader.readOdtToStringArray(1);
+        String[] strAr = DataReader.readOdtToStringArray(3);
         DataReader.makeRepresentation(strAr);
 
         for (int i = 0; i < JSP.numOfJobs; i++) {
@@ -36,8 +36,8 @@ public class Main {
         Plotter plotter = new Plotter();
         plotter.plotPSOSchedule(p);
 
-
-        for (int i = 0; i < 100; i++) {
+        double minMakespan = Double.MAX_VALUE;
+        while (true) {
             try {
                 TimeUnit.MILLISECONDS.sleep(100);
             } catch (InterruptedException e) {
@@ -46,6 +46,10 @@ public class Main {
             Particle p2 = new Particle();
             p2.generateSchedule();
             plotter.plotPSOSchedule(p2);
+            if (p2.makespan<minMakespan) {
+                minMakespan = p2.makespan;
+                System.out.println(minMakespan);
+            }
         }
     }
 

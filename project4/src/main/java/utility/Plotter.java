@@ -75,18 +75,18 @@ public class Plotter extends ApplicationFrame {
     }
 
     public void plotPSOSchedule(pso.Particle particle) {
-        System.out.println("\nPlotting...");
+//        System.out.println("\nPlotting...");
         dataset.removeAllSeries();
         XYIntervalSeries[] series = new XYIntervalSeries[JSP.numOfJobs];
         for (int i = 0; i < JSP.numOfJobs; i++) {
-            System.out.println(jobs[i]);
+//            System.out.println(jobs[i]);
             series[i] = new XYIntervalSeries(jobs[i]);
             for (int j = 0; j < JSP.numOfMachines; j++) {
                 Operation op = JSP.jobs[i][j];
                 double startTime = particle.operationStartTimes[i][j];
                 series[i].add(op.machine, op.machine - 0.35, op.machine + 0.35,
                         startTime, startTime, startTime + op.duration);
-                System.out.println(op.machine + " " + startTime + " " + (startTime + op.duration));
+//                System.out.println(op.machine + " " + startTime + " " + (startTime + op.duration));
             }
         }
         for(int i = 0; i < JSP.numOfJobs; i++){
