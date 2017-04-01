@@ -3,7 +3,8 @@ package pso;
 
 public abstract class Settings {
 
-    static final int fileId = 1;
+    public static final int fileId = 5;
+    static final int numOfParticles = 10000;
     static final double gBestFactor = 0.5;
     static final double pBestFactor = 0.3;
 

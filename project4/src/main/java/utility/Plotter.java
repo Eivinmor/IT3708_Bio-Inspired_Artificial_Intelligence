@@ -28,7 +28,7 @@ public class Plotter extends ApplicationFrame {
 
     public Plotter() {
 
-        super("Gantt chart");
+        super("Schedule");
 
         dataset = new XYIntervalSeriesCollection();
 
@@ -38,22 +38,6 @@ public class Plotter extends ApplicationFrame {
         jobs = new String[JSP.numOfJobs];
         for(int i = 0; i < JSP.numOfJobs; i++) jobs[i] = "J" + i;
 
-        //Create series. Start and end times are used as y intervals, and the room is represented by the x value
-
-
-//
-//        for(int k = 0; k < totalCourseCount; k++){
-//            //get a random room
-//            int currentRoom = r.nextInt(JSP.numOfMachines);
-//            //get a random course
-//            int currentCourse = r.nextInt(JSP.numOfJobs);
-//            //get a random course duration (1-3 h)
-//            int time = r.nextInt(3) + 1;
-//            //Encode the room as x value. The width of the bar is only 0.6 to leave a small gap. The course starts 0.1 h/6 min after the end of the preceding course.
-//            series[currentCourse].add(currentRoom, currentRoom - 0.3, currentRoom + 0.3, startTimes[currentRoom], startTimes[currentRoom] +0.1, startTimes[currentRoom] + time - 0.1);
-//            //Increase start time for the current room
-//            startTimes[currentRoom] += time;
-//        }
         XYBarRenderer renderer = new XYBarRenderer();
         renderer.setUseYInterval(true);
         renderer.setShadowVisible(false);
@@ -73,7 +57,27 @@ public class Plotter extends ApplicationFrame {
         setVisible(true);
     }
 
-    public void plotPSOSchedule(pso.Particle particle) {
+//    public void plotPSOSchedule(pso.Particle particle) {
+////        System.out.println("\nPlotting...");
+//        dataset.removeAllSeries();
+//        XYIntervalSeries[] series = new XYIntervalSeries[JSP.numOfJobs];
+//        for (int i = 0; i < JSP.numOfJobs; i++) {
+////            System.out.println(jobs[i]);
+//            series[i] = new XYIntervalSeries(jobs[i]);
+//            for (int j = 0; j < JSP.numOfMachines; j++) {
+//                Operation op = JSP.jobs[i][j];
+//                double startTime = particle.operationStartTimes[i][j];
+//                series[i].add(op.machine, op.machine - 0.35, op.machine + 0.35,
+//                        startTime, startTime, startTime + op.duration);
+////                System.out.println(op.machine + " " + startTime + " " + (startTime + op.duration));
+//            }
+//        }
+//        for(int i = 0; i < JSP.numOfJobs; i++){
+//            dataset.addSeries(series[i]);
+//        }
+//    }
+
+    public void plotPSOSolution(pso.Solution solution) {
 //        System.out.println("\nPlotting...");
         dataset.removeAllSeries();
         XYIntervalSeries[] series = new XYIntervalSeries[JSP.numOfJobs];
@@ -82,7 +86,7 @@ public class Plotter extends ApplicationFrame {
             series[i] = new XYIntervalSeries(jobs[i]);
             for (int j = 0; j < JSP.numOfMachines; j++) {
                 Operation op = JSP.jobs[i][j];
-                double startTime = particle.operationStartTimes[i][j];
+                double startTime = solution.operationStartTimes[i][j];
                 series[i].add(op.machine, op.machine - 0.35, op.machine + 0.35,
                         startTime, startTime, startTime + op.duration);
 //                System.out.println(op.machine + " " + startTime + " " + (startTime + op.duration));
