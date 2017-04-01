@@ -7,13 +7,21 @@ public class PSO {
 
     private int gBestId = 0;
     private int pWorstId = 0;
-    Solution[] pBest = new Solution[Settings.numOfParticles];
-    Particle[] swarm = new Particle[Settings.numOfParticles];
+    private Solution[] pBest = new Solution[Settings.numOfParticles];
+    private Particle[] swarm = new Particle[Settings.numOfParticles];
 
 
     public void runAlgorithm() {
+        initiateSwarm();
+        while (true) {
+            for (int i = 0; i < Settings.numOfParticles; i++) swarm[i] = new Particle();
+            updatePBest();
+            Tools.plotter.plotPSOSolution(pBest[gBestId]);
+            System.out.println(pBest[gBestId].makespan + "\t" + pBest[pWorstId].makespan);
+        }
+    }
 
-        // Initiate swarm
+    private void initiateSwarm() {
         for (int i = 0; i < Settings.numOfParticles; i++) {
             Particle particle = new Particle();
             Solution solution = new Solution(particle);
@@ -21,15 +29,6 @@ public class PSO {
             pBest[i] = solution;
             if (solution.makespan < pBest[gBestId].makespan) gBestId = i;
             else if (solution.makespan > pBest[pWorstId].makespan) pWorstId = i;
-        }
-
-        // TODO Add termination constraint
-        while (true) {
-            updatePBest();
-
-
-            Tools.plotter.plotPSOSolution(pBest[gBestId]);
-            System.out.println(pBest[gBestId].makespan + "\t" + pBest[pWorstId].makespan);
         }
     }
 
