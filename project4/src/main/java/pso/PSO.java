@@ -85,7 +85,8 @@ public class PSO {
         Particle particle = swarm[particleId];
         for (int i = 0; i < JSP.numOfMachines; i++) {
             for (int j = 0; j < JSP.numOfJobs; j++) {
-                particle.velocityMatrix[i][j]--;
+                if (Tools.random.nextDouble() >= Settings.inertiaWeight) particle.velocityMatrix[i][j] = 0;
+//                particle.velocityMatrix[i][j]--;
             }
         }
         for (int i = 0; i < JSP.numOfMachines; i++) {
@@ -103,8 +104,5 @@ public class PSO {
             }
         }
     }
-
-
-
 
 }

@@ -26,7 +26,7 @@ public class Particle {
     }
 
     // TODO - Test
-    public void moveToward(int machine, int job, Solution solution) {
+    void moveToward(int machine, int job, Solution solution) {
         int j1 = preferenceMatrix[machine][job];
         int j1SolutionLocation = -1;
         for (int i = 0; i < JSP.numOfJobs; i++) {
@@ -34,16 +34,19 @@ public class Particle {
         }
         int j2 = preferenceMatrix[machine][j1SolutionLocation];
 
-        if (velocityMatrix[machine][job] <= 0 && velocityMatrix[machine][j1SolutionLocation] <= 0) {
+        if (velocityMatrix[machine][job] <= 0
+                && velocityMatrix[machine][j1SolutionLocation] <= 0
+                && j1 != j2) {
             preferenceMatrix[machine][job] = j2;
             preferenceMatrix[machine][j1SolutionLocation] = j1;
-            velocityMatrix[machine][job] = Settings.movementDelay;
-            velocityMatrix[machine][j1SolutionLocation] = Settings.movementDelay;
+            velocityMatrix[machine][job] = 1;
+            // TODO Not change velocity of job2?
+//            velocityMatrix[machine][job] = Settings.movementDelay;
         }
         if (Tools.random.nextDouble() <= Settings.mutationRate) mutate();
     }
 
-    public void mutate() {
+    void mutate() {
         int machine = Tools.random.nextInt(JSP.numOfMachines);
         int job1 = Tools.random.nextInt(JSP.numOfJobs);
         int job2 = Tools.random.nextInt(JSP.numOfJobs);
@@ -51,6 +54,8 @@ public class Particle {
         int pref2 = preferenceMatrix[machine][job1];
         preferenceMatrix[machine][job1] = pref2;
         preferenceMatrix[machine][job2] = pref1;
+        velocityMatrix[machine][job1] = 1;
+        velocityMatrix[machine][job2] = 1;
     }
 
 
