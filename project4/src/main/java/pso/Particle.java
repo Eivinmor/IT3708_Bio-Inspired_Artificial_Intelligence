@@ -5,7 +5,6 @@ import representation.JSP;
 import utility.Tools;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 
@@ -39,11 +38,9 @@ public class Particle {
                 && j1 != j2) {
             preferenceMatrix[machine][job] = j2;
             preferenceMatrix[machine][j1SolutionLocation] = j1;
-            velocityMatrix[machine][job] = 1;
             // TODO Not change velocity of job2?
-//            velocityMatrix[machine][job] = Settings.movementDelay;
+            velocityMatrix[machine][job] = 1;
         }
-        if (Tools.random.nextDouble() <= Settings.mutationRate) mutate();
     }
 
     void mutate() {
