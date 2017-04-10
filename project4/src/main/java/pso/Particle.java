@@ -21,6 +21,19 @@ public class Particle {
         }
     }
 
+    // TODO - Test
+    public void moveToward(int machine, int job, Solution solution) {
+        int j1 = preferenceMatrix[machine][job];
+        int j1SolutionLocation = -1;
+        for (int i = 0; i < JSP.numOfJobs; i++) {
+            if (solution.schedule[machine][i] == j1) j1SolutionLocation = i;
+        }
+        int j2 = preferenceMatrix[machine][j1SolutionLocation];
+
+        preferenceMatrix[machine][job] = j2;
+        preferenceMatrix[machine][j1SolutionLocation] = j1;
+    }
+
 
 //    public int[][] generateSchedule() {
 //        // TODO Kan optimaliseres uten HashSet
@@ -79,9 +92,5 @@ public class Particle {
 //        makespan = maxSpan;
 //        return schedule;
 //    }
-
-
-
-
 }
 
