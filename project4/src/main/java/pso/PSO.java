@@ -16,7 +16,7 @@ public class PSO {
         initiateSwarm();
         while (true) {
 //            for (int i = 0; i < Settings.numOfParticles; i++) swarm[i] = new Particle();
-            for (int i = 0; i < Settings.numOfParticles; i++) moveParticle(swarm[i]);
+            for (int i = 0; i < Settings.numOfParticles; i++) moveParticle(i);
             updatePBest();
             Tools.plotter.plotPSOSolution(pBest[gBestId]);
             System.out.println(pBest[gBestId].makespan + "\t" + pBest[pWorstId].makespan);
@@ -81,7 +81,13 @@ public class PSO {
     }
 
     // TODO - Test
-    private void moveParticle(Particle particle) {
+    private void moveParticle(int particleId) {
+        Particle particle = swarm[particleId];
+        for (int i = 0; i < JSP.numOfMachines; i++) {
+            for (int j = 0; j < JSP.numOfJobs; j++) {
+                particle.velocityMatrix[i][j]--;
+            }
+        }
         for (int i = 0; i < JSP.numOfMachines; i++) {
             int l = Tools.random.nextInt(JSP.numOfJobs);
             for (int j = 0; j < JSP.numOfJobs; j++) {
@@ -90,7 +96,7 @@ public class PSO {
                     particle.moveToward(i, l, pBest[gBestId]);
                 }
                 else if (prob - Settings.gBestFactor <= Settings.pBestFactor) {
-                    particle.moveToward(i, l, pBest[Tools.random.nextInt(pBest.length)]);
+                    particle.moveToward(i, l, pBest[particleId]);
                 }
                 l++;
                 if (l == JSP.numOfJobs) l = 0;

@@ -2,17 +2,21 @@ package pso;
 
 
 import representation.JSP;
+import utility.Tools;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 
 public class Particle {
 
     int[][] preferenceMatrix;
+    int[][] velocityMatrix;
 
     Particle() {
         preferenceMatrix = new int[JSP.numOfMachines][JSP.numOfJobs];
+        velocityMatrix = new int[JSP.numOfMachines][JSP.numOfJobs];
         ArrayList<Integer> preferences = new ArrayList<>(JSP.numOfJobs);
         for (int i = 0; i < JSP.numOfJobs; i++) preferences.add(i);
         for (int i = 0; i < JSP.numOfMachines; i++) {
@@ -30,8 +34,23 @@ public class Particle {
         }
         int j2 = preferenceMatrix[machine][j1SolutionLocation];
 
-        preferenceMatrix[machine][job] = j2;
-        preferenceMatrix[machine][j1SolutionLocation] = j1;
+        if (velocityMatrix[machine][job] <= 0 && velocityMatrix[machine][j1SolutionLocation] <= 0) {
+            preferenceMatrix[machine][job] = j2;
+            preferenceMatrix[machine][j1SolutionLocation] = j1;
+            velocityMatrix[machine][job] = Settings.movementDelay;
+            velocityMatrix[machine][j1SolutionLocation] = Settings.movementDelay;
+        }
+        if (Tools.random.nextDouble() <= Settings.mutationRate) mutate();
+    }
+
+    public void mutate() {
+        int machine = Tools.random.nextInt(JSP.numOfMachines);
+        int job1 = Tools.random.nextInt(JSP.numOfJobs);
+        int job2 = Tools.random.nextInt(JSP.numOfJobs);
+        int pref1 = preferenceMatrix[machine][job1];
+        int pref2 = preferenceMatrix[machine][job1];
+        preferenceMatrix[machine][job1] = pref2;
+        preferenceMatrix[machine][job2] = pref1;
     }
 
 
