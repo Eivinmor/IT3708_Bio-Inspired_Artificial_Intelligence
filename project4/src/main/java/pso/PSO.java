@@ -15,7 +15,7 @@ public class PSO {
     public void runAlgorithm() {
         initiateSwarm();
         while (true) {
-//            for (int i = 0; i < Settings.numOfParticles; i++) swarm[i] = new Particle();
+            updateParticleVelocities();
             for (int i = 0; i < Settings.numOfParticles; i++) moveParticle(i);
             updatePBest();
             Tools.plotter.plotPSOSolution(pBest[gBestId]);
@@ -84,11 +84,6 @@ public class PSO {
     private void moveParticle(int particleId) {
         Particle particle = swarm[particleId];
         for (int i = 0; i < JSP.numOfMachines; i++) {
-            for (int j = 0; j < JSP.numOfJobs; j++) {
-                if (Tools.random.nextDouble() >= Settings.inertiaWeight) particle.velocityMatrix[i][j] = 0;
-            }
-        }
-        for (int i = 0; i < JSP.numOfMachines; i++) {
             int l = Tools.random.nextInt(JSP.numOfJobs);
             for (int j = 0; j < JSP.numOfJobs; j++) {
                 double prob = Tools.random.nextDouble();
@@ -103,6 +98,16 @@ public class PSO {
             }
         }
         if (Tools.random.nextDouble() <= Settings.mutationRate) particle.mutate();
+    }
+
+    private void updateParticleVelocities() {
+        for (Particle particle : swarm) {
+            for (int i = 0; i < JSP.numOfMachines; i++) {
+                for (int j = 0; j < JSP.numOfJobs; j++) {
+                    if (Tools.random.nextDouble() >= Settings.inertiaWeight) particle.velocityMatrix[i][j] = 0;
+                }
+            }
+        }
     }
 
 }
