@@ -13,7 +13,6 @@ public class Solution {
     final double makespan;
     public double[][] operationStartTimes;
 
-
     Solution(Particle particle) {
         schedule = new int[JSP.numOfMachines][JSP.numOfJobs];
         ArrayList<Operation> schedulable = new ArrayList<>(JSP.numOfMachines);
@@ -44,30 +43,31 @@ public class Solution {
             }
             // Find highest prio within machine of best
             int bestMachine = earliestDoneOperation.machine;
-            Operation prioOp = earliestDoneOperation;
-            for (Operation op : schedulable) {
-                if (op.machine == bestMachine
-                        && particle.preferenceMatrix[op.machine][op.job] < particle.preferenceMatrix[prioOp.machine][prioOp.job])
-                    prioOp = op;
-            }
+            Operation prioOp = findHighestPrioOperation(particle, schedulable, bestMachine);
             double prioOpFinishTime = Math.max(jobEndTime[prioOp.job], machineEndTime[prioOp.machine]) + prioOp.duration;
             schedulable.remove(prioOp);
             if (!jobQueues[prioOp.job].isEmpty()) schedulable.add(jobQueues[prioOp.job].remove(0));
-            schedule[prioOp.machine][prioOp.job] = machineOperations[prioOp.machine];
+            schedule[prioOp.machine][machineOperations[prioOp.machine]] = prioOp.job;
             machineOperations[prioOp.machine]++;
             jobEndTime[prioOp.job] = prioOpFinishTime;
             machineEndTime[prioOp.machine] = prioOpFinishTime;
-            int counter = 0;
-            for (Operation op : JSP.jobs[prioOp.job]) {
-                if (op.machine == prioOp.machine)
-                    operationStartTimes[prioOp.job][counter] = prioOpFinishTime - prioOp.duration;
-                counter++;
-            }
+            operationStartTimes[prioOp.job][prioOp.jobOpIndex] = prioOpFinishTime - prioOp.duration;
         }
         double maxSpan = machineEndTime[0];
         for (int i = 1; i < machineEndTime.length; i++)
             if (machineEndTime[i] > maxSpan) maxSpan = machineEndTime[i];
         makespan = maxSpan;
+    }
+
+    private Operation findHighestPrioOperation(Particle particle, ArrayList<Operation> schedulable, int bestMachine) {
+        for (int i = 0; i < JSP.numOfJobs; i++) {
+            for (Operation op : schedulable) {
+                if (op.machine == bestMachine && op.job == particle.preferenceMatrix[bestMachine][i]) {
+                    return op;
+                }
+            }
+        }
+        return null;
     }
 
 }
