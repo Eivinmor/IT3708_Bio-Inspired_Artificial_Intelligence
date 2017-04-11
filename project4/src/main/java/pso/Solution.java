@@ -13,7 +13,6 @@ public class Solution {
     final double makespan;
     public double[][] operationStartTimes;
 
-
     Solution(Particle particle) {
         schedule = new int[JSP.numOfMachines][JSP.numOfJobs];
         ArrayList<Operation> schedulable = new ArrayList<>(JSP.numOfMachines);
