@@ -48,7 +48,7 @@ public class Particle {
         int job1 = Tools.random.nextInt(JSP.numOfJobs);
         int job2 = Tools.random.nextInt(JSP.numOfJobs);
         int pref1 = preferenceMatrix[machine][job1];
-        int pref2 = preferenceMatrix[machine][job1];
+        int pref2 = preferenceMatrix[machine][job2];
         preferenceMatrix[machine][job1] = pref2;
         preferenceMatrix[machine][job2] = pref1;
         velocityMatrix[machine][job1] = 1;
