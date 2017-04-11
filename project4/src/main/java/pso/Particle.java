@@ -37,7 +37,6 @@ public class Particle {
         if (velocityMatrix[machine][j1] == 0 && velocityMatrix[machine][j2] == 0 && j1 != j2) {
             preferenceMatrix[machine][l] = j2;
             preferenceMatrix[machine][j1SolutionLocation] = j1;
-            // TODO Not change velocity of job2?
             velocityMatrix[machine][j1] = 1;
         }
     }

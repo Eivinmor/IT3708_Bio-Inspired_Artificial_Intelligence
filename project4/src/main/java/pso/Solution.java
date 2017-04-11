@@ -61,11 +61,9 @@ public class Solution {
 
     private Operation findHighestPrioOperation(Particle particle, ArrayList<Operation> schedulable, int bestMachine) {
         for (int i = 0; i < JSP.numOfJobs; i++) {
-            for (Operation op : schedulable) {
-                if (op.machine == bestMachine && op.job == particle.preferenceMatrix[bestMachine][i]) {
-                    return op;
-                }
-            }
+            int preferenceJob = particle.preferenceMatrix[bestMachine][i];
+            for (Operation op : schedulable)
+                if (op.machine == bestMachine && op.job == preferenceJob) return op;
         }
         return null;
     }
