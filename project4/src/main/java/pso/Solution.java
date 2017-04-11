@@ -5,6 +5,7 @@ import representation.Operation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 
 
 public class Solution {
@@ -43,7 +44,7 @@ public class Solution {
             }
             // Find highest prio within machine of best
             int bestMachine = earliestDoneOperation.machine;
-            Operation prioOp = findHighestPrioOperation(particle, schedulable, bestMachine);
+            Operation prioOp = findHighestPrioOperation(particle, schedulable, bestMachine, bestFinishTime, jobEndTime, machineEndTime);
             double prioOpFinishTime = Math.max(jobEndTime[prioOp.job], machineEndTime[prioOp.machine]) + prioOp.duration;
             schedulable.remove(prioOp);
             if (!jobQueues[prioOp.job].isEmpty()) schedulable.add(jobQueues[prioOp.job].remove(0));
@@ -59,11 +60,19 @@ public class Solution {
         makespan = maxSpan;
     }
 
-    private Operation findHighestPrioOperation(Particle particle, ArrayList<Operation> schedulable, int bestMachine) {
+    private Operation findHighestPrioOperation(Particle particle, ArrayList<Operation> schedulable, int bestMachine,
+                                               double bestFinishTime, double[] jobEndTime, double[] machineEndTime) {
+        HashSet<Operation> schedulableForBestMachine = new HashSet<>(schedulable.size());
+
+        for (Operation op : schedulable) {
+            if (op.machine == bestMachine && Math.max(jobEndTime[op.job], machineEndTime[op.machine]) < bestFinishTime)
+                schedulableForBestMachine.add(op);
+        }
+
         for (int i = 0; i < JSP.numOfJobs; i++) {
             int preferenceJob = particle.preferenceMatrix[bestMachine][i];
-            for (Operation op : schedulable)
-                if (op.machine == bestMachine && op.job == preferenceJob) return op;
+            for (Operation op : schedulableForBestMachine)
+                if ( op.job == preferenceJob) return op;
         }
         return null;
     }
