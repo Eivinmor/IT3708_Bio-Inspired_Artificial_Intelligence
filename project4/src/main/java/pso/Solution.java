@@ -57,12 +57,7 @@ public class Solution {
             machineOperations[prioOp.machine]++;
             jobEndTime[prioOp.job] = prioOpFinishTime;
             machineEndTime[prioOp.machine] = prioOpFinishTime;
-            int counter = 0;
-            for (Operation op : JSP.jobs[prioOp.job]) {
-                if (op.machine == prioOp.machine)
-                    operationStartTimes[prioOp.job][counter] = prioOpFinishTime - prioOp.duration;
-                counter++;
-            }
+            operationStartTimes[prioOp.job][prioOp.jobOpIndex] = prioOpFinishTime - prioOp.duration;
         }
         double maxSpan = machineEndTime[0];
         for (int i = 1; i < machineEndTime.length; i++)
