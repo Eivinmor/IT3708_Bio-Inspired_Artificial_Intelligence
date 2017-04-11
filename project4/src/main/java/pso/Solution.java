@@ -46,6 +46,7 @@ public class Solution {
             Operation prioOp = earliestDoneOperation;
             for (Operation op : schedulable) {
                 if (op.machine == bestMachine
+                        && Math.max(jobEndTime[op.job], machineEndTime[op.machine]) < bestFinishTime
                         && particle.preferenceMatrix[op.machine][op.job] < particle.preferenceMatrix[prioOp.machine][prioOp.job])
                     prioOp = op;
             }
