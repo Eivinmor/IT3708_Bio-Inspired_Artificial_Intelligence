@@ -31,7 +31,9 @@ public class Solution {
         while (!schedulable.isEmpty()) {
             // Find best machine
             Operation earliestDoneOperation = schedulable.get(0);
-            double bestFinishTime = jobEndTime[earliestDoneOperation.job] + earliestDoneOperation.duration;
+            double bestFinishTime =
+                    Math.max(jobEndTime[earliestDoneOperation.job], machineEndTime[earliestDoneOperation.machine])
+                            + earliestDoneOperation.duration;
             for (int i = 1; i < schedulable.size(); i++) {
                 Operation op = schedulable.get(i);
                 double opFinisTime = Math.max(jobEndTime[op.job], machineEndTime[op.machine]) + op.duration;
