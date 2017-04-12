@@ -27,18 +27,16 @@ public class Particle {
     // TODO - Test
     void moveToward(int machine, int job, Solution solution) {
         int j1 = preferenceMatrix[machine][job];
+
         int j1SolutionLocation = -1;
         for (int i = 0; i < JSP.numOfJobs; i++) {
             if (solution.schedule[machine][i] == j1) j1SolutionLocation = i;
         }
         int j2 = preferenceMatrix[machine][j1SolutionLocation];
 
-        if (velocityMatrix[machine][job] <= 0
-                && velocityMatrix[machine][j1SolutionLocation] <= 0
-                && j1 != j2) {
+        if (velocityMatrix[machine][job] == 0  && velocityMatrix[machine][j1SolutionLocation] == 0 && j1 != j2) {
             preferenceMatrix[machine][job] = j2;
             preferenceMatrix[machine][j1SolutionLocation] = j1;
-            // TODO Not change velocity of job2?
             velocityMatrix[machine][job] = 1;
         }
     }
