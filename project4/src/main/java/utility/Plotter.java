@@ -33,10 +33,10 @@ public class Plotter extends ApplicationFrame {
         dataset = new XYIntervalSeriesCollection();
 
         machines = new String[JSP.numOfMachines];
-        for(int i = 0; i < JSP.numOfMachines; i++) machines[i] = "M" + i;
+        for(int i = 0; i < JSP.numOfMachines; i++) machines[i] = "M" + (i + 1);
 
         jobs = new String[JSP.numOfJobs];
-        for(int i = 0; i < JSP.numOfJobs; i++) jobs[i] = "J" + i;
+        for(int i = 0; i < JSP.numOfJobs; i++) jobs[i] = "J" + (i + 1);
 
         XYBarRenderer renderer = new XYBarRenderer();
         renderer.setUseYInterval(true);

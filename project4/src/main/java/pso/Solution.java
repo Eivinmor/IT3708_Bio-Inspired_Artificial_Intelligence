@@ -60,6 +60,7 @@ public class Solution {
         makespan = maxSpan;
     }
 
+    // TODO - Optimise
     private Operation findHighestPrioOperation(Particle particle, ArrayList<Operation> schedulable, int bestMachine,
                                                double bestFinishTime, double[] jobEndTime, double[] machineEndTime) {
         HashSet<Operation> schedulableForBestMachine = new HashSet<>(schedulable.size());
