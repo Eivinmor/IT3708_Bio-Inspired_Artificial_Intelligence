@@ -5,6 +5,7 @@ import representation.Operation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 
 
 public class Solution {
@@ -43,17 +44,11 @@ public class Solution {
             }
             // Find highest prio within machine of best
             int bestMachine = earliestDoneOperation.machine;
-            Operation prioOp = earliestDoneOperation;
-            for (Operation op : schedulable) {
-                if (op.machine == bestMachine
-                        && Math.max(jobEndTime[op.job], machineEndTime[op.machine]) < bestFinishTime
-                        && particle.preferenceMatrix[op.machine][op.job] < particle.preferenceMatrix[prioOp.machine][prioOp.job])
-                    prioOp = op;
-            }
+            Operation prioOp = findHighestPrioOperation(particle, schedulable, bestMachine, bestFinishTime, jobEndTime, machineEndTime);
             double prioOpFinishTime = Math.max(jobEndTime[prioOp.job], machineEndTime[prioOp.machine]) + prioOp.duration;
             schedulable.remove(prioOp);
             if (!jobQueues[prioOp.job].isEmpty()) schedulable.add(jobQueues[prioOp.job].remove(0));
-            schedule[prioOp.machine][prioOp.job] = machineOperations[prioOp.machine];
+            schedule[prioOp.machine][machineOperations[prioOp.machine]] = prioOp.job;
             machineOperations[prioOp.machine]++;
             jobEndTime[prioOp.job] = prioOpFinishTime;
             machineEndTime[prioOp.machine] = prioOpFinishTime;
@@ -63,6 +58,23 @@ public class Solution {
         for (int i = 1; i < machineEndTime.length; i++)
             if (machineEndTime[i] > maxSpan) maxSpan = machineEndTime[i];
         makespan = maxSpan;
+    }
+
+    private Operation findHighestPrioOperation(Particle particle, ArrayList<Operation> schedulable, int bestMachine,
+                                               double bestFinishTime, double[] jobEndTime, double[] machineEndTime) {
+        HashSet<Operation> schedulableForBestMachine = new HashSet<>(schedulable.size());
+
+        for (Operation op : schedulable) {
+            if (op.machine == bestMachine && Math.max(jobEndTime[op.job], machineEndTime[op.machine]) < bestFinishTime)
+                schedulableForBestMachine.add(op);
+        }
+
+        for (int i = 0; i < JSP.numOfJobs; i++) {
+            int preferenceJob = particle.preferenceMatrix[bestMachine][i];
+            for (Operation op : schedulableForBestMachine)
+                if ( op.job == preferenceJob) return op;
+        }
+        return null;
     }
 
 }
