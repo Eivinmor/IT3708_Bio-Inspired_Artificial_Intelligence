@@ -1,15 +1,16 @@
 import pso.PSO;
-import pso.Settings;
+import aco.ACO;
 import utility.DataReader;
 
 
 public class Main {
 
     private enum Algorithm {PSO, ACO, BCO}
-    private static Algorithm algorithm = Algorithm.PSO;
+    private static Algorithm algorithm = Algorithm.ACO;
+    public static final int fileId = 32;
 
     public static void main(String[] args) {
-        String[] strAr = DataReader.readOdtToStringArray(Settings.fileId);
+        String[] strAr = DataReader.readOdtToStringArray(fileId);
         DataReader.makeRepresentation(strAr);
         switch (algorithm) {
             case PSO:
@@ -17,6 +18,8 @@ public class Main {
                 pso.runAlgorithm();
                 break;
             case ACO:
+                ACO aco = new ACO();
+                aco.runAlgorithm();
                 break;
             case BCO:
                 break;
