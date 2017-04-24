@@ -4,15 +4,19 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.SymbolAxis;
+import org.jfree.chart.labels.*;
 import org.jfree.chart.plot.PlotOrientation;
 
 import org.jfree.chart.plot.XYPlot;
 
+import org.jfree.chart.renderer.xy.GradientXYBarPainter;
 import org.jfree.chart.renderer.xy.StandardXYBarPainter;
 import org.jfree.chart.renderer.xy.XYBarRenderer;
+import org.jfree.data.xy.XYIntervalDataItem;
 import org.jfree.data.xy.XYIntervalSeries;
 import org.jfree.data.xy.XYIntervalSeriesCollection;
 import org.jfree.ui.ApplicationFrame;
+import org.jfree.ui.TextAnchor;
 import representation.JSP;
 import representation.Operation;
 
@@ -44,6 +48,11 @@ public class Plotter extends ApplicationFrame {
         renderer.setBarPainter(new StandardXYBarPainter());
         renderer.setDrawBarOutline(true);
         renderer.setBaseOutlinePaint(Color.BLACK);
+
+        renderer.setBaseItemLabelGenerator(new CustomXYItemLabelGenerator());
+        renderer.setBaseItemLabelsVisible(true);
+        renderer.setBaseItemLabelPaint(Color.BLACK);
+        renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(ItemLabelAnchor.INSIDE6, TextAnchor.BOTTOM_CENTER));
 
         XYPlot plot = new XYPlot(dataset, new SymbolAxis("Machines", machines), new NumberAxis("Time"), renderer);
 
@@ -87,8 +96,10 @@ public class Plotter extends ApplicationFrame {
             for (int j = 0; j < JSP.numOfMachines; j++) {
                 Operation op = JSP.jobs[i][j];
                 double startTime = solution.operationStartTimes[i][j];
-                series[i].add(op.machine, op.machine - 0.35, op.machine + 0.35,
-                        startTime, startTime, startTime + op.duration);
+                String label = "(" + (j+1) + "/" + (op.job+1) + ")";
+                CustomXYIntervalDataItem item =  new CustomXYIntervalDataItem(op.machine, op.machine - 0.35, op.machine + 0.35,
+                        startTime, startTime, startTime + op.duration, label);
+                series[i].add(item, false);
 //                System.out.println(op.machine + " " + startTime + " " + (startTime + op.duration));
             }
         }
@@ -97,3 +108,4 @@ public class Plotter extends ApplicationFrame {
         }
     }
 }
+
