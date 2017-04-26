@@ -107,5 +107,27 @@ public class Plotter extends ApplicationFrame {
             dataset.addSeries(series[i]);
         }
     }
+
+    public void plotACOSolution(aco.Solution solution) {
+//        System.out.println("\nPlotting...");
+        dataset.removeAllSeries();
+        XYIntervalSeries[] series = new XYIntervalSeries[JSP.numOfJobs];
+        for (int i = 0; i < JSP.numOfJobs; i++) {
+//            System.out.println(jobs[i]);
+            series[i] = new XYIntervalSeries(jobs[i]);
+            for (int j = 0; j < JSP.numOfMachines; j++) {
+                Operation op = JSP.jobs[i][j];
+                double startTime = solution.operationStartTimes[i][j];
+                String label = "(" + (j+1) + "/" + (op.job+1) + ")";
+                CustomXYIntervalDataItem item =  new CustomXYIntervalDataItem(op.machine, op.machine - 0.35, op.machine + 0.35,
+                        startTime, startTime, startTime + op.duration, label);
+                series[i].add(item, false);
+//                System.out.println(op.machine + " " + startTime + " " + (startTime + op.duration));
+            }
+        }
+        for(int i = 0; i < JSP.numOfJobs; i++){
+            dataset.addSeries(series[i]);
+        }
+    }
 }
 

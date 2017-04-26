@@ -21,17 +21,19 @@ public class Ant {
         double[] edgeValue = new double[edges.size()];
 
         for (int i = 0; i < edges.size(); i++) {
-            double distance = 10; // TODO - PLACEHOLDER, calculate
+            Edge edge = edges.get(i);
+            double distance = JSP.getOperation(edge.to).duration; // TODO - Replace with operation start time
             double heuristic = (Settings.distanceValueConstant/distance);
-            edgeValue[i] = Math.pow(edges.get(i).pheromone, Settings.pheromoneInfluence)
+            edgeValue[i] = Math.pow(edge.pheromone, Settings.pheromoneInfluence)
                     * Math.pow(heuristic, Settings.heuristicInfluence);
             totalValue += edgeValue[i];
         }
 
         double randomValue = Tools.random.nextDouble() * totalValue;
         for (int i = 0; i < edgeValue.length; i++) {
+//            System.out.println(randomValue);
             randomValue -= edgeValue[i];
-            if (randomValue <= 0) return i;
+            if (randomValue <= 0) return edges.get(i).to;
         }
         System.out.println("NÅKKA E GALT HER");
         return -1;
