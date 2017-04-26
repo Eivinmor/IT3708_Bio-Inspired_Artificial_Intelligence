@@ -24,9 +24,8 @@ public class ACO {
             ant.moveTo(startNode * JSP.numOfJobs);
 
             for (int i = 0; i < JSP.numOfOperations - 1; i++) {
-
-                // Find possible edges
-                // Make ant decide and move (store path in ant)
+                ArrayList<Edge> possibleEdges = findPossibleEdges(ant, curOpIndex);
+                ant.chooseEdge(possibleEdges, jobEndTime, machineEndTime);
             }
 
             // Update local pheromone on path (reduction)
@@ -66,13 +65,11 @@ public class ACO {
         return JSP.jobs[graphIndex / JSP.numOfMachines][graphIndex % JSP.numOfMachines];
     }
 
-    private ArrayList<Edge> findPossibleEdges(Ant ant) {
+    private ArrayList<Edge> findPossibleEdges(Ant ant, int[] curOpIndex) {
         ArrayList<Edge> edges = new ArrayList<>(JSP.numOfJobs);
-        for (int i = 0; i < JSP.numOfOperations; i++) {
-            if (!ant.visited.contains(i)) {
-                Edge edge = graph[ant.position][i];
-                if (edge != null) edges.add(edge);
-            }
+        for (int i = 0; i < JSP.numOfJobs; i++) {
+            Edge edge = graph[ant.position][curOpIndex[i]];
+            if (edge != null) edges.add(edge);
         }
         return edges;
     }
