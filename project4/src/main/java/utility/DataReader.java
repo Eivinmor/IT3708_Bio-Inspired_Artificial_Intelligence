@@ -27,6 +27,7 @@ public abstract class DataReader {
         String[] lineStringArray = stringArray[0].trim().replaceAll(" +", " ").split(" ");
         JSP.numOfJobs = Integer.parseInt(lineStringArray[0]);
         JSP.numOfMachines = Integer.parseInt(lineStringArray[1]);
+        JSP.numOfOperations = JSP.numOfJobs * JSP.numOfMachines;
         JSP.jobs = new Operation[JSP.numOfJobs][JSP.numOfMachines];
         for (int i = 1; i < JSP.numOfJobs + 1; i++) {
             lineStringArray = stringArray[i].trim().replaceAll(" +", " ").split(" ");

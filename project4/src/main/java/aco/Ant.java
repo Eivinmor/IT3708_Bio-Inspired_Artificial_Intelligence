@@ -1,14 +1,26 @@
 package aco;
 
 import representation.JSP;
-import representation.Operation;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 
 public class Ant {
 
-    HashSet<Edge> availableEdges = new HashSet<>(JSP.numOfJobs);
-    Operation[] path = new Operation[JSP.numOfJobs * JSP.numOfMachines];
+    int position;
+    ArrayList<Integer> path = new ArrayList<>(JSP.numOfOperations);
+    HashSet<Integer> visited = new HashSet<>(JSP.numOfOperations);
+
+    public void moveTo(int index) {
+        visited.add(index);
+        position = index;
+        path.add(index);
+    }
+
+//    public int chooseEdge(ArrayList<Edge> edges){
+//
+//    }
+
 
 }

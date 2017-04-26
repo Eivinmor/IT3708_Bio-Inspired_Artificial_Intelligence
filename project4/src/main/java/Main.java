@@ -6,7 +6,7 @@ import utility.DataReader;
 public class Main {
 
     private enum Algorithm {PSO, ACO, BCO, TEST}
-    private static Algorithm algorithm = Algorithm.TEST;
+    private static Algorithm algorithm = Algorithm.ACO;
     public static final int fileId = 1;
 
     public static void main(String[] args) {
