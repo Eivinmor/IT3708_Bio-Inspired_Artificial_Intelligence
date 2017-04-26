@@ -1,19 +1,21 @@
 package aco;
 
-import representation.Operation;
-
 
 public class Edge {
-    public final Operation from, to;
+    public final int from, to;
     public double pheromone;
 
 
-    public Edge(Operation from, Operation to) {
+    public Edge(int from, int to) {
         this.from = from;
         this.to = to;
         this.pheromone = 0;
     }
 
+    @Override
+    public String toString() {
+        return "From " + from  + " to " + to + " - Pheromone:" + pheromone;
+    }
 }
 
 
