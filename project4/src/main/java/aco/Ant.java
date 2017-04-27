@@ -27,9 +27,9 @@ public class Ant {
         for (int i = 0; i < edges.size(); i++) {
             Edge edge = edges.get(i);
             double distance = JSP.getOperation(edge.to).duration; // TODO - Replace with operation start time
-            double heuristic = (Settings.distanceValueConstant/distance);
-            edgeValue[i] = Math.pow(edge.pheromone, Settings.pheromoneInfluence)
-                    * Math.pow(heuristic, Settings.heuristicInfluence);
+            double heuristic = (Settings.C/distance);
+            edgeValue[i] = Math.pow(edge.pheromone, Settings.alpha)
+                    * Math.pow(heuristic, Settings.beta);
             totalValue += edgeValue[i];
         }
 

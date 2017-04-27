@@ -12,7 +12,7 @@ public class ACO {
 
     public void runAlgorithm() {
         graph = generateGraph();
-        ACOSolution totalBestSolution = new ACOSolution(new Ant());
+        ACOSolution totalBestSolution;
         double totalBestMakespan = Double.POSITIVE_INFINITY;
         int startNode = -1;
 
@@ -38,7 +38,6 @@ public class ACO {
                 localPheromoneUpdate(ant.path);
                 if (solution.makespan < roundBestMakespan) {
                     roundBestMakespan = solution.makespan;
-//                    bestPath = new ArrayList<>(ant.path);
                     bestPath = ant.path;
                     if (solution.makespan < totalBestMakespan) {
                         totalBestSolution = solution;
@@ -47,14 +46,9 @@ public class ACO {
                         Tools.plotter.plotSolution(totalBestSolution);
                     }
                 }
-//                try {
-//                    TimeUnit.MILLISECONDS.sleep(100);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
             }
-            Tools.plotter.plotSolution(totalBestSolution);
             globalPheromoneUpdate(bestPath, roundBestMakespan);
+//            printGraph();
         }
     }
 

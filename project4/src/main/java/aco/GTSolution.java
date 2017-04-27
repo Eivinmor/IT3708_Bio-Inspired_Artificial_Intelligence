@@ -2,16 +2,14 @@ package aco;
 
 import representation.JSP;
 import representation.Operation;
+import representation.Solution;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 
 
-public class GTSolution {
-
-    final double makespan;
-    public double[][] operationStartTimes;
+public class GTSolution extends Solution{
 
     GTSolution(Ant ant) {
         ArrayList<Operation> schedulable = new ArrayList<>(JSP.numOfMachines);
