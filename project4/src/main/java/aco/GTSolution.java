@@ -8,18 +8,15 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 
-public class Solution {
+public class GTSolution {
 
-    final int[][] schedule;
     final double makespan;
     public double[][] operationStartTimes;
 
-    Solution(Ant ant) {
-        schedule = new int[JSP.numOfMachines][JSP.numOfJobs];
+    GTSolution(Ant ant) {
         ArrayList<Operation> schedulable = new ArrayList<>(JSP.numOfMachines);
         double[] jobEndTime = new double[JSP.numOfJobs];
         double[] machineEndTime = new double[JSP.numOfMachines];
-        int[] machineOperations = new int[JSP.numOfMachines];
         operationStartTimes = new double[JSP.numOfJobs][JSP.numOfMachines];
 
         int[][] preferenceMatrix = antPathToPreferenceMatrix(ant.path);
@@ -50,8 +47,6 @@ public class Solution {
             double prioOpFinishTime = Math.max(jobEndTime[prioOp.job], machineEndTime[prioOp.machine]) + prioOp.duration;
             schedulable.remove(prioOp);
             if (!jobQueues[prioOp.job].isEmpty()) schedulable.add(jobQueues[prioOp.job].remove(0));
-            schedule[prioOp.machine][machineOperations[prioOp.machine]] = prioOp.job;
-            machineOperations[prioOp.machine]++;
             jobEndTime[prioOp.job] = prioOpFinishTime;
             machineEndTime[prioOp.machine] = prioOpFinishTime;
             operationStartTimes[prioOp.job][prioOp.jobOpIndex] = prioOpFinishTime - prioOp.duration;
@@ -92,5 +87,30 @@ public class Solution {
         }
         return preferenceMatrix;
     }
+
+    public ArrayList<Integer> scheduleToAntPath() { // TODO This is slow af
+        int[] jobOpIndexes = new int[JSP.numOfJobs];
+        ArrayList<Integer> path = new ArrayList<>(JSP.numOfOperations);
+        for (int i = 0; i < JSP.numOfOperations; i++) {
+            int firstOperation = -1;
+            int firstJob = -1;
+            double firstStartTime = Double.POSITIVE_INFINITY;
+            for (int j = 0; j < JSP.numOfJobs; j++) {
+                if (jobOpIndexes[j] < JSP.numOfMachines){
+                    double startTime = operationStartTimes[j][jobOpIndexes[j]];
+                    if (startTime < firstStartTime){
+                        firstStartTime = startTime;
+                        firstJob = j;
+                        firstOperation = j * JSP.numOfMachines + jobOpIndexes[j];
+                    }
+                }
+            }
+            path.add(firstOperation);
+            jobOpIndexes[firstJob]++;
+        }
+//        System.out.println(path);
+        return path;
+    }
+
 
 }

@@ -8,13 +8,11 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 
-public class Solution {
+public class PSOSolution extends representation.Solution{
 
     final int[][] schedule;
-    final double makespan;
-    public double[][] operationStartTimes;
 
-    Solution(Particle particle) {
+    PSOSolution(Particle particle) {
         schedule = new int[JSP.numOfMachines][JSP.numOfJobs];
         ArrayList<Operation> schedulable = new ArrayList<>(JSP.numOfMachines);
         double[] jobEndTime = new double[JSP.numOfJobs];

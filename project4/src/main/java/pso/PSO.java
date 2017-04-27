@@ -8,7 +8,7 @@ public class PSO {
 
     private int gBestId = 0;
     private int pWorstId = 0;
-    private Solution[] pBest = new Solution[Settings.numOfParticles];
+    private PSOSolution[] pBest = new PSOSolution[Settings.numOfParticles];
     private Particle[] swarm = new Particle[Settings.numOfParticles];
 
 
@@ -18,7 +18,7 @@ public class PSO {
             updateParticleVelocities();
             for (int i = 0; i < Settings.numOfParticles; i++) moveParticle(i);
             updatePBest();
-            Tools.plotter.plotPSOSolution(pBest[gBestId]);
+            Tools.plotter.plotSolution(pBest[gBestId]);
             System.out.println(pBest[gBestId].makespan + "\t" + pBest[pWorstId].makespan);
         }
     }
@@ -26,7 +26,7 @@ public class PSO {
     private void initiateSwarm() {
         for (int i = 0; i < Settings.numOfParticles; i++) {
             Particle particle = new Particle();
-            Solution solution = new Solution(particle);
+            PSOSolution solution = new PSOSolution(particle);
             swarm[i] = particle;
             pBest[i] = solution;
             if (solution.makespan < pBest[gBestId].makespan) gBestId = i;
@@ -36,7 +36,7 @@ public class PSO {
 
     private void updatePBest() {
         for (int i = 0; i < swarm.length; i++) {
-            Solution solution = new Solution(swarm[i]);
+            PSOSolution solution = new PSOSolution(swarm[i]);
             if (solution.makespan > pBest[pWorstId].makespan) continue; // Worse than all
             if (attemptReplaceGBest(solution)) continue;                // Better than gBest
             if (attemptReplaceEqual(solution)) continue;                // Equal to pBest[i]
@@ -44,7 +44,7 @@ public class PSO {
         }
     }
 
-    private boolean attemptReplaceGBest(Solution solution) {
+    private boolean attemptReplaceGBest(PSOSolution solution) {
         if (solution.makespan < pBest[gBestId].makespan) {
             pBest[pWorstId] = pBest[gBestId];
             pBest[gBestId] = solution;
@@ -54,7 +54,7 @@ public class PSO {
         return false;
     }
 
-    private boolean attemptReplaceEqual(Solution solution) {
+    private boolean attemptReplaceEqual(PSOSolution solution) {
         for (int i = 0; i < pBest.length; i++) {
             if (solution.makespan == pBest[i].makespan){
                 pBest[i] = solution;
@@ -64,7 +64,7 @@ public class PSO {
         return false;
     }
 
-    private boolean attemptReplacePWorst(Solution solution) {
+    private boolean attemptReplacePWorst(PSOSolution solution) {
         if (solution.makespan < pBest[pWorstId].makespan) {
             pBest[pWorstId] = solution;
             pWorstId = findPWorstID();

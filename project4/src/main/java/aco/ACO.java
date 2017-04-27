@@ -12,46 +12,49 @@ public class ACO {
 
     public void runAlgorithm() {
         graph = generateGraph();
-        Solution totalBestSolution = null;
+        ACOSolution totalBestSolution = new ACOSolution(new Ant());
         double totalBestMakespan = Double.POSITIVE_INFINITY;
         int startNode = -1;
 
         while (true) {
-            double bestMakespan = Double.POSITIVE_INFINITY;
+            double roundBestMakespan = Double.POSITIVE_INFINITY;
             ArrayList<Integer> bestPath = new ArrayList<>(JSP.numOfOperations);
 
             for (int i = 0; i < Settings.colonySize; i++) {
                 Ant ant = new Ant();
-                double[] jobEndTime = new double[JSP.numOfJobs];
-                double[] machineEndTime = new double[JSP.numOfMachines];
-                int[] curOpIndex = new int[JSP.numOfJobs];
 
+                int[] curOpIndex = new int[JSP.numOfJobs];
                 startNode = (startNode + 1) % JSP.numOfJobs;
-                curOpIndex[JSP.getOperation(startNode * JSP.numOfMachines).job]++;
+                curOpIndex[startNode]++;
                 ant.moveTo(startNode * JSP.numOfMachines);
 
                 for (int j = 0; j < JSP.numOfOperations - 1; j++) {
                     ArrayList<Edge> possibleEdges = findPossibleEdges(ant, curOpIndex);
-                    int nextNode = ant.chooseEdge(possibleEdges, jobEndTime, machineEndTime);
+                    int nextNode = ant.chooseEdge(possibleEdges);
                     curOpIndex[JSP.getOperation(nextNode).job]++;
                     ant.moveTo(nextNode);
                 }
-
-                localPheromoneUpdate(ant);
-                Solution solution = new Solution(ant);
-                if (solution.makespan < bestMakespan) {
-                    bestMakespan = solution.makespan;
-                    bestPath = new ArrayList<>(ant.path);
+                ACOSolution solution = new ACOSolution(ant);
+                localPheromoneUpdate(ant.path);
+                if (solution.makespan < roundBestMakespan) {
+                    roundBestMakespan = solution.makespan;
+//                    bestPath = new ArrayList<>(ant.path);
+                    bestPath = ant.path;
                     if (solution.makespan < totalBestMakespan) {
                         totalBestSolution = solution;
                         totalBestMakespan = solution.makespan;
                         System.out.println(solution.makespan);
-                        Tools.plotter.plotACOSolution(totalBestSolution);
+                        Tools.plotter.plotSolution(totalBestSolution);
                     }
                 }
+//                try {
+//                    TimeUnit.MILLISECONDS.sleep(100);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
             }
-            globalPheromoneUpdate(bestPath, bestMakespan);
-//            printGraph();
+            Tools.plotter.plotSolution(totalBestSolution);
+            globalPheromoneUpdate(bestPath, roundBestMakespan);
         }
     }
 
@@ -63,7 +66,7 @@ public class ACO {
 
                 for (int k = 0; k < JSP.numOfJobs; k++) {
                     if (k == i) {
-                        int to = k * JSP.numOfMachines + j + 1;
+                        int to = from + 1;
                         if (j < JSP.numOfMachines - 1) graph[from][to] = new Edge(from, to);
                         continue;
                     }
@@ -88,9 +91,9 @@ public class ACO {
         return edges;
     }
 
-    private void localPheromoneUpdate(Ant ant) {
+    private void localPheromoneUpdate(ArrayList<Integer> path) {
         for (int i = 0; i < JSP.numOfOperations - 1; i++) {
-            Edge edge = graph[ant.path.get(i)][ant.path.get(i+1)];
+            Edge edge = graph[path.get(i)][path.get(i+1)];
             edge.pheromone = (1 - Settings.pheromoneDecay) * edge.pheromone
                     + Settings.pheromoneDecay * Settings.basePheromone;
         }
@@ -114,7 +117,7 @@ public class ACO {
             for (int j = 0; j < JSP.numOfOperations; j++) {
                 Edge edge = graph[i][j];
                 if (edge == null) System.out.print(String.format("%4s ", "-"));
-                else System.out.print(String.format("%4.2f ", graph[i][j].pheromone));
+                else System.out.print(String.format("%4.2f ", 100*graph[i][j].pheromone));
             }
             System.out.println();
         }

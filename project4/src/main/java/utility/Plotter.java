@@ -9,16 +9,14 @@ import org.jfree.chart.plot.PlotOrientation;
 
 import org.jfree.chart.plot.XYPlot;
 
-import org.jfree.chart.renderer.xy.GradientXYBarPainter;
 import org.jfree.chart.renderer.xy.StandardXYBarPainter;
 import org.jfree.chart.renderer.xy.XYBarRenderer;
-import org.jfree.data.xy.XYIntervalDataItem;
 import org.jfree.data.xy.XYIntervalSeries;
 import org.jfree.data.xy.XYIntervalSeriesCollection;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.TextAnchor;
-import representation.JSP;
-import representation.Operation;
+
+import representation.*;
 
 import java.awt.*;
 
@@ -66,32 +64,10 @@ public class Plotter extends ApplicationFrame {
         setVisible(true);
     }
 
-//    public void plotPSOSchedule(pso.Particle particle) {
-////        System.out.println("\nPlotting...");
-//        dataset.removeAllSeries();
-//        XYIntervalSeries[] series = new XYIntervalSeries[JSP.numOfJobs];
-//        for (int i = 0; i < JSP.numOfJobs; i++) {
-////            System.out.println(jobs[i]);
-//            series[i] = new XYIntervalSeries(jobs[i]);
-//            for (int j = 0; j < JSP.numOfMachines; j++) {
-//                Operation op = JSP.jobs[i][j];
-//                double startTime = particle.operationStartTimes[i][j];
-//                series[i].add(op.machine, op.machine - 0.35, op.machine + 0.35,
-//                        startTime, startTime, startTime + op.duration);
-////                System.out.println(op.machine + " " + startTime + " " + (startTime + op.duration));
-//            }
-//        }
-//        for(int i = 0; i < JSP.numOfJobs; i++){
-//            dataset.addSeries(series[i]);
-//        }
-//    }
-
-    public void plotPSOSolution(pso.Solution solution) {
-//        System.out.println("\nPlotting...");
+    public void plotSolution(Solution solution) {
         dataset.removeAllSeries();
         XYIntervalSeries[] series = new XYIntervalSeries[JSP.numOfJobs];
         for (int i = 0; i < JSP.numOfJobs; i++) {
-//            System.out.println(jobs[i]);
             series[i] = new XYIntervalSeries(jobs[i]);
             for (int j = 0; j < JSP.numOfMachines; j++) {
                 Operation op = JSP.jobs[i][j];
@@ -100,29 +76,6 @@ public class Plotter extends ApplicationFrame {
                 CustomXYIntervalDataItem item =  new CustomXYIntervalDataItem(op.machine, op.machine - 0.35, op.machine + 0.35,
                         startTime, startTime, startTime + op.duration, label);
                 series[i].add(item, false);
-//                System.out.println(op.machine + " " + startTime + " " + (startTime + op.duration));
-            }
-        }
-        for(int i = 0; i < JSP.numOfJobs; i++){
-            dataset.addSeries(series[i]);
-        }
-    }
-
-    public void plotACOSolution(aco.Solution solution) {
-//        System.out.println("\nPlotting...");
-        dataset.removeAllSeries();
-        XYIntervalSeries[] series = new XYIntervalSeries[JSP.numOfJobs];
-        for (int i = 0; i < JSP.numOfJobs; i++) {
-//            System.out.println(jobs[i]);
-            series[i] = new XYIntervalSeries(jobs[i]);
-            for (int j = 0; j < JSP.numOfMachines; j++) {
-                Operation op = JSP.jobs[i][j];
-                double startTime = solution.operationStartTimes[i][j];
-                String label = "(" + (j+1) + "/" + (op.job+1) + ")";
-                CustomXYIntervalDataItem item =  new CustomXYIntervalDataItem(op.machine, op.machine - 0.35, op.machine + 0.35,
-                        startTime, startTime, startTime + op.duration, label);
-                series[i].add(item, false);
-//                System.out.println(op.machine + " " + startTime + " " + (startTime + op.duration));
             }
         }
         for(int i = 0; i < JSP.numOfJobs; i++){

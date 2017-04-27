@@ -16,7 +16,11 @@ public class Ant {
         path.add(index);
     }
 
-    public int chooseEdge(ArrayList<Edge> edges, double[] jobEndTime, double[] machineEndTime){
+//    public int chooseEdge(ArrayList<Edge> edges){
+//        return edges.get(Tools.random.nextInt(edges.size())).to;
+//    }
+
+    public int chooseEdge(ArrayList<Edge> edges){
         double totalValue = 0;
         double[] edgeValue = new double[edges.size()];
 
@@ -40,7 +44,7 @@ public class Ant {
             }
             return edges.get(bestEdge).to;
         }
-        double randomValue = Tools.random.nextDouble() * totalValue;
+        double randomValue = Tools.random.nextDouble() * totalValue; // TODO Not tested
         for (int i = 0; i < edgeValue.length; i++) {
             randomValue -= edgeValue[i];
             if (randomValue <= 0) {

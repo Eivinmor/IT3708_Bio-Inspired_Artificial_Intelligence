@@ -25,7 +25,7 @@ public class Particle {
     }
 
     // TODO - Test
-    void moveToward(int machine, int l, Solution solution) {
+    void moveToward(int machine, int l, PSOSolution solution) {
         int j1 = preferenceMatrix[machine][l];
 
         int j1SolutionLocation = -1;
