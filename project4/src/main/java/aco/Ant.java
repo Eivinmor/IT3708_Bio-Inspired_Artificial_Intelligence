@@ -29,11 +29,23 @@ public class Ant {
             totalValue += edgeValue[i];
         }
 
+        if (Tools.random.nextDouble() <= Settings.exploitationProbability) {
+            int bestEdge = -1;
+            double bestValue = Double.NEGATIVE_INFINITY;
+            for (int i = 0; i < edgeValue.length; i++) {
+                if (edgeValue[i] > bestValue) {
+                    bestEdge = i;
+                    bestValue = edgeValue[i];
+                }
+            }
+            return edges.get(bestEdge).to;
+        }
         double randomValue = Tools.random.nextDouble() * totalValue;
         for (int i = 0; i < edgeValue.length; i++) {
-//            System.out.println(randomValue);
             randomValue -= edgeValue[i];
-            if (randomValue <= 0) return edges.get(i).to;
+            if (randomValue <= 0) {
+                return edges.get(i).to;
+            }
         }
         System.out.println("NÅKKA E GALT HER");
         return -1;
