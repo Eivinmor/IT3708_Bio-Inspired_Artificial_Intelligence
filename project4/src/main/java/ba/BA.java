@@ -18,10 +18,16 @@ public class BA {
 //        int[] s2 = {0, 1, 2, 0, 2, 1, 2, 1, 0};
 
 //        crossover(s1, s2);
-
-        constructInitialSolutions();
-        for (int i = 0; i < Settings.rounds; i++) {
-            
+        int[][] foodSources = constructInitialSolutions();
+        BASolution bestSolution = new BASolution(foodSources[0]);
+        while (true) {
+            foodSources = constructInitialSolutions();
+            BASolution solution = new BASolution(foodSources[0]);
+            if (solution.makespan < bestSolution.makespan) {
+                bestSolution = solution;
+                System.out.println(solution.makespan);
+                Tools.plotter.plotSolution(solution);
+            }
         }
     }
 
@@ -30,16 +36,26 @@ public class BA {
         for (int i = 0; i < JSP.numOfJobs; i++) {
             for (int j = 0; j < JSP.numOfMachines; j++) jobs.add(i);
         }
-        int[][] solutions = new int[Settings.employed][JSP.numOfOperations];
+        int[][] foodSources = new int[Settings.employed][JSP.numOfOperations];
         for (int i = 0; i < Settings.employed; i++) {
-            int[] solution = new int[JSP.numOfOperations];
+            int[] foodSource = new int[JSP.numOfOperations];
             Collections.shuffle(jobs);
             for (int j = 0; j < JSP.numOfOperations; j++) {
-                solution[j] = jobs.get(j);
+                foodSource[j] = jobs.get(j);
             }
-            solutions[i] = solution;
+            foodSources[i] = foodSource;
         }
-        return solutions;
+        return foodSources;
+    }
+    
+    private int[] updateSolutions(int[][] foodSources) {
+        for (int i = 0; i < foodSources.length; i++) {
+            int[] s1 = foodSources[i];
+            int[] s2 = foodSources[Tools.random.nextInt(foodSources.length)];
+            int[] c1 = crossover(s1, s2);
+//            if () // TODO
+        }
+        return null;
     }
 
     private int[] crossover(int[] p1, int[] p2) {
