@@ -31,8 +31,10 @@ public class BA {
             selectFoodSources();
             replaceBestFoodSource();
             updateSelectedFoodSources();
+            replaceStagnatedFoodSources(i);
+            System.out.println(bestSolution.makespan);
         }
-        System.out.println(Arrays.toString(roundsSinceImprovement));
+        Tools.plotter.plotSolution(bestSolution);
     }
 
     private int[][] constructInitialFoodSources() {
@@ -110,6 +112,36 @@ public class BA {
             }
         }
     }
+
+    private void replaceStagnatedFoodSources(int round) {
+        for (int i = 0; i < foodSources.length; i++) {
+            if (roundsSinceImprovement[i] > Settings.roundsBeforeScouting) {
+
+                int[] newFoodSource = new int[JSP.numOfOperations];
+                ArrayList<Integer> selected = new ArrayList<>(JSP.numOfOperations);
+
+                for (int j = 0; j < JSP.numOfOperations; j++) {
+                    if (Tools.random.nextDouble() < Settings.omegaMax -
+                            (((double) round / Settings.rounds) * (Settings.omegaMax - Settings.omegaMin))) {
+                        selected.add(j);
+                    }
+                    else newFoodSource[j] = foodSources[i][j];
+                }
+
+                ArrayList<Integer> shuffledSelected = new ArrayList<>(selected);
+                Collections.shuffle(shuffledSelected);
+
+                for (int j = 0; j < selected.size(); j++) {
+                    newFoodSource[selected.get(j)] = foodSources[i][shuffledSelected.get(j)];
+                }
+//                System.out.println(Arrays.toString(newFoodSource));
+                foodSources[i] = newFoodSource;
+                solutions[i] = new BASolution(newFoodSource);
+                roundsSinceImprovement[i] = 0;
+            }
+        }
+    }
+
 
     private int[] crossover(int[] p1, int[] p2) {
         ArrayList<Integer> availableIndexes = new ArrayList<>(JSP.numOfOperations);
