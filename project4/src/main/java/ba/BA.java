@@ -32,6 +32,7 @@ public class BA {
             replaceBestFoodSource();
             updateSelectedFoodSources();
             replaceStagnatedFoodSources(i);
+            variableNeighbourSearch();
             System.out.println(bestSolution.makespan);
         }
         Tools.plotter.plotSolution(bestSolution);
@@ -75,7 +76,6 @@ public class BA {
         for (int i = 0; i < Settings.employed; i++) {
             totalFitness += 1/solutions[i].makespan;
         }
-
         for (int i = 0; i < Settings.onlookers; i++) {
             double randomValue = Tools.random.nextDouble() * totalFitness;
             for (int j = 0; j < foodSources.length; j++) {
@@ -93,8 +93,8 @@ public class BA {
         for (int i = 0; i < selectedFoodSources.length; i++) {
             BASolution solution = solutions[selectedFoodSources[i]];
             if (solution.makespan < bestSolution.makespan) {
-                bestSolution = solution;
-                bestFoodSource = foodSources[selectedFoodSources[i]];
+                bestFoodSource = foodSources[selectedFoodSources[i]].clone();
+                bestSolution = new BASolution(bestFoodSource);
             }
         }
     }
@@ -162,5 +162,80 @@ public class BA {
         }
         return s;
     }
+    
+    private void variableNeighbourSearch() {
+        int[] firstFoodSource = bestFoodSource.clone();
+        int step = 0;
+        int p = 1;
+        
+        int alpha = Tools.random.nextInt(JSP.numOfOperations);
+        int beta = Tools.random.nextInt(JSP.numOfOperations);
+        while (beta == alpha) beta = Tools.random.nextInt(JSP.numOfOperations);
+        firstFoodSource = exchangingProcess(firstFoodSource, alpha, beta);
 
+        alpha = Tools.random.nextInt(JSP.numOfOperations);
+        beta = Tools.random.nextInt(JSP.numOfOperations);
+        while (beta == alpha) beta = Tools.random.nextInt(JSP.numOfOperations);
+        firstFoodSource = insertingProcess(firstFoodSource, alpha, beta);
+
+        alpha = Tools.random.nextInt(JSP.numOfOperations);
+        beta = Tools.random.nextInt(JSP.numOfOperations);
+        while (beta == alpha) beta = Tools.random.nextInt(JSP.numOfOperations);
+        firstFoodSource = exchangingProcess(firstFoodSource, alpha, beta);
+        
+        while (step <= JSP.numOfOperations * (JSP.numOfOperations - 1)){
+            int[] secondFoodSource;
+            alpha = Tools.random.nextInt(JSP.numOfOperations);
+            beta = Tools.random.nextInt(JSP.numOfOperations);
+            while (beta == alpha) beta = Tools.random.nextInt(JSP.numOfOperations);
+            if (p == 1) {
+                secondFoodSource = exchangingProcess(firstFoodSource, alpha, beta);
+            }
+            else {
+                secondFoodSource = insertingProcess(firstFoodSource, alpha, beta);
+            }
+            if (new BASolution(secondFoodSource).makespan < new BASolution(firstFoodSource).makespan) {
+                firstFoodSource = secondFoodSource.clone();
+            }
+            else {
+                p = Math.abs(p - 1);
+            }
+            step++;
+        }
+        if (new BASolution(firstFoodSource).makespan < bestSolution.makespan) {
+            bestFoodSource = firstFoodSource.clone();
+            bestSolution = new BASolution(bestFoodSource);
+        }
+        
+    }
+
+    private int[] exchangingProcess(int[] foodSource, int alpha, int beta) {
+        int[] newFoodSource = foodSource.clone();
+        newFoodSource[alpha] = foodSource[beta];
+        newFoodSource[beta] = foodSource[alpha];
+        return newFoodSource;
+    }
+    
+    private int[] insertingProcess(int[] foodSource, int alpha, int beta) {
+//        System.out.println(alpha + " " + beta);
+//        System.out.println(Arrays.toString(foodSource));
+        int[] newFoodSource = foodSource.clone();
+        if (alpha > beta) {
+            for (int i = beta; i < alpha; i++) {
+                newFoodSource[i+1] = foodSource[i];
+            }
+        }
+        else {
+            for (int i = alpha; i < foodSource.length - 1; i++) {
+                if (i == beta) break;
+                newFoodSource[i] = foodSource[i + 1];
+            }
+        }
+        newFoodSource[beta] = foodSource[alpha];
+//        System.out.println(Arrays.toString(newFoodSource));
+//        System.out.println();
+        return newFoodSource;
+    }
+    
+    
 }
