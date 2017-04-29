@@ -1,3 +1,4 @@
+import ba.BA;
 import pso.PSO;
 import aco.ACO;
 import utility.DataReader;
@@ -5,9 +6,9 @@ import utility.DataReader;
 
 public class Main {
 
-    private enum Algorithm {PSO, ACO, BCO, TEST}
-    private static Algorithm algorithm = Algorithm.ACO;
-    public static final int fileId = 2;
+    private enum Algorithm {PSO, ACO, BA, TEST}
+    private static Algorithm algorithm = Algorithm.BA;
+    public static final int fileId = 5;
 
     public static void main(String[] args) {
         String[] strAr = DataReader.readOdtToStringArray(fileId);
@@ -21,7 +22,9 @@ public class Main {
                 ACO aco = new ACO();
                 aco.runAlgorithm();
                 break;
-            case BCO:
+            case BA:
+                BA ba = new BA();
+                ba.runAlgorithm();
                 break;
             case TEST:
                 ACO aco2 = new ACO();
