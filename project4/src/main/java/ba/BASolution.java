@@ -15,7 +15,8 @@ public class BASolution extends Solution implements Comparable<BASolution>{
 
         for (int i = 0; i < foodSource.length; i++) {
             int job = foodSource[i];
-            Operation op = JSP.getOperation(job * JSP.numOfMachines + jobCount[job]);
+//            Operation op = JSP.getOperation(job * JSP.numOfMachines + jobCount[job]);
+            Operation op = JSP.jobs[job][jobCount[job]];
             jobCount[job]++;
             double maxStartTime = Math.max(jobEndTime[op.job], machineEndTime[op.machine]);
             operationStartTimes[op.job][op.jobOpIndex] = maxStartTime;

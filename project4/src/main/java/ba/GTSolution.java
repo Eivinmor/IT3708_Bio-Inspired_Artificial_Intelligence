@@ -78,7 +78,8 @@ public class GTSolution extends Solution {
         int[] jobCount = new int[JSP.numOfJobs];
 
         for (int job : foodSource) {
-            Operation op = JSP.getOperation(job * JSP.numOfMachines + jobCount[job]);
+//            Operation op = JSP.getOperation(job * JSP.numOfMachines + jobCount[job]);
+            Operation op = JSP.jobs[job][jobCount[job]];
             jobCount[job]++;
             int machine = op.machine;
             preferenceMatrix[machine][machineIndex[machine]] = op.job;
