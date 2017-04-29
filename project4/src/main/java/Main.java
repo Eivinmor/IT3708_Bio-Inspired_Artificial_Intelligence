@@ -8,7 +8,7 @@ public class Main {
 
     private enum Algorithm {PSO, ACO, BA, TEST}
     private static Algorithm algorithm = Algorithm.BA;
-    public static final int fileId = 3;
+    public static final int fileId = 2;
 
     public static void main(String[] args) {
         String[] strAr = DataReader.readOdtToStringArray(fileId);

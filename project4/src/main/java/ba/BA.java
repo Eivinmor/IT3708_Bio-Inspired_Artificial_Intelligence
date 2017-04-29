@@ -31,9 +31,13 @@ public class BA {
             selectFoodSources();
             replaceBestFoodSource();
             updateSelectedFoodSources();
+            // Fourth step
             replaceStagnatedFoodSources(i);
-            variableNeighbourSearch();
-            System.out.println(bestSolution.makespan);
+            // Fifth step
+            bestFoodSource = variableNeighbourSearch(bestFoodSource);
+//            variableNeighbourSearch(bestFoodSource);
+            bestSolution = new BASolution(bestFoodSource);
+            System.out.println(bestSolution.makespan + "\t" + new GTSolution(bestFoodSource).makespan);
         }
         Tools.plotter.plotSolution(bestSolution);
     }
@@ -89,13 +93,37 @@ public class BA {
         selectedFoodSources = selected;
     }
 
+//    private void replaceBestFoodSource() {
+//        for (int i = 0; i < selectedFoodSources.length; i++) {
+//            BASolution solution = solutions[selectedFoodSources[i]];
+//            if (solution.makespan < bestSolution.makespan) {
+//                System.out.println("HEI");
+//                bestFoodSource = foodSources[selectedFoodSources[i]].clone();
+//                bestSolution = new BASolution(bestFoodSource);
+//            }
+//        }
+//    }
+
     private void replaceBestFoodSource() {
-        for (int i = 0; i < selectedFoodSources.length; i++) {
+        int[] curBestFoodSource = foodSources[selectedFoodSources[0]];
+        BASolution curBestSolution = new BASolution(curBestFoodSource);
+
+        for (int i = 1; i < selectedFoodSources.length; i++) {
+            int[] curSelectedFoodSource = foodSources[selectedFoodSources[i]];
             BASolution solution = solutions[selectedFoodSources[i]];
-            if (solution.makespan < bestSolution.makespan) {
-                bestFoodSource = foodSources[selectedFoodSources[i]].clone();
-                bestSolution = new BASolution(bestFoodSource);
+            if (solution.makespan < curBestSolution.makespan) {
+
+//                bestFoodSource = foodSources[selectedFoodSources[i]].clone();
+                curBestFoodSource = curSelectedFoodSource;
+                curBestSolution = solution;
             }
+        }
+        curBestFoodSource = variableNeighbourSearch(curBestFoodSource);
+        curBestSolution = new BASolution(curBestFoodSource);
+        if (curBestSolution.makespan < bestSolution.makespan) {
+            System.out.println("HEI");
+            bestFoodSource = curBestFoodSource;
+            bestSolution = curBestSolution;
         }
     }
 
@@ -120,9 +148,11 @@ public class BA {
                 int[] newFoodSource = new int[JSP.numOfOperations];
                 ArrayList<Integer> selected = new ArrayList<>(JSP.numOfOperations);
 
+                double prob = Settings.omegaMax -
+                        (((double) round / Settings.rounds) * (Settings.omegaMax - Settings.omegaMin));
+
                 for (int j = 0; j < JSP.numOfOperations; j++) {
-                    if (Tools.random.nextDouble() < Settings.omegaMax -
-                            (((double) round / Settings.rounds) * (Settings.omegaMax - Settings.omegaMin))) {
+                    if (Tools.random.nextDouble() < prob) {
                         selected.add(j);
                     }
                     else newFoodSource[j] = foodSources[i][j];
@@ -134,7 +164,6 @@ public class BA {
                 for (int j = 0; j < selected.size(); j++) {
                     newFoodSource[selected.get(j)] = foodSources[i][shuffledSelected.get(j)];
                 }
-//                System.out.println(Arrays.toString(newFoodSource));
                 foodSources[i] = newFoodSource;
                 solutions[i] = new BASolution(newFoodSource);
                 roundsSinceImprovement[i] = 0;
@@ -163,7 +192,7 @@ public class BA {
         return s;
     }
     
-    private void variableNeighbourSearch() {
+    private int[] variableNeighbourSearch(int[] foodSource) {
         int[] firstFoodSource = bestFoodSource.clone();
         int step = 0;
         int p = 1;
@@ -203,9 +232,11 @@ public class BA {
             step++;
         }
         if (new BASolution(firstFoodSource).makespan < bestSolution.makespan) {
-            bestFoodSource = firstFoodSource.clone();
-            bestSolution = new BASolution(bestFoodSource);
+            return firstFoodSource.clone();
+//            bestFoodSource = firstFoodSource.clone();
+//            bestSolution = new BASolution(bestFoodSource);
         }
+        return foodSource;
         
     }
 
