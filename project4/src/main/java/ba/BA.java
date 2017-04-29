@@ -4,25 +4,38 @@ import representation.JSP;
 import utility.Tools;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 public class BA {
 
-    public void runAlgorithm() {
+    private int[][] foodSources;
+    private int[] bestFoodSource, selectedFoodSources, roundsSinceImprovement;
+    private BASolution bestSolution;
+    private BASolution[] solutions;
 
-        int[][] foodSources = constuctInitialFoodSources();
-        int[] bestFoodSource = foodSources[0].clone();
-        BASolution bestSolution = new BASolution(foodSources[0]);
-        BASolution[] solutions = new BASolution[Settings.employed];
+    public void runAlgorithm() {
+        // First step
+        foodSources = constructInitialFoodSources();
+        bestFoodSource = foodSources[0].clone();
+        bestSolution = new BASolution(foodSources[0]);
+        solutions = new BASolution[Settings.employed];
+        roundsSinceImprovement = new int[foodSources.length];
+
 
         for (int i = 0; i < Settings.rounds; i++) {
-            updateSolutions(foodSources, solutions);
-            selectFoodSources(foodSources, solutions);
+            for (int j = 0; j < roundsSinceImprovement.length; j++) roundsSinceImprovement[j]++;
+            // Second step
+            updateAllFoodSources();
+            // Third step
+            selectFoodSources();
+            replaceBestFoodSource();
+            updateSelectedFoodSources();
         }
-
+        System.out.println(Arrays.toString(roundsSinceImprovement));
     }
 
-    private int[][] constuctInitialFoodSources() {
+    private int[][] constructInitialFoodSources() {
         ArrayList<Integer> jobs = new ArrayList<>(JSP.numOfOperations);
         for (int i = 0; i < JSP.numOfJobs; i++) {
             for (int j = 0; j < JSP.numOfMachines; j++) jobs.add(i);
@@ -39,7 +52,7 @@ public class BA {
         return foodSources;
     }
     
-    private void updateSolutions(int[][] foodSources, BASolution[] solutions) {
+    private void updateAllFoodSources() {
         for (int i = 0; i < Settings.employed; i++) solutions[i] = new BASolution(foodSources[i]);
         for (int i = 0; i < foodSources.length; i++) {
             int[] p1 = foodSources[i];
@@ -49,11 +62,12 @@ public class BA {
             if (cSolution.makespan < solutions[i].makespan) {
                 foodSources[i] = c;
                 solutions[i] = cSolution;
+                roundsSinceImprovement[i] = 0;
             }
         }
     }
 
-    private int[] selectFoodSources(int[][] foodSources, BASolution[] solutions) {
+    private void selectFoodSources() {
         int[] selected = new int[Settings.onlookers];
         double totalFitness = 0;
         for (int i = 0; i < Settings.employed; i++) {
@@ -70,7 +84,31 @@ public class BA {
                 }
             }
         }
-        return selected;
+        selectedFoodSources = selected;
+    }
+
+    private void replaceBestFoodSource() {
+        for (int i = 0; i < selectedFoodSources.length; i++) {
+            BASolution solution = solutions[selectedFoodSources[i]];
+            if (solution.makespan < bestSolution.makespan) {
+                bestSolution = solution;
+                bestFoodSource = foodSources[selectedFoodSources[i]];
+            }
+        }
+    }
+
+    private void updateSelectedFoodSources() {
+        for (int i = 0; i < selectedFoodSources.length; i++) {
+            int foodSourceIndex = selectedFoodSources[i];
+            int[] p1 = foodSources[foodSourceIndex];
+            int[] c = crossover(p1, bestFoodSource);
+            BASolution cSolution = new BASolution(c);
+            if (cSolution.makespan < solutions[foodSourceIndex].makespan) {
+                foodSources[foodSourceIndex] = c;
+                solutions[foodSourceIndex] = cSolution;
+                roundsSinceImprovement[foodSourceIndex] = 0;
+            }
+        }
     }
 
     private int[] crossover(int[] p1, int[] p2) {

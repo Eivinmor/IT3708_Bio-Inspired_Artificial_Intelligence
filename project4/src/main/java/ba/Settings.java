@@ -1,11 +1,13 @@
 package ba;
 
-public class Settings {
+class Settings {
 
-    public static final int rounds = 200;
+    static final int rounds = 10000;
 
-    public static final int employed = 25;
-    public static final int onlookers = 25;
+    static final int employed = 25;
+    static final int onlookers = 25;
+
+    static final int roundsBeforeScouting = 5;
 
 
 }
