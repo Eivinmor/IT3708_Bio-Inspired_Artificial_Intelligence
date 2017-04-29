@@ -9,29 +9,20 @@ import java.util.Collections;
 public class BA {
 
     public void runAlgorithm() {
-//
-//        JSP.numOfJobs = 3;
-//        JSP.numOfMachines = 3;
-//        JSP.numOfOperations = 9;
-//
-//        int[] s1 = {1, 2, 0, 2, 0, 1, 0, 1, 2};
-//        int[] s2 = {0, 1, 2, 0, 2, 1, 2, 1, 0};
 
-//        crossover(s1, s2);
-        int[][] foodSources = constructInitialSolutions();
+        int[][] foodSources = constuctInitialFoodSources();
+        int[] bestFoodSource = foodSources[0].clone();
         BASolution bestSolution = new BASolution(foodSources[0]);
-        while (true) {
-            foodSources = constructInitialSolutions();
-            BASolution solution = new BASolution(foodSources[0]);
-            if (solution.makespan < bestSolution.makespan) {
-                bestSolution = solution;
-                System.out.println(solution.makespan);
-                Tools.plotter.plotSolution(solution);
-            }
+        BASolution[] solutions = new BASolution[Settings.employed];
+
+        for (int i = 0; i < Settings.rounds; i++) {
+            updateSolutions(foodSources, solutions);
+            selectFoodSources(foodSources, solutions);
         }
+
     }
 
-    private int[][] constructInitialSolutions() {
+    private int[][] constuctInitialFoodSources() {
         ArrayList<Integer> jobs = new ArrayList<>(JSP.numOfOperations);
         for (int i = 0; i < JSP.numOfJobs; i++) {
             for (int j = 0; j < JSP.numOfMachines; j++) jobs.add(i);
@@ -48,14 +39,38 @@ public class BA {
         return foodSources;
     }
     
-    private int[] updateSolutions(int[][] foodSources) {
+    private void updateSolutions(int[][] foodSources, BASolution[] solutions) {
+        for (int i = 0; i < Settings.employed; i++) solutions[i] = new BASolution(foodSources[i]);
         for (int i = 0; i < foodSources.length; i++) {
-            int[] s1 = foodSources[i];
-            int[] s2 = foodSources[Tools.random.nextInt(foodSources.length)];
-            int[] c1 = crossover(s1, s2);
-//            if () // TODO
+            int[] p1 = foodSources[i];
+            int[] p2 = foodSources[Tools.random.nextInt(foodSources.length)];
+            int[] c = crossover(p1, p2);
+            BASolution cSolution = new BASolution(c);
+            if (cSolution.makespan < solutions[i].makespan) {
+                foodSources[i] = c;
+                solutions[i] = cSolution;
+            }
         }
-        return null;
+    }
+
+    private int[] selectFoodSources(int[][] foodSources, BASolution[] solutions) {
+        int[] selected = new int[Settings.onlookers];
+        double totalFitness = 0;
+        for (int i = 0; i < Settings.employed; i++) {
+            totalFitness += 1/solutions[i].makespan;
+        }
+
+        for (int i = 0; i < Settings.onlookers; i++) {
+            double randomValue = Tools.random.nextDouble() * totalFitness;
+            for (int j = 0; j < foodSources.length; j++) {
+                randomValue -= 1 / solutions[j].makespan;
+                if (randomValue <= 0) {
+                    selected[i] = j;
+                    break;
+                }
+            }
+        }
+        return selected;
     }
 
     private int[] crossover(int[] p1, int[] p2) {
