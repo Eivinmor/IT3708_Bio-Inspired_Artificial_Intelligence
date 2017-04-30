@@ -193,6 +193,7 @@ public class BA {
     }
     
     private int[] variableNeighbourSearch(int[] foodSource) {
+        BASolution initialSolution = new BASolution(foodSource);
         int[] firstFoodSource = foodSource.clone();
         int step = 0;
         int p = 1;
@@ -231,7 +232,7 @@ public class BA {
             }
             step++;
         }
-        if (new BASolution(firstFoodSource).makespan < bestSolution.makespan) {
+        if (new BASolution(firstFoodSource).makespan < initialSolution.makespan) {
             return firstFoodSource.clone();
 //            bestFoodSource = firstFoodSource.clone();
 //            bestSolution = new BASolution(bestFoodSource);
