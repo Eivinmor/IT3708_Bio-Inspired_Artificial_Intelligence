@@ -111,8 +111,6 @@ public class BA {
             int[] curSelectedFoodSource = foodSources[selectedFoodSources[i]];
             BASolution solution = solutions[selectedFoodSources[i]];
             if (solution.makespan < curBestSolution.makespan) {
-
-//                bestFoodSource = foodSources[selectedFoodSources[i]].clone();
                 curBestFoodSource = curSelectedFoodSource;
                 curBestSolution = solution;
             }
@@ -233,8 +231,6 @@ public class BA {
         }
         if (new BASolution(firstFoodSource).makespan < initialSolution.makespan) {
             return firstFoodSource.clone();
-//            bestFoodSource = firstFoodSource.clone();
-//            bestSolution = new BASolution(bestFoodSource);
         }
         return foodSource;
     }
@@ -247,8 +243,6 @@ public class BA {
     }
     
     private int[] insertingProcess(int[] foodSource, int alpha, int beta) {
-//        System.out.println(alpha + " " + beta);
-//        System.out.println(Arrays.toString(foodSource));
         int[] newFoodSource = foodSource.clone();
         if (alpha > beta) {
             for (int i = beta; i < alpha; i++) {
@@ -262,8 +256,6 @@ public class BA {
             }
         }
         newFoodSource[beta] = foodSource[alpha];
-//        System.out.println(Arrays.toString(newFoodSource));
-//        System.out.println();
         return newFoodSource;
     }
     

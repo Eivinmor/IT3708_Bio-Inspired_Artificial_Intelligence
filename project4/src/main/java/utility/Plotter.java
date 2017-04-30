@@ -9,8 +9,6 @@ import org.jfree.chart.plot.PlotOrientation;
 
 import org.jfree.chart.plot.XYPlot;
 
-import org.jfree.chart.renderer.xy.ClusteredXYBarRenderer;
-import org.jfree.chart.renderer.xy.StackedXYBarRenderer;
 import org.jfree.chart.renderer.xy.StandardXYBarPainter;
 import org.jfree.chart.renderer.xy.XYBarRenderer;
 import org.jfree.data.xy.XYIntervalSeries;
@@ -25,24 +23,16 @@ import java.awt.*;
 
 public class Plotter extends ApplicationFrame {
 
-    // TODO Add (op order), (job id) labels for operation bars
-
-    String[] machines, jobs;
-    XYIntervalSeriesCollection dataset;
-    XYBarRenderer renderer;
-    Color[] colors;
+    private String[] machines, jobs;
+    private XYIntervalSeriesCollection dataset;
+    private XYBarRenderer renderer;
+    private Color[] colors;
 
     public Plotter() {
 
         super("Schedule");
 
-        colors = new Color[JSP.numOfJobs];
-        for (int i = 0; i < JSP.numOfJobs; i++) {
-            colors[i] = new Color(
-                    Tools.random.nextInt(256),
-                    Tools.random.nextInt(256),
-                    Tools.random.nextInt(256));
-        }
+        colors = generateColors(JSP.numOfJobs);
 
         dataset = new XYIntervalSeriesCollection();
 
@@ -94,6 +84,23 @@ public class Plotter extends ApplicationFrame {
             dataset.addSeries(series[i]);
             renderer.setSeriesPaint(i, colors[i]);
         }
+    }
+
+    private Color[] generateColors(int amount){
+        Color[] newColors = new Color[amount];
+        int min = 180;
+        for (int i = 0; i < amount; i++) {
+            int r = Tools.random.nextInt(256);
+            int g = Tools.random.nextInt(256);
+            int b = Tools.random.nextInt(256);
+            while (r + g + b < min) {
+                r = Tools.random.nextInt(256);
+                g = Tools.random.nextInt(256);
+                b = Tools.random.nextInt(256);
+            }
+            newColors[i] = new Color(r, g, b);
+        }
+        return newColors;
     }
 }
 

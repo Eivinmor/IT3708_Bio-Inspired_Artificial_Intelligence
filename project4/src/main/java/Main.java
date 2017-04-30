@@ -7,8 +7,8 @@ import utility.DataReader;
 public class Main {
 
     private enum Algorithm {PSO, ACO, BA, TEST}
-    private static Algorithm algorithm = Algorithm.ACO;
-    public static final int fileId = 2;
+    private static Algorithm algorithm = Algorithm.PSO;
+    public static final int fileId = 3;
 
     public static void main(String[] args) {
         String[] strAr = DataReader.readOdtToStringArray(fileId);
