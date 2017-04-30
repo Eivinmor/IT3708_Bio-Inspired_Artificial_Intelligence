@@ -9,6 +9,8 @@ import org.jfree.chart.plot.PlotOrientation;
 
 import org.jfree.chart.plot.XYPlot;
 
+import org.jfree.chart.renderer.xy.ClusteredXYBarRenderer;
+import org.jfree.chart.renderer.xy.StackedXYBarRenderer;
 import org.jfree.chart.renderer.xy.StandardXYBarPainter;
 import org.jfree.chart.renderer.xy.XYBarRenderer;
 import org.jfree.data.xy.XYIntervalSeries;
@@ -27,10 +29,20 @@ public class Plotter extends ApplicationFrame {
 
     String[] machines, jobs;
     XYIntervalSeriesCollection dataset;
+    XYBarRenderer renderer;
+    Color[] colors;
 
     public Plotter() {
 
         super("Schedule");
+
+        colors = new Color[JSP.numOfJobs];
+        for (int i = 0; i < JSP.numOfJobs; i++) {
+            colors[i] = new Color(
+                    Tools.random.nextInt(256),
+                    Tools.random.nextInt(256),
+                    Tools.random.nextInt(256));
+        }
 
         dataset = new XYIntervalSeriesCollection();
 
@@ -40,7 +52,7 @@ public class Plotter extends ApplicationFrame {
         jobs = new String[JSP.numOfJobs];
         for(int i = 0; i < JSP.numOfJobs; i++) jobs[i] = "J" + (i + 1);
 
-        XYBarRenderer renderer = new XYBarRenderer();
+        renderer = new XYBarRenderer();
         renderer.setUseYInterval(true);
         renderer.setShadowVisible(false);
         renderer.setBarPainter(new StandardXYBarPainter());
@@ -80,6 +92,7 @@ public class Plotter extends ApplicationFrame {
         }
         for(int i = 0; i < JSP.numOfJobs; i++){
             dataset.addSeries(series[i]);
+            renderer.setSeriesPaint(i, colors[i]);
         }
     }
 }
