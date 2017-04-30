@@ -7,10 +7,10 @@ public class Settings {
 
     static final int colonySize = 4 * JSP.numOfJobs;
 
-    static final double exploitationProbability = 0.2;
+    static final double exploitationProbability = 0.8;
     static final double alpha = 1;
     static final double beta = 2;
-    static final double C = 80;
+    static final double C = 1;
 
     static final double basePheromone = 0.01; // TODO
     static final double pheromoneDecay = 0.5;

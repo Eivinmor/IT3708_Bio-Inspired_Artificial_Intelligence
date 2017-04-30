@@ -60,9 +60,11 @@ public class ACO {
                 totalBestPath = new ArrayList<>(roundBestPath);
                 totalBestSolution = roundBestSolution;
             }
+            Tools.plotter.plotSolution(totalBestSolution);
             totalBestPath = variableNeighbourSearch(totalBestPath, totalBestPath);
             totalBestSolution = new ACOSolution(totalBestPath);
             globalPheromoneUpdate(roundBestPath, roundBestSolution.makespan);
+//            globalPheromoneUpdate(totalBestPath, roundBestSolution.makespan);
             System.out.println(totalBestSolution.makespan);
 //            printGraph();
         }
