@@ -37,7 +37,7 @@ public class BA {
             bestFoodSource = variableNeighbourSearch(bestFoodSource);
 //            variableNeighbourSearch(bestFoodSource);
             bestSolution = new BASolution(bestFoodSource);
-            System.out.println(bestSolution.makespan + "\t" + new GTSolution(bestFoodSource).makespan);
+            System.out.println(bestSolution.makespan);
         }
         Tools.plotter.plotSolution(bestSolution);
     }
@@ -193,7 +193,7 @@ public class BA {
     }
     
     private int[] variableNeighbourSearch(int[] foodSource) {
-        int[] firstFoodSource = bestFoodSource.clone();
+        int[] firstFoodSource = foodSource.clone();
         int step = 0;
         int p = 1;
         
@@ -237,7 +237,6 @@ public class BA {
 //            bestSolution = new BASolution(bestFoodSource);
         }
         return foodSource;
-        
     }
 
     private int[] exchangingProcess(int[] foodSource, int alpha, int beta) {
