@@ -1,5 +1,6 @@
 package aco;
 
+import ba.BASolution;
 import representation.JSP;
 import utility.Tools;
 
@@ -12,13 +13,15 @@ public class ACO {
 
     public void runAlgorithm() {
         graph = generateGraph();
-        ACOSolution totalBestSolution;
-        double totalBestMakespan = Double.POSITIVE_INFINITY;
+        ArrayList<Integer> totalBestPath = new ArrayList<>(JSP.numOfOperations);;
+        ACOSolution totalBestSolution = new ACOSolution(new ArrayList<>());
+        totalBestSolution.makespan = Double.POSITIVE_INFINITY;
         int startNode = -1;
 
         while (true) {
-            double roundBestMakespan = Double.POSITIVE_INFINITY;
-            ArrayList<Integer> bestPath = new ArrayList<>(JSP.numOfOperations);
+            ArrayList<Integer> roundBestPath = new ArrayList<>(JSP.numOfOperations);
+            ACOSolution roundBestSolution = new ACOSolution(new ArrayList<>());
+            roundBestSolution.makespan = Double.POSITIVE_INFINITY;
 
             for (int i = 0; i < Settings.colonySize; i++) {
                 Ant ant = new Ant();
@@ -34,20 +37,33 @@ public class ACO {
                     curOpIndex[JSP.getOperation(nextNode).job]++;
                     ant.moveTo(nextNode);
                 }
-                ACOSolution solution = new ACOSolution(ant);
+                ACOSolution solution = new ACOSolution(ant.path);
                 localPheromoneUpdate(ant.path);
-                if (solution.makespan < roundBestMakespan) {
-                    roundBestMakespan = solution.makespan;
-                    bestPath = ant.path;
-                    if (solution.makespan < totalBestMakespan) {
-                        totalBestSolution = solution;
-                        totalBestMakespan = solution.makespan;
-                        System.out.println(solution.makespan);
-                        Tools.plotter.plotSolution(totalBestSolution);
-                    }
+
+                if (solution.makespan < roundBestSolution.makespan) {
+                    roundBestPath = new ArrayList<>(ant.path);
+                    roundBestSolution = solution;
                 }
+//                if (solution.makespan < roundBestMakespan) {
+//                    roundBestMakespan = solution.makespan;
+//                    roundBestPath = ant.path;
+//                    if (solution.makespan < totalBestMakespan) {
+//                        totalBestSolution = solution;
+//                        totalBestMakespan = solution.makespan;
+//                        totalBestPath = roundBestPath;
+//                        System.out.println(solution.makespan);
+//                        Tools.plotter.plotSolution(totalBestSolution);
+//                    }
+//                }
             }
-            globalPheromoneUpdate(bestPath, roundBestMakespan);
+            if (roundBestSolution.makespan < totalBestSolution.makespan) {
+                totalBestPath = new ArrayList<>(roundBestPath);
+                totalBestSolution = roundBestSolution;
+            }
+            totalBestPath = variableNeighbourSearch(totalBestPath, totalBestPath);
+            totalBestSolution = new ACOSolution(totalBestPath);
+            globalPheromoneUpdate(roundBestPath, roundBestSolution.makespan);
+            System.out.println(totalBestSolution.makespan);
 //            printGraph();
         }
     }
@@ -116,6 +132,101 @@ public class ACO {
             System.out.println();
         }
         System.out.println();
+    }
+
+    private ArrayList<Integer> variableNeighbourSearch(ArrayList<Integer> path, ArrayList<Integer> totalBestPath) {
+        BASolution initialSolution = new BASolution(pathToFoodSource(totalBestPath));
+        int[] firstFoodSource = pathToFoodSource(path);
+        int step = 0;
+        int p = 1;
+
+        int alpha = Tools.random.nextInt(JSP.numOfOperations);
+        int beta = Tools.random.nextInt(JSP.numOfOperations);
+        while (beta == alpha) beta = Tools.random.nextInt(JSP.numOfOperations);
+        firstFoodSource = exchangingProcess(firstFoodSource, alpha, beta);
+
+        alpha = Tools.random.nextInt(JSP.numOfOperations);
+        beta = Tools.random.nextInt(JSP.numOfOperations);
+        while (beta == alpha) beta = Tools.random.nextInt(JSP.numOfOperations);
+        firstFoodSource = insertingProcess(firstFoodSource, alpha, beta);
+
+        alpha = Tools.random.nextInt(JSP.numOfOperations);
+        beta = Tools.random.nextInt(JSP.numOfOperations);
+        while (beta == alpha) beta = Tools.random.nextInt(JSP.numOfOperations);
+        firstFoodSource = exchangingProcess(firstFoodSource, alpha, beta);
+
+        while (step <= JSP.numOfOperations * (JSP.numOfOperations - 1)){
+            int[] secondFoodSource;
+            alpha = Tools.random.nextInt(JSP.numOfOperations);
+            beta = Tools.random.nextInt(JSP.numOfOperations);
+            while (beta == alpha) beta = Tools.random.nextInt(JSP.numOfOperations);
+            if (p == 1) {
+                secondFoodSource = exchangingProcess(firstFoodSource, alpha, beta);
+            }
+            else {
+                secondFoodSource = insertingProcess(firstFoodSource, alpha, beta);
+            }
+            if (new BASolution(secondFoodSource).makespan < new BASolution(firstFoodSource).makespan) {
+                firstFoodSource = secondFoodSource.clone();
+            }
+            else {
+                p = Math.abs(p - 1);
+            }
+            step++;
+        }
+        if (new BASolution(firstFoodSource).makespan < initialSolution.makespan) {
+            return foodSourceToPath(firstFoodSource);
+
+//            bestFoodSource = firstFoodSource.clone();
+//            bestSolution = new BASolution(bestFoodSource);
+        }
+        return path;
+    }
+
+    private int[] exchangingProcess(int[] foodSource, int alpha, int beta) {
+        int[] newFoodSource = foodSource.clone();
+        newFoodSource[alpha] = foodSource[beta];
+        newFoodSource[beta] = foodSource[alpha];
+        return newFoodSource;
+    }
+
+    private int[] insertingProcess(int[] foodSource, int alpha, int beta) {
+//        System.out.println(alpha + " " + beta);
+//        System.out.println(Arrays.toString(foodSource));
+        int[] newFoodSource = foodSource.clone();
+        if (alpha > beta) {
+            for (int i = beta; i < alpha; i++) {
+                newFoodSource[i+1] = foodSource[i];
+            }
+        }
+        else {
+            for (int i = alpha; i < foodSource.length - 1; i++) {
+                if (i == beta) break;
+                newFoodSource[i] = foodSource[i + 1];
+            }
+        }
+        newFoodSource[beta] = foodSource[alpha];
+//        System.out.println(Arrays.toString(newFoodSource));
+//        System.out.println();
+        return newFoodSource;
+    }
+
+    private int[] pathToFoodSource(ArrayList<Integer> path) {
+        int[] foodSource = new int[path.size()];
+        for (int i = 0; i < path.size(); i++) {
+            foodSource[i] = path.get(i) / JSP.numOfMachines;
+        }
+        return foodSource;
+    }
+
+    private ArrayList<Integer> foodSourceToPath(int[] foodSource) {
+        int[] jobOpIndex = new int[JSP.numOfJobs];
+        ArrayList<Integer> path = new ArrayList<>(foodSource.length);
+        for (int i = 0; i < foodSource.length; i++) {
+            path.add(foodSource[i] * JSP.numOfMachines + jobOpIndex[foodSource[i]]);
+            jobOpIndex[foodSource[i]]++;
+        }
+        return path;
     }
 
 }
