@@ -1,6 +1,5 @@
 package aco;
 
-import ba.BASolution;
 import representation.JSP;
 import utility.Tools;
 
@@ -44,17 +43,6 @@ public class ACO {
                     roundBestPath = new ArrayList<>(ant.path);
                     roundBestSolution = solution;
                 }
-//                if (solution.makespan < roundBestMakespan) {
-//                    roundBestMakespan = solution.makespan;
-//                    roundBestPath = ant.path;
-//                    if (solution.makespan < totalBestMakespan) {
-//                        totalBestSolution = solution;
-//                        totalBestMakespan = solution.makespan;
-//                        totalBestPath = roundBestPath;
-//                        System.out.println(solution.makespan);
-//                        Tools.plotter.plotSolution(totalBestSolution);
-//                    }
-//                }
             }
             if (roundBestSolution.makespan < totalBestSolution.makespan) {
                 totalBestPath = new ArrayList<>(roundBestPath);
@@ -64,7 +52,6 @@ public class ACO {
             totalBestPath = variableNeighbourSearch(totalBestPath, totalBestPath);
             totalBestSolution = new ACOSolution(totalBestPath);
             globalPheromoneUpdate(roundBestPath, roundBestSolution.makespan);
-//            globalPheromoneUpdate(totalBestPath, roundBestSolution.makespan);
             System.out.println(totalBestSolution.makespan);
 //            printGraph();
         }
@@ -123,21 +110,8 @@ public class ACO {
         }
     }
 
-    private void printGraph() {
-        System.out.println();
-        for (int i = 0; i < JSP.numOfOperations; i++) {
-            for (int j = 0; j < JSP.numOfOperations; j++) {
-                Edge edge = graph[i][j];
-                if (edge == null) System.out.print(String.format("%4s ", "-"));
-                else System.out.print(String.format("%4.2f ", 100*graph[i][j].pheromone));
-            }
-            System.out.println();
-        }
-        System.out.println();
-    }
-
     private ArrayList<Integer> variableNeighbourSearch(ArrayList<Integer> path, ArrayList<Integer> totalBestPath) {
-        BASolution initialSolution = new BASolution(pathToFoodSource(totalBestPath));
+        ACOSolution initialSolution = new ACOSolution(pathToFoodSource(totalBestPath));
         int[] firstFoodSource = pathToFoodSource(path);
         int step = 0;
         int p = 1;
@@ -168,7 +142,7 @@ public class ACO {
             else {
                 secondFoodSource = insertingProcess(firstFoodSource, alpha, beta);
             }
-            if (new BASolution(secondFoodSource).makespan < new BASolution(firstFoodSource).makespan) {
+            if (new ACOSolution(secondFoodSource).makespan < new ACOSolution(firstFoodSource).makespan) {
                 firstFoodSource = secondFoodSource.clone();
             }
             else {
@@ -176,11 +150,8 @@ public class ACO {
             }
             step++;
         }
-        if (new BASolution(firstFoodSource).makespan < initialSolution.makespan) {
+        if (new ACOSolution(firstFoodSource).makespan < initialSolution.makespan) {
             return foodSourceToPath(firstFoodSource);
-
-//            bestFoodSource = firstFoodSource.clone();
-//            bestSolution = new BASolution(bestFoodSource);
         }
         return path;
     }
@@ -193,8 +164,6 @@ public class ACO {
     }
 
     private int[] insertingProcess(int[] foodSource, int alpha, int beta) {
-//        System.out.println(alpha + " " + beta);
-//        System.out.println(Arrays.toString(foodSource));
         int[] newFoodSource = foodSource.clone();
         if (alpha > beta) {
             for (int i = beta; i < alpha; i++) {
@@ -208,8 +177,6 @@ public class ACO {
             }
         }
         newFoodSource[beta] = foodSource[alpha];
-//        System.out.println(Arrays.toString(newFoodSource));
-//        System.out.println();
         return newFoodSource;
     }
 
@@ -229,6 +196,19 @@ public class ACO {
             jobOpIndex[foodSource[i]]++;
         }
         return path;
+    }
+
+    private void printGraph() {
+        System.out.println();
+        for (int i = 0; i < JSP.numOfOperations; i++) {
+            for (int j = 0; j < JSP.numOfOperations; j++) {
+                Edge edge = graph[i][j];
+                if (edge == null) System.out.print(String.format("%4s ", "-"));
+                else System.out.print(String.format("%4.2f ", 100*graph[i][j].pheromone));
+            }
+            System.out.println();
+        }
+        System.out.println();
     }
 
 }
