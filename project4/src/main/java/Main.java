@@ -27,8 +27,6 @@ public class Main {
                 ba.runAlgorithm();
                 break;
             case TEST:
-                ACO aco2 = new ACO();
-                aco2.runAlgorithm();
                 break;
         }
     }

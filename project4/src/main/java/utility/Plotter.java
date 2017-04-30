@@ -61,7 +61,11 @@ public class Plotter extends ApplicationFrame {
         plot.setOrientation(PlotOrientation.HORIZONTAL);
 
         JFreeChart chart = new JFreeChart(plot);
-        getContentPane().add(new ChartPanel(chart));
+        ChartPanel chartPanel = new ChartPanel(chart);
+        chartPanel.setPreferredSize(new Dimension(1024, 576));
+        chartPanel.setMaximumDrawHeight(1080);
+        chartPanel.setMaximumDrawWidth(1920);
+        getContentPane().add(chartPanel);
         pack();
         setVisible(true);
     }
