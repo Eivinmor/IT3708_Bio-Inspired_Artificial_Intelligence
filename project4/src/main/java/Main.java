@@ -8,7 +8,7 @@ import utility.DataReader;
 public class Main {
 
     private enum Algorithm {PSO, ACO, BA, ABC, TEST}
-    private static Algorithm algorithm = Algorithm.BA;
+    private static Algorithm algorithm = Algorithm.ABC;
     public static final int fileId = 2;
 
     public static void main(String[] args) {

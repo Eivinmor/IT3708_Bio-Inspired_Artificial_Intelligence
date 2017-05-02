@@ -180,7 +180,6 @@ public class ABC {
     private int[] variableNeighbourSearch(int[] foodSource) {
         ABCSolution initialSolution = new ABCSolution(foodSource);
         int[] firstFoodSource = foodSource.clone();
-        int step = 0;
         int p = 1;
         
         int alpha = Tools.random.nextInt(JSP.numOfOperations);
@@ -197,8 +196,8 @@ public class ABC {
         beta = Tools.random.nextInt(JSP.numOfOperations);
         while (beta == alpha) beta = Tools.random.nextInt(JSP.numOfOperations);
         firstFoodSource = exchangingProcess(firstFoodSource, alpha, beta);
-        
-        while (step <= JSP.numOfOperations * (JSP.numOfOperations - 1)){
+
+        for (int i = 0; i <= (JSP.numOfOperations * (JSP.numOfOperations - 1)); i++) {
             int[] secondFoodSource;
             alpha = Tools.random.nextInt(JSP.numOfOperations);
             beta = Tools.random.nextInt(JSP.numOfOperations);
@@ -215,7 +214,6 @@ public class ABC {
             else {
                 p = Math.abs(p - 1);
             }
-            step++;
         }
         if (new ABCSolution(firstFoodSource).makespan < initialSolution.makespan) {
             return firstFoodSource.clone();
