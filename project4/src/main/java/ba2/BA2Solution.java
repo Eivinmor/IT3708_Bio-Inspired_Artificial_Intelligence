@@ -11,7 +11,6 @@ public class BA2Solution extends Solution implements Comparable<BA2Solution>{
     double neighbourhoodSize;
     int roundsWithoutImprovement;
 
-
     BA2Solution(int[] foodSource) {
         this.foodSource = foodSource;
         this.neighbourhoodSize = Settings.initialNeighbourhoodSize;
@@ -34,6 +33,14 @@ public class BA2Solution extends Solution implements Comparable<BA2Solution>{
             if (maxStartTime + op.duration > makespan) makespan = maxStartTime + op.duration;
         }
     }
+
+//    BA2Solution(BA2Solution solution) {
+//        this.foodSource = solution.foodSource.clone();
+//        this.neighbourhoodSize = solution.neighbourhoodSize;
+//        this.roundsWithoutImprovement = solution.roundsWithoutImprovement;
+//        this.makespan = solution.makespan;
+//        this.operationStartTimes = solution.operationStartTimes.clone();
+//    }
 
     @Override
     public int compareTo(BA2Solution o) {

@@ -10,39 +10,35 @@ public class BA2 {
 
     public void runAlgorithm() {
 
-
-
         // Initiate scouted solutions (generate random solutions)
+        ArrayList<BA2Solution> population = scatterScouts(Settings.populationSize);
+        ArrayList<BA2Solution> nextPopulation;
         BA2Solution bestSolution;
-        ArrayList<BA2Solution> solutions = scatterScouts(Settings.numOfScoutBees);
+
 
         // START LOOP
 
         // Sort scouted sites (generate random solutions)
-        Collections.sort(solutions);
-        bestSolution = solutions.get(0);
+        Collections.sort(population);
+        nextPopulation = new ArrayList<>(Settings.populationSize);
+        bestSolution = population.get(0);
 
         // Present nb best of the scouted sites
-        ArrayList<BA2Solution> bestSolutions = new ArrayList<>(solutions.subList(
-                0, Settings.numOfBestSites));
-
         for (int i = 0; i < Settings.numOfEliteSites; i++) {
             // Elite search
-            bestSolutions.set(i, searchNeighbourhood(bestSolutions.get(i), Settings.beesPerEliteSite));
+            nextPopulation.add(searchNeighbourhood(population.get(i), Settings.beesPerEliteSite));
         }
         for (int i = Settings.numOfEliteSites; i < Settings.numOfBestSites; i++) {
             // Best search
-            bestSolutions.set(i, searchNeighbourhood(bestSolutions.get(i), Settings.beesPerBestSite));
+            nextPopulation.add(searchNeighbourhood(population.get(i), Settings.beesPerBestSite));
         }
-
-        // Perform local search on patches (scatter within neighbourhood)
-
-        // Shrink neighbourhoods
-
         // Site abandonment
 
         // Scout new sites
+        nextPopulation.addAll
+                (scatterScouts(Settings.populationSize - nextPopulation.size()));
 
+        population = nextPopulation;
     }
 
     private ArrayList<BA2Solution> scatterScouts(int numberOfScouts) {
@@ -63,9 +59,10 @@ public class BA2 {
     }
 
     private BA2Solution searchNeighbourhood(BA2Solution solution, int numOfBees) {
+        // Shrink neighbourhoods
         BA2Solution bestNeighbourhoodSolution = null;
         for (int i = 0; i < numOfBees; i++) {
-               
+
         }
         return bestNeighbourhoodSolution;
     }

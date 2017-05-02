@@ -2,7 +2,7 @@ package ba2;
 
 class Settings {
 
-    static final int populationSize = 20;       // n
+    static final int populationSize = 200;       // n
     static final int numOfScoutBees = 100;      // ns
 
     static final int numOfEliteSites = 5;       // ne
