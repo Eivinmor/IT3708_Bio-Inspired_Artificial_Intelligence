@@ -113,7 +113,6 @@ public class ACO {
     private ArrayList<Integer> variableNeighbourSearch(ArrayList<Integer> path, ArrayList<Integer> totalBestPath) {
         ACOSolution initialSolution = new ACOSolution(pathToFoodSource(totalBestPath));
         int[] firstFoodSource = pathToFoodSource(path);
-        int step = 0;
         int p = 1;
 
         int alpha = Tools.random.nextInt(JSP.numOfOperations);
@@ -131,7 +130,7 @@ public class ACO {
         while (beta == alpha) beta = Tools.random.nextInt(JSP.numOfOperations);
         firstFoodSource = exchangingProcess(firstFoodSource, alpha, beta);
 
-        while (step <= JSP.numOfOperations * (JSP.numOfOperations - 1)){
+        for (int i = 0; i <= (JSP.numOfOperations * (JSP.numOfOperations - 1)); i++) {
             int[] secondFoodSource;
             alpha = Tools.random.nextInt(JSP.numOfOperations);
             beta = Tools.random.nextInt(JSP.numOfOperations);
@@ -148,7 +147,6 @@ public class ACO {
             else {
                 p = Math.abs(p - 1);
             }
-            step++;
         }
         if (new ACOSolution(firstFoodSource).makespan < initialSolution.makespan) {
             return foodSourceToPath(firstFoodSource);
