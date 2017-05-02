@@ -6,6 +6,7 @@ import utility.Tools;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
 public class BA2 {
 
@@ -58,10 +59,12 @@ public class BA2 {
 //            System.out.println();
 //            for (BA2Solution s : population) {
 //                System.out.print(s.neighbourhoodSize + " ");
+//                break;
 //            }
 //            System.out.println();
+
 //            try {
-//                TimeUnit.SECONDS.sleep(2);
+//                TimeUnit.MILLISECONDS.sleep(100);
 //            } catch (InterruptedException e) {
 //                e.printStackTrace();
 //            }
@@ -92,7 +95,7 @@ public class BA2 {
             BA2Solution neighbourSolution = getNeighbourSolution(solution);
             if (neighbourSolution.makespan <= bestNeighbourhoodSolution.makespan) {
                 bestNeighbourhoodSolution = neighbourSolution;
-                changed = true;
+                if (neighbourSolution.makespan < bestNeighbourhoodSolution.makespan) changed = true;
             }
         }
         if (changed) bestNeighbourhoodSolution.neighbourhoodSize = solution.neighbourhoodSize;
