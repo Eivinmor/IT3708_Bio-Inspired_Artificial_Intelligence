@@ -26,7 +26,6 @@ public class BA2 {
             // Replace best solution
             if (population.get(0).makespan < bestSolution.makespan) {
                 bestSolution = population.get(0);
-                Tools.plotter.plotSolution(bestSolution);
             }
 
             // Present nb best of the scouted sites
@@ -53,9 +52,9 @@ public class BA2 {
                     (scatterScouts(Settings.populationSize - nextPopulation.size()));
 
             population = new ArrayList<>(nextPopulation);
-            System.out.println(bestSolution.makespan);
-
             bestSolution = variableNeighbourSearch(bestSolution);
+            System.out.println(bestSolution.makespan);
+            Tools.plotter.plotSolution(bestSolution);
         }
     }
 
