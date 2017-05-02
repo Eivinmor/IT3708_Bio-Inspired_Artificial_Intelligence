@@ -1,17 +1,17 @@
-package ba2;
+package ba;
 
 import representation.JSP;
 import representation.Operation;
 import representation.Solution;
 
 
-public class BA2Solution extends Solution implements Comparable<BA2Solution>{
+public class BASolution extends Solution implements Comparable<BASolution>{
 
     int[] foodSource;
     double neighbourhoodSize;
     int roundsWithoutImprovement;
 
-    BA2Solution(int[] foodSource) {
+    BASolution(int[] foodSource) {
         this.foodSource = foodSource;
         this.neighbourhoodSize = Settings.initialNeighbourhoodSize;
         this.roundsWithoutImprovement = 0;
@@ -43,7 +43,7 @@ public class BA2Solution extends Solution implements Comparable<BA2Solution>{
 //    }
 
     @Override
-    public int compareTo(BA2Solution o) {
+    public int compareTo(BASolution o) {
         if (this.makespan < o.makespan) return -1;
         if (this.makespan > o.makespan) return 1;
         return 0;

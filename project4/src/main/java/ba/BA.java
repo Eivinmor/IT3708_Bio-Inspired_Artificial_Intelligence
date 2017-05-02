@@ -1,4 +1,4 @@
-package ba2;
+package ba;
 
 
 import representation.JSP;
@@ -7,14 +7,14 @@ import utility.Tools;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class BA2 {
+public class BA {
 
     public void runAlgorithm() {
 
         // Initiate scouted solutions (generate random solutions)
-        ArrayList<BA2Solution> population = scatterScouts(Settings.numOfScoutBees);
-        ArrayList<BA2Solution> nextPopulation;
-        BA2Solution bestSolution = population.get(0);
+        ArrayList<BASolution> population = scatterScouts(Settings.numOfScoutBees);
+        ArrayList<BASolution> nextPopulation;
+        BASolution bestSolution = population.get(0);
 
         // START LOOP
         while (true) {
@@ -39,8 +39,8 @@ public class BA2 {
             }
 
             // Site abandonment
-            ArrayList<BA2Solution> nextPopulationAfterAbandonment = new ArrayList<>(Settings.populationSize);
-            for (BA2Solution site : nextPopulation) {
+            ArrayList<BASolution> nextPopulationAfterAbandonment = new ArrayList<>(Settings.populationSize);
+            for (BASolution site : nextPopulation) {
                 if (++site.roundsWithoutImprovement <= Settings.numOfStagnationRoundsBeforeAbandonment) {
                    nextPopulationAfterAbandonment.add(site);
                 }
@@ -58,28 +58,28 @@ public class BA2 {
         }
     }
 
-    private ArrayList<BA2Solution> scatterScouts(int numberOfScouts) {
+    private ArrayList<BASolution> scatterScouts(int numberOfScouts) {
         ArrayList<Integer> jobs = new ArrayList<>(JSP.numOfOperations);
         for (int i = 0; i < JSP.numOfJobs; i++) {
             for (int j = 0; j < JSP.numOfMachines; j++) jobs.add(i);
         }
-        ArrayList<BA2Solution> solutions = new ArrayList<>(numberOfScouts);
+        ArrayList<BASolution> solutions = new ArrayList<>(numberOfScouts);
         for (int i = 0; i < numberOfScouts; i++) {
             int[] foodSource = new int[JSP.numOfOperations];
             Collections.shuffle(jobs);
             for (int j = 0; j < JSP.numOfOperations; j++) {
                 foodSource[j] = jobs.get(j);
             }
-            solutions.add(new BA2Solution(foodSource));
+            solutions.add(new BASolution(foodSource));
         }
         return solutions;
     }
 
-    private BA2Solution searchNeighbourhood(BA2Solution solution, int numOfBees) {
+    private BASolution searchNeighbourhood(BASolution solution, int numOfBees) {
         boolean changed = false;
-        BA2Solution bestNeighbourhoodSolution = solution;
+        BASolution bestNeighbourhoodSolution = solution;
         for (int i = 0; i < numOfBees; i++) {
-            BA2Solution neighbourSolution = getNeighbourSolution(solution);
+            BASolution neighbourSolution = getNeighbourSolution(solution);
             if (neighbourSolution.makespan <= bestNeighbourhoodSolution.makespan) {
                 bestNeighbourhoodSolution = neighbourSolution;
                 if (neighbourSolution.makespan < bestNeighbourhoodSolution.makespan) changed = true;
@@ -92,7 +92,7 @@ public class BA2 {
         return variableNeighbourSearch(bestNeighbourhoodSolution);
     }
 
-    private BA2Solution getNeighbourSolution(BA2Solution solution) {
+    private BASolution getNeighbourSolution(BASolution solution) {
         int[] newFoodSource = new int[JSP.numOfOperations];
         ArrayList<Integer> selectedIndexes = new ArrayList<>(JSP.numOfOperations);
         for (int i = 0; i < JSP.numOfOperations; i++) {
@@ -107,11 +107,11 @@ public class BA2 {
         for (int i = 0; i < selectedIndexes.size(); i++) {
             newFoodSource[selectedIndexes.get(i)] = solution.foodSource[shuffledSelected.get(i)];
         }
-        return new BA2Solution(newFoodSource);
+        return new BASolution(newFoodSource);
     }
 
 
-    private BA2Solution variableNeighbourSearch(BA2Solution initialSolution) {
+    private BASolution variableNeighbourSearch(BASolution initialSolution) {
         int[] firstFoodSource = initialSolution.foodSource.clone();
         int p = 1;
 
@@ -141,14 +141,14 @@ public class BA2 {
             else {
                 secondFoodSource = insertingProcess(firstFoodSource, alpha, beta);
             }
-            if (new BA2Solution(secondFoodSource).makespan < new BA2Solution(firstFoodSource).makespan) {
+            if (new BASolution(secondFoodSource).makespan < new BASolution(firstFoodSource).makespan) {
                 firstFoodSource = secondFoodSource.clone();
             }
             else {
                 p = Math.abs(p - 1);
             }
         }
-        BA2Solution firstFoodSourceSolution = new BA2Solution(firstFoodSource);
+        BASolution firstFoodSourceSolution = new BASolution(firstFoodSource);
         if (firstFoodSourceSolution.makespan < initialSolution.makespan) {
             return firstFoodSourceSolution;
         }
