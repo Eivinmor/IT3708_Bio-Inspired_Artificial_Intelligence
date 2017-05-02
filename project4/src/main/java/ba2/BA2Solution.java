@@ -4,14 +4,18 @@ import representation.JSP;
 import representation.Operation;
 import representation.Solution;
 
-import java.util.Arrays;
 
 public class BA2Solution extends Solution implements Comparable<BA2Solution>{
 
-    public int[] foodSource;
+    int[] foodSource;
+    double neighbourhoodSize;
+    int roundsWithoutImprovement;
 
-    public BA2Solution(int[] foodSource) {
+
+    BA2Solution(int[] foodSource) {
         this.foodSource = foodSource;
+        this.neighbourhoodSize = Settings.initialNeighbourhoodSize;
+        this.roundsWithoutImprovement = 0;
         this.makespan = 0;
         double[] jobEndTime = new double[JSP.numOfJobs];
         double[] machineEndTime = new double[JSP.numOfMachines];
