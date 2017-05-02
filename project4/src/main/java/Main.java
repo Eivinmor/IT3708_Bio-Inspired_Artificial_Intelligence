@@ -1,4 +1,5 @@
 import ba.BA;
+import ba2.BA2;
 import pso.PSO;
 import aco.ACO;
 import utility.DataReader;
@@ -6,8 +7,8 @@ import utility.DataReader;
 
 public class Main {
 
-    private enum Algorithm {PSO, ACO, BA, TEST}
-    private static Algorithm algorithm = Algorithm.PSO;
+    private enum Algorithm {PSO, ACO, BA, BA2, TEST}
+    private static Algorithm algorithm = Algorithm.BA2;
     public static final int fileId = 3;
 
     public static void main(String[] args) {
@@ -25,6 +26,10 @@ public class Main {
             case BA:
                 BA ba = new BA();
                 ba.runAlgorithm();
+                break;
+            case BA2:
+                BA2 ba2 = new BA2();
+                ba2.runAlgorithm();
                 break;
             case TEST:
                 break;
