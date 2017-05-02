@@ -1,4 +1,4 @@
-package ba;
+package abc;
 
 class Settings {
 

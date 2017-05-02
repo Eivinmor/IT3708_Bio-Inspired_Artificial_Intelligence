@@ -1,4 +1,4 @@
-package ba;
+package abc;
 
 import representation.JSP;
 import utility.Tools;
@@ -6,19 +6,19 @@ import utility.Tools;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class BA {
+public class ABC {
 
     private int[][] foodSources;
     private int[] bestFoodSource, selectedFoodSources, roundsSinceImprovement;
-    private BASolution bestSolution;
-    private BASolution[] solutions;
+    private ABCSolution bestSolution;
+    private ABCSolution[] solutions;
 
     public void runAlgorithm() {
         // First step
         foodSources = constructInitialFoodSources();
         bestFoodSource = foodSources[0].clone();
-        bestSolution = new BASolution(foodSources[0]);
-        solutions = new BASolution[Settings.employed];
+        bestSolution = new ABCSolution(foodSources[0]);
+        solutions = new ABCSolution[Settings.employed];
         roundsSinceImprovement = new int[foodSources.length];
 
 
@@ -35,7 +35,7 @@ public class BA {
             // Fifth step
             bestFoodSource = variableNeighbourSearch(bestFoodSource);
 //            variableNeighbourSearch(bestFoodSource);
-            bestSolution = new BASolution(bestFoodSource);
+            bestSolution = new ABCSolution(bestFoodSource);
             System.out.println(bestSolution.makespan);
         }
         Tools.plotter.plotSolution(bestSolution);
@@ -59,12 +59,12 @@ public class BA {
     }
     
     private void updateAllFoodSources() {
-        for (int i = 0; i < Settings.employed; i++) solutions[i] = new BASolution(foodSources[i]);
+        for (int i = 0; i < Settings.employed; i++) solutions[i] = new ABCSolution(foodSources[i]);
         for (int i = 0; i < foodSources.length; i++) {
             int[] p1 = foodSources[i];
             int[] p2 = foodSources[Tools.random.nextInt(foodSources.length)];
             int[] c = crossover(p1, p2);
-            BASolution cSolution = new BASolution(c);
+            ABCSolution cSolution = new ABCSolution(c);
             if (cSolution.makespan < solutions[i].makespan) {
                 foodSources[i] = c;
                 solutions[i] = cSolution;
@@ -92,33 +92,21 @@ public class BA {
         selectedFoodSources = selected;
     }
 
-//    private void replaceBestFoodSource() {
-//        for (int i = 0; i < selectedFoodSources.length; i++) {
-//            BASolution solution = solutions[selectedFoodSources[i]];
-//            if (solution.makespan < bestSolution.makespan) {
-//                System.out.println("HEI");
-//                bestFoodSource = foodSources[selectedFoodSources[i]].clone();
-//                bestSolution = new BASolution(bestFoodSource);
-//            }
-//        }
-//    }
-
     private void replaceBestFoodSource() {
         int[] curBestFoodSource = foodSources[selectedFoodSources[0]];
-        BASolution curBestSolution = new BASolution(curBestFoodSource);
+        ABCSolution curBestSolution = new ABCSolution(curBestFoodSource);
 
         for (int i = 1; i < selectedFoodSources.length; i++) {
             int[] curSelectedFoodSource = foodSources[selectedFoodSources[i]];
-            BASolution solution = solutions[selectedFoodSources[i]];
+            ABCSolution solution = solutions[selectedFoodSources[i]];
             if (solution.makespan < curBestSolution.makespan) {
                 curBestFoodSource = curSelectedFoodSource;
                 curBestSolution = solution;
             }
         }
         curBestFoodSource = variableNeighbourSearch(curBestFoodSource);
-        curBestSolution = new BASolution(curBestFoodSource);
+        curBestSolution = new ABCSolution(curBestFoodSource);
         if (curBestSolution.makespan < bestSolution.makespan) {
-            System.out.println("HEI");
             bestFoodSource = curBestFoodSource;
             bestSolution = curBestSolution;
         }
@@ -129,7 +117,7 @@ public class BA {
             int foodSourceIndex = selectedFoodSources[i];
             int[] p1 = foodSources[foodSourceIndex];
             int[] c = crossover(p1, bestFoodSource);
-            BASolution cSolution = new BASolution(c);
+            ABCSolution cSolution = new ABCSolution(c);
             if (cSolution.makespan < solutions[foodSourceIndex].makespan) {
                 foodSources[foodSourceIndex] = c;
                 solutions[foodSourceIndex] = cSolution;
@@ -162,7 +150,7 @@ public class BA {
                     newFoodSource[selected.get(j)] = foodSources[i][shuffledSelected.get(j)];
                 }
                 foodSources[i] = newFoodSource;
-                solutions[i] = new BASolution(newFoodSource);
+                solutions[i] = new ABCSolution(newFoodSource);
                 roundsSinceImprovement[i] = 0;
             }
         }
@@ -190,7 +178,7 @@ public class BA {
     }
     
     private int[] variableNeighbourSearch(int[] foodSource) {
-        BASolution initialSolution = new BASolution(foodSource);
+        ABCSolution initialSolution = new ABCSolution(foodSource);
         int[] firstFoodSource = foodSource.clone();
         int step = 0;
         int p = 1;
@@ -221,7 +209,7 @@ public class BA {
             else {
                 secondFoodSource = insertingProcess(firstFoodSource, alpha, beta);
             }
-            if (new BASolution(secondFoodSource).makespan < new BASolution(firstFoodSource).makespan) {
+            if (new ABCSolution(secondFoodSource).makespan < new ABCSolution(firstFoodSource).makespan) {
                 firstFoodSource = secondFoodSource.clone();
             }
             else {
@@ -229,7 +217,7 @@ public class BA {
             }
             step++;
         }
-        if (new BASolution(firstFoodSource).makespan < initialSolution.makespan) {
+        if (new ABCSolution(firstFoodSource).makespan < initialSolution.makespan) {
             return firstFoodSource.clone();
         }
         return foodSource;

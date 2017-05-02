@@ -1,12 +1,12 @@
-package ba;
+package abc;
 
 import representation.JSP;
 import representation.Operation;
 import representation.Solution;
 
-public class BASolution extends Solution implements Comparable<BASolution>{
+public class ABCSolution extends Solution implements Comparable<ABCSolution>{
 
-    public BASolution(int[] foodSource) {
+    public ABCSolution(int[] foodSource) {
         this.makespan = 0;
         double[] jobEndTime = new double[JSP.numOfJobs];
         double[] machineEndTime = new double[JSP.numOfMachines];
@@ -27,7 +27,7 @@ public class BASolution extends Solution implements Comparable<BASolution>{
     }
 
     @Override
-    public int compareTo(BASolution o) {
+    public int compareTo(ABCSolution o) {
         if (this.makespan < o.makespan) return -1;
         if (this.makespan > o.makespan) return 1;
         return 0;
