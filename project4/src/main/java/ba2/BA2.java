@@ -17,28 +17,36 @@ public class BA2 {
 
 
         // START LOOP
+        while (true) {
+            // Sort scouted sites (generate random solutions)
+            Collections.sort(population);
+            nextPopulation = new ArrayList<>(Settings.populationSize);
+            bestSolution = population.get(0);
 
-        // Sort scouted sites (generate random solutions)
-        Collections.sort(population);
-        nextPopulation = new ArrayList<>(Settings.populationSize);
-        bestSolution = population.get(0);
+            // Present nb best of the scouted sites
+            for (int i = 0; i < Settings.numOfEliteSites; i++) {
+                // Elite search
+                nextPopulation.add(searchNeighbourhood(population.get(i), Settings.beesPerEliteSite));
+            }
+            for (int i = Settings.numOfEliteSites; i < Settings.numOfBestSites; i++) {
+                // Best search
+                nextPopulation.add(searchNeighbourhood(population.get(i), Settings.beesPerBestSite));
+            }
+            // Site abandonment
+            ArrayList<BA2Solution> nextPopulationAfterAbandonment = new ArrayList<>(Settings.populationSize);
+            for (BA2Solution site : nextPopulation) {
+                if (site.roundsWithoutImprovement >= Settings.numOfStagnationRoundsBeforeAbandonment) {
+                   nextPopulationAfterAbandonment.add(site);
+                }
+            }
+            nextPopulation = nextPopulationAfterAbandonment;
 
-        // Present nb best of the scouted sites
-        for (int i = 0; i < Settings.numOfEliteSites; i++) {
-            // Elite search
-            nextPopulation.add(searchNeighbourhood(population.get(i), Settings.beesPerEliteSite));
+            // Scout new sites
+            nextPopulation.addAll
+                    (scatterScouts(Settings.populationSize - nextPopulation.size()));
+
+            population = nextPopulation;
         }
-        for (int i = Settings.numOfEliteSites; i < Settings.numOfBestSites; i++) {
-            // Best search
-            nextPopulation.add(searchNeighbourhood(population.get(i), Settings.beesPerBestSite));
-        }
-        // Site abandonment
-
-        // Scout new sites
-        nextPopulation.addAll
-                (scatterScouts(Settings.populationSize - nextPopulation.size()));
-
-        population = nextPopulation;
     }
 
     private ArrayList<BA2Solution> scatterScouts(int numberOfScouts) {
