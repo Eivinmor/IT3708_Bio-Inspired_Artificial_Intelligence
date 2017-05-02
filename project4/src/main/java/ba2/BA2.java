@@ -5,9 +5,7 @@ import representation.JSP;
 import utility.Tools;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.concurrent.TimeUnit;
 
 public class BA2 {
 
@@ -26,7 +24,10 @@ public class BA2 {
             Collections.sort(population);
 
             // Replace best solution
-            if (population.get(0).makespan < bestSolution.makespan) bestSolution = population.get(0);
+            if (population.get(0).makespan < bestSolution.makespan) {
+                bestSolution = population.get(0);
+                Tools.plotter.plotSolution(bestSolution);
+            }
 
             // Present nb best of the scouted sites
             for (int i = 0; i < Settings.numOfEliteSites; i++) {
