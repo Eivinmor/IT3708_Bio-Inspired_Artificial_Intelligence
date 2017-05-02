@@ -28,11 +28,12 @@ public class Plotter extends ApplicationFrame {
     private XYBarRenderer renderer;
     private Color[] colors;
 
+
     public Plotter() {
 
         super("Schedule");
 
-        colors = generateColors(JSP.numOfJobs);
+        colors = getPredefinedColors();
 
         dataset = new XYIntervalSeriesCollection();
 
@@ -90,10 +91,69 @@ public class Plotter extends ApplicationFrame {
         }
     }
 
-    private Color[] generateColors(int amount){
-        Color[] newColors = new Color[amount];
+    private Color[] getPredefinedColors() {
+        Color[] colors = {
+                new Color (255, 0, 86),
+                new Color (14, 76, 161),
+//                new Color (255, 229, 2),
+                new Color (255, 219, 102),
+                new Color (0, 95, 57),
+                new Color (158, 0, 142),
+                new Color (0, 185, 23),
+                new Color (255, 147, 126),
+                new Color (164, 36, 0),
+                new Color (145, 208, 203),
+                new Color (107, 104, 130),
+//                new Color (0, 0, 255),
+                new Color (0, 125, 181),
+                new Color (254, 137, 0),
+                new Color (106, 130, 108),
+                new Color (0, 174, 126),
+                new Color (194, 140, 159),
+                new Color (190, 153, 112),
+//                new Color (0, 143, 156),
+                new Color (95, 173, 78),
+//                new Color (255, 0, 0),
+//                new Color (255, 0, 246),
+                new Color (104, 61, 59),
+                new Color (255, 116, 163),
+                new Color (150, 138, 232),
+                new Color (152, 255, 82),
+                new Color (167, 87, 64),
+                new Color (1, 255, 254),
+                new Color (255, 238, 232),
+                new Color (189, 198, 255),
+                new Color (1, 208, 255),
+//                new Color (187, 136, 0),
+                new Color (165, 255, 210),
+                new Color (255, 166, 254),
+//                new Color (119, 77, 0),
+                new Color (122, 71, 130),
+//                new Color (38, 52, 0),
+                new Color (0, 71, 84),
+                new Color (255, 177, 103),
+                new Color (144, 251, 146),
+                new Color (126, 45, 210),
+                new Color (189, 211, 147),
+                new Color (229, 111, 254),
+                new Color (222, 255, 116),
+                new Color (0, 255, 120),
+                new Color (0, 155, 255),
+                new Color (0, 100, 1),
+                new Color (0, 118, 255),
+                new Color (133, 169, 0),
+
+                new Color (120, 130, 49),
+                new Color (0, 255, 198),
+                new Color (255, 110, 65),
+                new Color (232, 94, 190)};
+        return colors;
+    }
+
+    private Color[] generateRandomColors(){
+        Color[] newColors = new Color[JSP.numOfJobs];
         int min = 180;
-        for (int i = 0; i < amount; i++) {
+        for (int i = 0; i < JSP.numOfJobs; i++) {
             int r = Tools.random.nextInt(256);
             int g = Tools.random.nextInt(256);
             int b = Tools.random.nextInt(256);
