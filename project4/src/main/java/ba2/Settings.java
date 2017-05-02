@@ -11,8 +11,8 @@ class Settings {
     static final int beesPerEliteSite = 5;      // nre
     static final int beesPerBestSite = 2;       // nrb
 
-    static final double initialNeighbourhoodSize = 20;                  // ngh
-    static final double neighbourhoodReduction = 0.01;
+    static final double initialNeighbourhoodSize = 1;                  // ngh
+    static final double neighbourhoodReduction = 0.001;
 
     static final int numOfStagnationRoundsBeforeAbandonment = 5;        // stlim
 

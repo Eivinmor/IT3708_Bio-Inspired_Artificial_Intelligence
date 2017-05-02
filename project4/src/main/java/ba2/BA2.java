@@ -2,26 +2,29 @@ package ba2;
 
 
 import representation.JSP;
+import utility.Tools;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class BA2 {
 
+    double neighbourhoodSize = Settings.initialNeighbourhoodSize;
+
     public void runAlgorithm() {
 
         // Initiate scouted solutions (generate random solutions)
         ArrayList<BA2Solution> population = scatterScouts(Settings.populationSize);
         ArrayList<BA2Solution> nextPopulation;
-        BA2Solution bestSolution;
-
+        BA2Solution bestSolution = population.get(0);
 
         // START LOOP
         while (true) {
             // Sort scouted sites (generate random solutions)
             Collections.sort(population);
             nextPopulation = new ArrayList<>(Settings.populationSize);
-            bestSolution = population.get(0);
+            neighbourhoodSize *= (1 - Settings.neighbourhoodReduction);
+            if (population.get(0).makespan < bestSolution.makespan) bestSolution = population.get(0);
 
             // Present nb best of the scouted sites
             for (int i = 0; i < Settings.numOfEliteSites; i++) {
@@ -46,6 +49,8 @@ public class BA2 {
                     (scatterScouts(Settings.populationSize - nextPopulation.size()));
 
             population = nextPopulation;
+            System.out.println(bestSolution.makespan);
+            Tools.plotter.plotSolution(bestSolution);
         }
     }
 
@@ -72,7 +77,7 @@ public class BA2 {
         for (int i = 0; i < numOfBees; i++) {
 
         }
-        return bestNeighbourhoodSolution;
+        return solution;
     }
 
 }
