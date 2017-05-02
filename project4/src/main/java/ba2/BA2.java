@@ -6,7 +6,6 @@ import utility.Tools;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.concurrent.TimeUnit;
 
 public class BA2 {
 
@@ -56,18 +55,7 @@ public class BA2 {
             population = new ArrayList<>(nextPopulation);
             System.out.println(bestSolution.makespan);
 
-//            System.out.println();
-//            for (BA2Solution s : population) {
-//                System.out.print(s.neighbourhoodSize + " ");
-//                break;
-//            }
-//            System.out.println();
-
-//            try {
-//                TimeUnit.MILLISECONDS.sleep(100);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
+            bestSolution = variableNeighbourSearch(bestSolution);
         }
     }
 
@@ -102,8 +90,7 @@ public class BA2 {
         else {
             bestNeighbourhoodSolution.neighbourhoodSize *= (1 - Settings.neighbourhoodReduction);
         }
-//        System.out.println(bestNeighbourhoodSolution.neighbourhoodSize);
-        return bestNeighbourhoodSolution;
+        return variableNeighbourSearch(bestNeighbourhoodSolution);
     }
 
     private BA2Solution getNeighbourSolution(BA2Solution solution) {
@@ -122,6 +109,77 @@ public class BA2 {
             newFoodSource[selectedIndexes.get(i)] = solution.foodSource[shuffledSelected.get(i)];
         }
         return new BA2Solution(newFoodSource);
+    }
+
+
+    private BA2Solution variableNeighbourSearch(BA2Solution initialSolution) {
+        int[] firstFoodSource = initialSolution.foodSource.clone();
+        int step = 0;
+        int p = 1;
+
+        int alpha = Tools.random.nextInt(JSP.numOfOperations);
+        int beta = Tools.random.nextInt(JSP.numOfOperations);
+        while (beta == alpha) beta = Tools.random.nextInt(JSP.numOfOperations);
+        firstFoodSource = exchangingProcess(firstFoodSource, alpha, beta);
+
+        alpha = Tools.random.nextInt(JSP.numOfOperations);
+        beta = Tools.random.nextInt(JSP.numOfOperations);
+        while (beta == alpha) beta = Tools.random.nextInt(JSP.numOfOperations);
+        firstFoodSource = insertingProcess(firstFoodSource, alpha, beta);
+
+        alpha = Tools.random.nextInt(JSP.numOfOperations);
+        beta = Tools.random.nextInt(JSP.numOfOperations);
+        while (beta == alpha) beta = Tools.random.nextInt(JSP.numOfOperations);
+        firstFoodSource = exchangingProcess(firstFoodSource, alpha, beta);
+
+        while (step <= JSP.numOfOperations * (JSP.numOfOperations - 1)){
+            int[] secondFoodSource;
+            alpha = Tools.random.nextInt(JSP.numOfOperations);
+            beta = Tools.random.nextInt(JSP.numOfOperations);
+            while (beta == alpha) beta = Tools.random.nextInt(JSP.numOfOperations);
+            if (p == 1) {
+                secondFoodSource = exchangingProcess(firstFoodSource, alpha, beta);
+            }
+            else {
+                secondFoodSource = insertingProcess(firstFoodSource, alpha, beta);
+            }
+            if (new BA2Solution(secondFoodSource).makespan < new BA2Solution(firstFoodSource).makespan) {
+                firstFoodSource = secondFoodSource.clone();
+            }
+            else {
+                p = Math.abs(p - 1);
+            }
+            step++;
+        }
+        BA2Solution firstFoodSourceSolution = new BA2Solution(firstFoodSource);
+        if (firstFoodSourceSolution.makespan < initialSolution.makespan) {
+            return firstFoodSourceSolution;
+        }
+        return initialSolution;
+    }
+
+    private int[] exchangingProcess(int[] foodSource, int alpha, int beta) {
+        int[] newFoodSource = foodSource.clone();
+        newFoodSource[alpha] = foodSource[beta];
+        newFoodSource[beta] = foodSource[alpha];
+        return newFoodSource;
+    }
+
+    private int[] insertingProcess(int[] foodSource, int alpha, int beta) {
+        int[] newFoodSource = foodSource.clone();
+        if (alpha > beta) {
+            for (int i = beta; i < alpha; i++) {
+                newFoodSource[i+1] = foodSource[i];
+            }
+        }
+        else {
+            for (int i = alpha; i < foodSource.length - 1; i++) {
+                if (i == beta) break;
+                newFoodSource[i] = foodSource[i + 1];
+            }
+        }
+        newFoodSource[beta] = foodSource[alpha];
+        return newFoodSource;
     }
 
 }
